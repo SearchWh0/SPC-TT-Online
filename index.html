@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timetable</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+[data-theme="light"] {
+  --bg:#f4f1ec; --surface:#ffffff; --surface2:#faf8f5; --border:#e4ddd4;
+  --text:#18160f; --muted:#9e9890; --soft:#ede9e2;
+  --shadow:0 2px 10px rgba(0,0,0,0.06); --shadow-lg:0 8px 28px rgba(0,0,0,0.11);
+  --toggle-track:#d6d0c8; --toggle-thumb:#ffffff;
+}
+[data-theme="dark"] {
+  --bg:#111010; --surface:#1c1b1a; --surface2:#232220; --border:#2e2c29;
+  --text:#f0ece4; --muted:#6b6760; --soft:#252320;
+  --shadow:0 2px 10px rgba(0,0,0,0.3); --shadow-lg:0 8px 28px rgba(0,0,0,0.4);
+  --toggle-track:#3a3835; --toggle-thumb:#f0ece4;
+}
+body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif; min-height:100vh; transition:background .25s,color .25s; }
+
+.site-header { background:var(--surface); border-bottom:1px solid var(--border); padding:22px 40px; display:flex; align-items:center; gap:20px; }
+.site-title { font-size:2rem; font-weight:900; color:var(--text); letter-spacing:-0.04em; line-height:1; }
+.site-day { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; margin-left:auto; }
+.theme-toggle { display:flex; align-items:center; gap:10px; cursor:pointer; user-select:none; flex-shrink:0; }
+.toggle-label { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; }
+.toggle-track { width:40px; height:22px; border-radius:11px; background:var(--toggle-track); position:relative; transition:background .2s; flex-shrink:0; }
+.toggle-track::after { content:''; position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:50%; background:var(--toggle-thumb); transition:transform .2s,background .2s; box-shadow:0 1px 4px rgba(0,0,0,0.2); }
+[data-theme="dark"] .toggle-track { background:#c8f542; }
+[data-theme="dark"] .toggle-track::after { transform:translateX(18px); background:#111010; }
+
+/* Loading / empty states */
+.state-wrap { max-width:600px; margin:80px auto; padding:0 24px; text-align:center; }
+.state-icon { font-size:3rem; margin-bottom:20px; opacity:0.4; }
+.state-title { font-size:1.3rem; font-weight:700; margin-bottom:8px; }
+.state-sub { font-size:0.88rem; color:var(--muted); line-height:1.7; }
+.spinner { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--text); border-radius:50%; animation:spin .7s linear infinite; margin:0 auto 20px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* Server URL input (viewer sets their own copy) */
+.server-setup { max-width:600px; margin:0 auto 0; padding:0 24px 24px; display:none; }
+.server-setup.visible { display:block; }
+.setup-row { display:flex; gap:10px; align-items:center; margin-top:20px; }
+.setup-input { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'DM Mono',monospace; font-size:0.82rem; padding:9px 14px; outline:none; transition:border-color .2s; }
+.setup-input:focus { border-color:var(--text); }
+.setup-btn { background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.85rem; font-weight:600; padding:10px 20px; border-radius:8px; cursor:pointer; white-space:nowrap; }
+
+/* App */
+.app { display:none; }
+.app.visible { display:block; }
+.class-nav-wrap { background:var(--surface); border-bottom:1px solid var(--border); padding:0 40px; position:sticky; top:0; z-index:100; box-shadow:var(--shadow); }
+.class-nav { display:flex; gap:6px; overflow-x:auto; padding:14px 0; scrollbar-width:none; }
+.class-nav::-webkit-scrollbar { display:none; }
+.class-btn { display:flex; align-items:center; gap:9px; padding:11px 20px; border-radius:11px; border:2px solid transparent; cursor:pointer; font-family:'Outfit',sans-serif; font-size:0.88rem; font-weight:600; white-space:nowrap; transition:all .18s ease; background:var(--soft); color:var(--text); }
+.class-btn .btn-dot { width:13px; height:13px; border-radius:50%; flex-shrink:0; border:1.5px solid rgba(0,0,0,0.1); }
+.class-btn:hover { background:var(--border); transform:translateY(-1px); }
+.class-btn.active { background:var(--text); color:var(--bg); border-color:var(--text); box-shadow:0 4px 16px rgba(0,0,0,0.2); }
+[data-theme="dark"] .class-btn.active { color:var(--bg); }
+.class-btn.active .btn-dot { border-color:rgba(255,255,255,0.25); }
+
+.toolbar { max-width:1000px; margin:0 auto; padding:14px 24px 0; display:flex; align-items:center; justify-content:space-between; }
+.status-bar { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); }
+.refresh-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.8rem; padding:7px 16px; border-radius:8px; cursor:pointer; transition:border-color .2s,color .2s; }
+.refresh-btn:hover { border-color:var(--text); color:var(--text); }
+
+.content-area { max-width:1000px; margin:0 auto; padding:36px 24px 100px; }
+.panel { display:none; }
+.panel.active { display:block; animation:panelIn .22s ease both; }
+@keyframes panelIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.panel-header { display:flex; align-items:center; gap:18px; margin-bottom:32px; flex-wrap:wrap; }
+.panel-colour-bar { width:7px; height:58px; border-radius:4px; flex-shrink:0; }
+.panel-title { font-size:2rem; font-weight:800; letter-spacing:-0.03em; line-height:1.1; }
+.panel-subtitle { font-size:0.74rem; color:var(--muted); font-family:'DM Mono',monospace; margin-top:4px; }
+.panel-actions { margin-left:auto; }
+.copy-btn { background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.85rem; font-weight:600; padding:11px 22px; border-radius:10px; cursor:pointer; transition:opacity .15s,transform .15s; white-space:nowrap; }
+.copy-btn:hover { opacity:0.82; transform:translateY(-1px); }
+.copy-btn.copied { background:#22a85a; color:#fff; }
+.period-grid { display:flex; flex-direction:column; gap:12px; }
+.period-row { display:grid; grid-template-columns:6px 70px 28px 1fr 1fr 1fr; align-items:stretch; background:var(--surface); border-radius:14px; overflow:hidden; box-shadow:var(--shadow); border:1px solid var(--border); min-height:64px; transition:box-shadow .15s,border-color .15s; }
+.period-row:hover { box-shadow:var(--shadow-lg); border-color:var(--muted); }
+.period-row.empty-row { opacity:0.28; }
+.period-row.empty-row:hover { box-shadow:var(--shadow); border-color:var(--border); }
+.period-row > div { display:flex; align-items:center; padding:18px 20px; }
+.period-row > div + div { border-left:1px solid var(--border); }
+.accent-bar { padding:0!important; border-left:none!important; width:6px; flex-shrink:0; }
+.cell-period { background:var(--surface2); font-family:'DM Mono',monospace; font-size:0.8rem; font-weight:500; color:var(--muted); letter-spacing:0.05em; justify-content:center; flex-shrink:0; }
+.cell-period.has-data { color:var(--text); font-weight:700; font-size:0.85rem; }
+.cell-dash { color:var(--border); justify-content:center; font-size:0.75rem; padding:18px 8px!important; flex-shrink:0; border-left:none!important; }
+.cell-data { color:var(--text); font-weight:500; font-size:0.95rem; line-height:1.5; word-break:break-word; padding:20px 24px!important; align-items:flex-start; cursor:pointer; position:relative; transition:background .15s; user-select:none; }
+.cell-data:not(.empty):hover { background:var(--soft); }
+.cell-data:not(.empty):hover::after { content:'copy'; position:absolute; top:8px; right:10px; font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; opacity:0.7; }
+.cell-data.flash-copy::after { content:'✓'; position:absolute; top:8px; right:10px; font-size:0.7rem; color:#22a85a; }
+.cell-data.flash-copy { background:var(--soft); }
+.cell-data.empty { color:var(--muted); font-weight:400; font-size:0.82rem; font-style:italic; cursor:default; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-title">Timetable</div>
+  <div class="site-day" id="todayLabel"></div>
+  <div class="theme-toggle" id="themeToggle">
+    <span class="toggle-label" id="toggleLabel">Light</span>
+    <div class="toggle-track"></div>
+  </div>
+</header>
+
+<!-- Loading -->
+<div class="state-wrap" id="loadingState">
+  <div class="spinner"></div>
+  <div class="state-title">Loading timetable…</div>
+</div>
+
+<!-- No timetable for today -->
+<div class="state-wrap" id="emptyState" style="display:none">
+  <div class="state-icon">📭</div>
+  <div class="state-title">No timetable yet today</div>
+  <div class="state-sub">The admin hasn't uploaded today's timetable yet.<br>Check back soon or ask them to paste it in.</div>
+</div>
+
+<!-- No server configured -->
+<div class="state-wrap" id="noServerState" style="display:none">
+  <div class="state-icon">🔌</div>
+  <div class="state-title">Server not configured</div>
+  <div class="state-sub">Enter the server URL below to connect to the timetable.</div>
+</div>
+<div class="server-setup" id="serverSetup">
+  <div class="setup-row">
+    <input id="serverUrlInput" class="setup-input" type="text" placeholder="https://your-app.onrender.com" />
+    <button class="setup-btn" id="connectBtn">Connect</button>
+  </div>
+</div>
+
+<!-- App -->
+<div class="app" id="app">
+  <div class="class-nav-wrap">
+    <div class="class-nav" id="classNav"></div>
+  </div>
+  <div class="toolbar">
+    <div class="status-bar" id="statusBar"></div>
+    <button class="refresh-btn" id="refreshBtn">↻ Refresh</button>
+  </div>
+  <div class="content-area" id="contentArea"></div>
+</div>
+
+<script>
+// ── Date / theme ───────────────────────────────────────────────────────────
+const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const now = new Date();
+document.getElementById('todayLabel').textContent =
+  DAYS[now.getDay()] + ' · ' + now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+
+const html = document.documentElement;
+const savedTheme = localStorage.getItem('tt-theme') || 'light';
+html.setAttribute('data-theme', savedTheme);
+document.getElementById('toggleLabel').textContent = savedTheme === 'dark' ? 'Dark' : 'Light';
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  document.getElementById('toggleLabel').textContent = next === 'dark' ? 'Dark' : 'Light';
+  localStorage.setItem('tt-theme', next);
+});
+
+// ── Server URL ─────────────────────────────────────────────────────────────
+// Viewers set their server URL once; it's saved in localStorage
+function getServerUrl() {
+  // Can be hardcoded here after deploy: return 'https://your-app.onrender.com';
+  return (localStorage.getItem('tt-viewer-server') || '').replace(/\/$/, '');
+}
+
+document.getElementById('connectBtn').addEventListener('click', () => {
+  const url = document.getElementById('serverUrlInput').value.trim().replace(/\/$/, '');
+  if (!url) return;
+  localStorage.setItem('tt-viewer-server', url);
+  loadTimetable();
+});
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function getLuminance(c){const n=(c||'').match(/\d+/g);return(!n||n.length<3)?999:0.299*+n[0]+0.587*+n[1]+0.114*+n[2];}
+function escapeHTML(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function show(id) {
+  ['loadingState','emptyState','noServerState','app'].forEach(s => {
+    document.getElementById(s).style.display = s === id ? '' : 'none';
+    if(document.getElementById(s).classList) document.getElementById(s).classList.remove('visible');
+  });
+  document.getElementById('serverSetup').classList.toggle('visible', id === 'noServerState');
+  if (id === 'app') document.getElementById('app').classList.add('visible');
+}
+
+// ── Load from server ───────────────────────────────────────────────────────
+async function loadTimetable() {
+  const url = getServerUrl();
+  if (!url) { show('noServerState'); return; }
+
+  show('loadingState');
+  try {
+    const res = await fetch(`${url}/timetable`);
+    if (res.status === 404) { show('emptyState'); return; }
+    if (!res.ok) { show('emptyState'); return; }
+    const state = await res.json();
+    if (!state.map) { show('emptyState'); return; }
+
+    const groupMap = new Map();
+    for (const [key, val] of Object.entries(state.map)) groupMap.set(key, val);
+    const names = state.names || {};
+    renderApp(groupMap, names);
+  } catch(e) {
+    show('noServerState');
+  }
+}
+
+document.getElementById('refreshBtn').addEventListener('click', loadTimetable);
+
+// Auto-refresh every 60 seconds
+setInterval(loadTimetable, 60000);
+
+// ── Render ─────────────────────────────────────────────────────────────────
+function renderApp(groupMap, names) {
+  const classNav   = document.getElementById('classNav');
+  const contentArea = document.getElementById('contentArea');
+  classNav.innerHTML = '';
+  contentArea.innerHTML = '';
+
+  const sorted = [...groupMap.entries()].sort((a,b) => getLuminance(a[1].bg) - getLuminance(b[1].bg));
+  let firstId = null;
+
+  sorted.forEach(([key, {bg, fg, slots}], gi) => {
+    const id = 'grp' + gi;
+    if (gi === 0) firstId = id;
+    const displayName = names[key] || `Name ${gi+1}`;
+
+    // Nav button (read-only — no editing for viewers)
+    const btn = document.createElement('button');
+    btn.className = 'class-btn'; btn.dataset.target = id;
+    const dot = document.createElement('span');
+    dot.className = 'btn-dot'; dot.style.background = bg;
+    if (fg) dot.style.borderColor = fg;
+    const label = document.createElement('span');
+    label.textContent = displayName;
+    btn.appendChild(dot); btn.appendChild(label);
+    btn.addEventListener('click', () => activateGroup(id));
+    classNav.appendChild(btn);
+
+    // Panel
+    const panel = document.createElement('div');
+    panel.className = 'panel'; panel.id = id;
+
+    const periodRows = [1,2,3,4,5,6].map(p => {
+      const entries = slots[p];
+      if (!entries || entries.length === 0) {
+        return `<div class="period-row empty-row"><div class="accent-bar" style="background:${bg}"></div><div class="cell-period">P${p}</div><div class="cell-dash">—</div><div class="cell-data empty" style="grid-column:4/-1"></div></div>`;
+      }
+      return entries.map(({d1,d2,d3}) => `
+        <div class="period-row">
+          <div class="accent-bar" style="background:${bg}"></div>
+          <div class="cell-period has-data">P${p}</div>
+          <div class="cell-dash">—</div>
+          <div class="cell-data${d1?'':' empty'}" data-copy="${escapeHTML(d1||'')}">${escapeHTML(d1||'')}</div>
+          <div class="cell-data${d2?'':' empty'}" data-copy="${escapeHTML(d2||'')}">${escapeHTML(d2||'')}</div>
+          <div class="cell-data${d3?'':' empty'}" data-copy="${escapeHTML(d3||'')}">${escapeHTML(d3||'')}</div>
+        </div>`).join('');
+    }).join('');
+
+    panel.innerHTML = `
+      <div class="panel-header">
+        <div class="panel-colour-bar" style="background:${bg}"></div>
+        <div><div class="panel-title">${escapeHTML(displayName)}</div>
+        <div class="panel-subtitle">${escapeHTML(bg)}${fg?' · '+escapeHTML(fg):''}</div></div>
+        <div class="panel-actions"><button class="copy-btn">Copy P1–P6</button></div>
+      </div>
+      <div class="period-grid">${periodRows}</div>`;
+
+    panel.querySelector('.copy-btn').addEventListener('click', function() {
+      const btn = this;
+      const grp = groupMap.get(key); if (!grp) return;
+      const text = [1,2,3,4,5,6].map(p => {
+        const ent = grp.slots[p];
+        if (!ent || ent.length === 0) return `P${p} - \t\t`;
+        return ent.map(({d1,d2,d3}) => `P${p} - ${d1}\t${d2}\t${d3}`).join('\n');
+      }).join('\n');
+      navigator.clipboard.writeText(text).then(() => flash(btn)).catch(() => {
+        const ta = Object.assign(document.createElement('textarea'), {value:text, style:'position:fixed;opacity:0'});
+        document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); flash(btn);
+      });
+    });
+    contentArea.appendChild(panel);
+  });
+
+  // Click to copy individual cells
+  contentArea.addEventListener('click', e => {
+    const cell = e.target.closest('.cell-data:not(.empty)');
+    if (!cell) return;
+    const text = cell.dataset.copy; if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      cell.classList.add('flash-copy');
+      setTimeout(() => cell.classList.remove('flash-copy'), 1200);
+    }).catch(() => {});
+  });
+
+  show('app');
+  document.getElementById('statusBar').textContent =
+    `${groupMap.size} found · auto-refreshes every minute`;
+  if (firstId) activateGroup(firstId);
+}
+
+function activateGroup(id) {
+  document.querySelectorAll('.class-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const btn = document.querySelector(`.class-btn[data-target="${id}"]`);
+  const panel = document.getElementById(id);
+  if (btn) btn.classList.add('active');
+  if (panel) panel.classList.add('active');
+}
+function flash(btn) {
+  const orig = btn.textContent; btn.textContent = '✓ Copied!'; btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+}
+
+// ── Start ──────────────────────────────────────────────────────────────────
+loadTimetable();
+</script>
+</body>
+</html>
