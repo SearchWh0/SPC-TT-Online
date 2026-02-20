@@ -167,7 +167,7 @@ document.getElementById('themeToggle').addEventListener('click', () => {
 // Viewers set their server URL once; it's saved in localStorage
 function getServerUrl() {
   // Can be hardcoded here after deploy: return 'https://your-app.onrender.com';
-  return (localStorage.getItem('tt-viewer-server') || '').replace(/\/$/, '');
+  return 'https://timetable-server-r6nb.onrender.com';
 }
 
 document.getElementById('connectBtn').addEventListener('click', () => {
