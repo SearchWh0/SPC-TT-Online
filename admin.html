@@ -22,105 +22,117 @@
 body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif; min-height:100vh; transition:background .25s,color .25s; }
 
 /* Header */
-.site-header { background:var(--surface); border-bottom:1px solid var(--border); padding:22px 40px; display:flex; align-items:center; gap:20px; }
-.site-title { font-size:2rem; font-weight:900; color:var(--text); letter-spacing:-0.04em; line-height:1; }
-.site-badge { background:#e05151; color:#fff; font-family:'DM Mono',monospace; font-size:0.65rem; font-weight:500; padding:3px 8px; border-radius:4px; letter-spacing:0.08em; text-transform:uppercase; }
-.site-day { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; margin-left:auto; }
-.theme-toggle { display:flex; align-items:center; gap:10px; cursor:pointer; user-select:none; flex-shrink:0; }
-.toggle-label { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; }
-.toggle-track { width:40px; height:22px; border-radius:11px; background:var(--toggle-track); position:relative; transition:background .2s; flex-shrink:0; }
-.toggle-track::after { content:''; position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:50%; background:var(--toggle-thumb); transition:transform .2s,background .2s; box-shadow:0 1px 4px rgba(0,0,0,0.2); }
+.site-header { background:var(--surface); border-bottom:1px solid var(--border); padding:18px 32px; display:flex; align-items:center; gap:16px; position:sticky; top:0; z-index:200; box-shadow:var(--shadow); }
+.site-title { font-size:1.8rem; font-weight:900; color:var(--text); letter-spacing:-0.04em; line-height:1; }
+.site-badge { background:#e05151; color:#fff; font-family:'DM Mono',monospace; font-size:0.62rem; padding:3px 8px; border-radius:4px; letter-spacing:0.08em; text-transform:uppercase; }
+.site-day { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; margin-left:auto; }
+.header-actions { display:flex; align-items:center; gap:10px; }
+.settings-btn { background:var(--soft); border:1px solid var(--border); color:var(--text); font-family:'Outfit',sans-serif; font-size:0.82rem; font-weight:600; padding:8px 16px; border-radius:8px; cursor:pointer; transition:all .15s; }
+.settings-btn:hover { background:var(--border); }
+.settings-btn.active { background:var(--text); color:var(--bg); border-color:var(--text); }
+.theme-toggle { display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; }
+.toggle-label { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; }
+.toggle-track { width:36px; height:20px; border-radius:10px; background:var(--toggle-track); position:relative; transition:background .2s; flex-shrink:0; }
+.toggle-track::after { content:''; position:absolute; top:3px; left:3px; width:14px; height:14px; border-radius:50%; background:var(--toggle-thumb); transition:transform .2s; box-shadow:0 1px 4px rgba(0,0,0,0.2); }
 [data-theme="dark"] .toggle-track { background:#c8f542; }
-[data-theme="dark"] .toggle-track::after { transform:translateX(18px); background:#111010; }
+[data-theme="dark"] .toggle-track::after { transform:translateX(16px); background:#111010; }
 
-/* Config bar */
-.config-bar { max-width:860px; margin:28px auto 0; padding:0 24px; display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap; }
-.config-group { display:flex; flex-direction:column; gap:5px; }
-.config-label { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; }
-.config-input {
-  background:var(--surface); border:1px solid var(--border); border-radius:8px;
-  color:var(--text); font-family:'DM Mono',monospace; font-size:0.82rem;
-  padding:9px 14px; outline:none; transition:border-color .2s;
-}
-.config-input:focus { border-color:var(--text); }
-.config-input.url { width:340px; }
-.config-input.pw  { width:180px; }
-.save-server-btn {
-  background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif;
-  font-size:0.85rem; font-weight:600; padding:10px 20px; border-radius:8px; cursor:pointer;
-  transition:opacity .15s; white-space:nowrap; align-self:flex-end;
-}
-.save-server-btn:hover { opacity:0.82; }
+/* Settings drawer */
+.settings-drawer { background:var(--surface); border-bottom:1px solid var(--border); overflow:hidden; max-height:0; transition:max-height .35s ease; }
+.settings-drawer.open { max-height:1400px; box-shadow:var(--shadow-lg); }
+.settings-inner { max-width:1000px; margin:0 auto; padding:28px 32px 32px; }
+.settings-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+@media(max-width:680px){ .settings-grid { grid-template-columns:1fr; } }
+.settings-section { background:var(--surface2); border:1px solid var(--border); border-radius:14px; padding:20px; }
+.settings-section.full { grid-column:1/-1; }
+.section-title { font-size:0.7rem; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:14px; }
+.field-group { display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
+.field-group:last-child { margin-bottom:0; }
+.field-label { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; }
+.field-input { background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'DM Mono',monospace; font-size:0.82rem; padding:9px 13px; outline:none; transition:border-color .2s; width:100%; }
+.field-input:focus { border-color:var(--text); }
+.btn-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+.s-btn { background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.82rem; font-weight:600; padding:9px 18px; border-radius:8px; cursor:pointer; transition:opacity .15s; white-space:nowrap; }
+.s-btn:hover { opacity:0.82; }
+.s-btn.secondary { background:var(--soft); color:var(--text); border:1px solid var(--border); }
+.s-btn.secondary:hover { background:var(--border); opacity:1; }
+.s-btn.danger { background:#e05151; color:#fff; }
+.s-btn.green { background:#22a85a; color:#fff; }
+.field-status { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); margin-top:6px; min-height:16px; }
+
+/* Cycle info box */
+.cycle-info { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; margin-bottom:12px; }
+.cycle-day-num { font-size:1.6rem; font-weight:900; letter-spacing:-0.03em; line-height:1; }
+.cycle-week { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); margin-top:2px; }
+.open-sheet-btn { width:100%; background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.88rem; font-weight:700; padding:11px; border-radius:10px; cursor:pointer; transition:opacity .15s; }
+.open-sheet-btn:hover { opacity:0.82; }
+
+/* Colour name list */
+.colour-name-list { display:flex; flex-direction:column; gap:8px; }
+.colour-name-row { display:flex; align-items:center; gap:10px; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 14px; }
+.colour-swatch { width:30px; height:30px; border-radius:7px; flex-shrink:0; border:1px solid rgba(0,0,0,0.08); }
+.colour-hex { font-family:'DM Mono',monospace; font-size:0.66rem; color:var(--muted); flex-shrink:0; width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.colour-name-input { flex:1; background:transparent; border:none; border-bottom:1.5px solid var(--border); color:var(--text); font-family:'Outfit',sans-serif; font-size:0.9rem; font-weight:600; padding:3px 4px; outline:none; transition:border-color .2s; }
+.colour-name-input:focus { border-bottom-color:var(--text); }
+.no-colours-msg { font-size:0.84rem; color:var(--muted); font-style:italic; padding:6px 2px; }
 
 /* Paste zone */
 .paste-wrap { max-width:860px; margin:28px auto; padding:0 24px; }
-.paste-zone {
-  border:2px dashed var(--border); border-radius:20px; padding:48px 48px;
-  cursor:pointer; transition:border-color .2s,background .2s; background:var(--surface);
-  text-align:center;
-}
+.paste-zone { border:2px dashed var(--border); border-radius:20px; padding:44px 48px; cursor:pointer; transition:border-color .2s,background .2s; background:var(--surface); text-align:center; }
 .paste-zone:hover { border-color:var(--text); background:var(--soft); }
-.paste-icon { font-size:2.4rem; margin-bottom:16px; }
-.paste-zone h2 { font-size:1.4rem; font-weight:700; margin-bottom:8px; }
-.paste-zone p { font-size:0.88rem; color:var(--muted); line-height:1.7; }
+.paste-icon { font-size:2.2rem; margin-bottom:14px; }
+.paste-zone h2 { font-size:1.3rem; font-weight:700; margin-bottom:8px; }
+.paste-zone p { font-size:0.87rem; color:var(--muted); line-height:1.7; }
 .key { display:inline-block; background:var(--soft); border:1px solid var(--border); border-radius:5px; padding:1px 8px; font-family:'DM Mono',monospace; font-size:0.76rem; color:var(--text); }
-.paste-status { margin-top:10px; font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); min-height:18px; }
+.paste-status { margin-top:10px; font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); min-height:18px; text-align:center; }
 .paste-status.err { color:#e05151; }
-.paste-status.ok  { color:#22a85a; }
+.paste-status.ok { color:#22a85a; }
 
-/* App shell */
+/* App */
 .app { display:none; }
 .app.visible { display:block; }
-
-/* Nav */
-.class-nav-wrap { background:var(--surface); border-bottom:1px solid var(--border); padding:0 40px; position:sticky; top:0; z-index:100; box-shadow:var(--shadow); }
-.class-nav { display:flex; gap:6px; overflow-x:auto; padding:14px 0; scrollbar-width:none; }
+.class-nav-wrap { background:var(--surface); border-bottom:1px solid var(--border); padding:0 32px; position:sticky; top:57px; z-index:100; box-shadow:var(--shadow); }
+.class-nav { display:flex; gap:6px; overflow-x:auto; padding:12px 0; scrollbar-width:none; }
 .class-nav::-webkit-scrollbar { display:none; }
-.class-btn { display:flex; align-items:center; gap:9px; padding:11px 20px; border-radius:11px; border:2px solid transparent; cursor:pointer; font-family:'Outfit',sans-serif; font-size:0.88rem; font-weight:600; white-space:nowrap; transition:all .18s ease; background:var(--soft); color:var(--text); }
-.class-btn .btn-dot { width:13px; height:13px; border-radius:50%; flex-shrink:0; border:1.5px solid rgba(0,0,0,0.1); }
+.class-btn { display:flex; align-items:center; gap:8px; padding:10px 18px; border-radius:10px; border:2px solid transparent; cursor:pointer; font-family:'Outfit',sans-serif; font-size:0.86rem; font-weight:600; white-space:nowrap; transition:all .18s ease; background:var(--soft); color:var(--text); }
+.class-btn .btn-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; border:1.5px solid rgba(0,0,0,0.1); }
 .class-btn:hover { background:var(--border); transform:translateY(-1px); }
 .class-btn.active { background:var(--text); color:var(--bg); border-color:var(--text); box-shadow:0 4px 16px rgba(0,0,0,0.2); }
 [data-theme="dark"] .class-btn.active { color:var(--bg); }
-.class-btn.active .btn-dot { border-color:rgba(255,255,255,0.25); }
 .btn-label { outline:none; background:transparent; border:none; font:inherit; color:inherit; cursor:inherit; min-width:40px; max-width:160px; pointer-events:none; border-radius:3px; padding:1px 3px; margin:-1px -3px; transition:background .15s; }
 .btn-label.editing { pointer-events:auto; cursor:text; background:rgba(255,255,255,0.15); text-decoration:underline; text-decoration-style:dashed; text-underline-offset:3px; }
-
-/* Toolbar */
-.toolbar { max-width:1000px; margin:0 auto; padding:14px 24px 0; display:flex; align-items:center; justify-content:space-between; }
-.status-bar { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); }
-.clear-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.8rem; padding:7px 16px; border-radius:8px; cursor:pointer; transition:border-color .2s,color .2s; }
+.toolbar { max-width:1000px; margin:0 auto; padding:14px 24px 0; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.status-bar { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted); }
+.clear-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.8rem; padding:7px 14px; border-radius:8px; cursor:pointer; transition:border-color .2s,color .2s; }
 .clear-btn:hover { border-color:#e05151; color:#e05151; }
-
-/* Content */
-.content-area { max-width:1000px; margin:0 auto; padding:36px 24px 100px; }
+.content-area { max-width:1000px; margin:0 auto; padding:28px 24px 100px; }
 .panel { display:none; }
 .panel.active { display:block; animation:panelIn .22s ease both; }
 @keyframes panelIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
-.panel-header { display:flex; align-items:center; gap:18px; margin-bottom:32px; flex-wrap:wrap; }
-.panel-colour-bar { width:7px; height:58px; border-radius:4px; flex-shrink:0; }
-.panel-title { font-size:2rem; font-weight:800; letter-spacing:-0.03em; line-height:1.1; }
-.panel-subtitle { font-size:0.74rem; color:var(--muted); font-family:'DM Mono',monospace; margin-top:4px; }
+.panel-header { display:flex; align-items:center; gap:16px; margin-bottom:28px; flex-wrap:wrap; }
+.panel-colour-bar { width:7px; height:54px; border-radius:4px; flex-shrink:0; }
+.panel-title { font-size:1.8rem; font-weight:800; letter-spacing:-0.03em; line-height:1.1; }
+.panel-subtitle { font-size:0.72rem; color:var(--muted); font-family:'DM Mono',monospace; margin-top:4px; }
 .panel-actions { margin-left:auto; }
-.copy-btn { background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.85rem; font-weight:600; padding:11px 22px; border-radius:10px; cursor:pointer; transition:opacity .15s,transform .15s; white-space:nowrap; }
+.copy-btn { background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.84rem; font-weight:600; padding:10px 20px; border-radius:10px; cursor:pointer; transition:opacity .15s,transform .15s; white-space:nowrap; }
 .copy-btn:hover { opacity:0.82; transform:translateY(-1px); }
 .copy-btn.copied { background:#22a85a; color:#fff; }
-.period-grid { display:flex; flex-direction:column; gap:12px; }
-.period-row { display:grid; grid-template-columns:6px 70px 28px 1fr 1fr 1fr; align-items:stretch; background:var(--surface); border-radius:14px; overflow:hidden; box-shadow:var(--shadow); border:1px solid var(--border); transition:box-shadow .15s,border-color .15s; min-height:64px; }
+.period-grid { display:flex; flex-direction:column; gap:10px; }
+.period-row { display:grid; grid-template-columns:6px 70px 28px 1fr 1fr 1fr; align-items:stretch; background:var(--surface); border-radius:13px; overflow:hidden; box-shadow:var(--shadow); border:1px solid var(--border); min-height:62px; transition:box-shadow .15s,border-color .15s; }
 .period-row:hover { box-shadow:var(--shadow-lg); border-color:var(--muted); }
 .period-row.empty-row { opacity:0.28; }
-.period-row.empty-row:hover { box-shadow:var(--shadow); border-color:var(--border); }
-.period-row > div { display:flex; align-items:center; padding:18px 20px; }
+.period-row > div { display:flex; align-items:center; padding:16px 18px; }
 .period-row > div + div { border-left:1px solid var(--border); }
 .accent-bar { padding:0!important; border-left:none!important; width:6px; flex-shrink:0; }
-.cell-period { background:var(--surface2); font-family:'DM Mono',monospace; font-size:0.8rem; font-weight:500; color:var(--muted); letter-spacing:0.05em; justify-content:center; flex-shrink:0; }
-.cell-period.has-data { color:var(--text); font-weight:700; font-size:0.85rem; }
-.cell-dash { color:var(--border); justify-content:center; font-size:0.75rem; padding:18px 8px!important; flex-shrink:0; border-left:none!important; }
-.cell-data { color:var(--text); font-weight:500; font-size:0.95rem; line-height:1.5; word-break:break-word; padding:20px 24px!important; align-items:flex-start; cursor:pointer; position:relative; transition:background .15s; user-select:none; }
+.cell-period { background:var(--surface2); font-family:'DM Mono',monospace; font-size:0.78rem; font-weight:500; color:var(--muted); letter-spacing:0.05em; justify-content:center; flex-shrink:0; }
+.cell-period.has-data { color:var(--text); font-weight:700; }
+.cell-dash { color:var(--border); justify-content:center; font-size:0.75rem; padding:16px 8px!important; flex-shrink:0; border-left:none!important; }
+.cell-data { color:var(--text); font-weight:500; font-size:0.93rem; line-height:1.5; word-break:break-word; padding:18px 22px!important; align-items:flex-start; cursor:pointer; position:relative; transition:background .15s; user-select:none; }
 .cell-data:not(.empty):hover { background:var(--soft); }
-.cell-data:not(.empty):hover::after { content:'copy'; position:absolute; top:8px; right:10px; font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; opacity:0.7; }
+.cell-data:not(.empty):hover::after { content:'copy'; position:absolute; top:7px; right:9px; font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; opacity:0.7; }
 .cell-data.flash-copy { background:var(--soft); }
-.cell-data.flash-copy::after { content:'✓'; position:absolute; top:8px; right:10px; font-size:0.7rem; color:#22a85a; }
-.cell-data.empty { color:var(--muted); font-weight:400; font-size:0.82rem; font-style:italic; cursor:default; }
+.cell-data.flash-copy::after { content:'✓'; position:absolute; top:7px; right:9px; font-size:0.7rem; color:#22a85a; }
+.cell-data.empty { cursor:default; }
 </style>
 </head>
 <body>
@@ -129,31 +141,88 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   <div class="site-title">Timetable</div>
   <div class="site-badge">Admin</div>
   <div class="site-day" id="todayLabel"></div>
-  <div class="theme-toggle" id="themeToggle">
-    <span class="toggle-label" id="toggleLabel">Light</span>
-    <div class="toggle-track"></div>
+  <div class="header-actions">
+    <button class="settings-btn" id="settingsToggle">⚙ Settings</button>
+    <div class="theme-toggle" id="themeToggle">
+      <span class="toggle-label" id="toggleLabel">Light</span>
+      <div class="toggle-track"></div>
+    </div>
   </div>
 </header>
 
-<!-- Server config -->
-<div class="config-bar">
-  <div class="config-group">
-    <span class="config-label">Render Server URL</span>
-    <input id="serverUrl" class="config-input url" type="text" placeholder="https://your-app.onrender.com" />
+<!-- Settings Drawer -->
+<div class="settings-drawer" id="settingsDrawer">
+  <div class="settings-inner">
+    <div class="settings-grid">
+
+      <!-- Server -->
+      <div class="settings-section">
+        <div class="section-title">Server Connection</div>
+        <div class="field-group">
+          <span class="field-label">Render Server URL</span>
+          <input id="serverUrl" class="field-input" type="text" placeholder="https://your-app.onrender.com" />
+        </div>
+        <div class="field-group">
+          <span class="field-label">Admin Password</span>
+          <input id="adminPw" class="field-input" type="password" placeholder="your password" />
+        </div>
+        <div class="btn-row">
+          <button class="s-btn" id="saveConfigBtn">Save</button>
+          <button class="s-btn secondary" id="testServerBtn">Test connection</button>
+        </div>
+        <div class="field-status" id="serverStatus"></div>
+      </div>
+
+      <!-- Today's sheet -->
+      <div class="settings-section">
+        <div class="section-title">Today's Sheet</div>
+        <div class="cycle-info">
+          <div style="font-size:0.66rem;color:var(--muted);margin-bottom:3px;font-family:'DM Mono',monospace;letter-spacing:0.06em;text-transform:uppercase">Today is</div>
+          <div class="cycle-day-num" id="cycleDayLabel">—</div>
+          <div class="cycle-week" id="cycleWeekLabel"></div>
+        </div>
+        <div class="field-group">
+          <span class="field-label">SharePoint File URL</span>
+          <input id="sharepointUrl" class="field-input" type="text" placeholder="https://stpeterscollege.sharepoint.com/..." />
+        </div>
+        <button class="open-sheet-btn" id="openSheetBtn">📂 Open Today's Sheet in Excel</button>
+        <div class="field-status">Opens the right sheet so you can Ctrl+A → Ctrl+C → paste here</div>
+      </div>
+
+      <!-- Colour names -->
+      <div class="settings-section full">
+        <div class="section-title">Colour → Name Mapping</div>
+        <div style="font-size:0.82rem;color:var(--muted);margin-bottom:14px">Set permanent names for each colour. Saved locally and pushed to viewers when you upload. Paste a timetable first to see the colours.</div>
+        <div class="colour-name-list" id="colourNameList">
+          <div class="no-colours-msg">No colours loaded yet — paste a timetable to see them here.</div>
+        </div>
+        <div class="btn-row">
+          <button class="s-btn green" id="saveNamesBtn">Save & push names</button>
+          <button class="s-btn secondary" id="clearNamesBtn">Clear all names</button>
+        </div>
+        <div class="field-status" id="namesStatus"></div>
+      </div>
+
+      <!-- Actions -->
+      <div class="settings-section full">
+        <div class="section-title">Actions</div>
+        <div class="btn-row">
+          <button class="s-btn secondary" id="exportKeysBtn">📋 Export colour keys</button>
+          <button class="s-btn danger" id="clearServerBtn">Clear server timetable</button>
+        </div>
+        <div class="field-status" id="actionStatus"></div>
+      </div>
+
+    </div>
   </div>
-  <div class="config-group">
-    <span class="config-label">Admin Password</span>
-    <input id="adminPw" class="config-input pw" type="password" placeholder="your password" />
-  </div>
-  <button class="save-server-btn" id="saveConfigBtn">Save Settings</button>
 </div>
 
 <!-- Paste zone -->
-<div class="paste-wrap">
+<div class="paste-wrap" id="pasteWrap">
   <div class="paste-zone" id="pasteZone" tabindex="0">
     <div class="paste-icon">📋</div>
     <h2>Paste your timetable</h2>
-    <p>Open your Excel timetable · select all <span class="key">Ctrl+A</span> · copy <span class="key">Ctrl+C</span> · then <span class="key">Ctrl+V</span> here</p>
+    <p>Open your Excel timetable · select all <span class="key">Ctrl+A</span> · copy <span class="key">Ctrl+C</span> · click here and press <span class="key">Ctrl+V</span></p>
   </div>
   <div class="paste-status" id="pasteStatus"></div>
 </div>
@@ -171,34 +240,40 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 </div>
 
 <script>
-// ── Config ─────────────────────────────────────────────────────────────────
-const serverUrlEl = document.getElementById('serverUrl');
-const adminPwEl   = document.getElementById('adminPw');
-const saveConfigBtn = document.getElementById('saveConfigBtn');
+// ── Cycle calculation ──────────────────────────────────────────────────────
+const CYCLE_START = new Date('2026-02-23T00:00:00');
+const DAYS_LONG = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
-serverUrlEl.value = localStorage.getItem('tt-server') || '';
-adminPwEl.value   = localStorage.getItem('tt-pw')     || '';
+function getTodayDayNumber() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const start = new Date(CYCLE_START); start.setHours(0,0,0,0);
+  let count = 0;
+  const d = new Date(start);
+  while (d <= today) {
+    if (d.getDay() !== 0 && d.getDay() !== 6) count++;
+    d.setDate(d.getDate() + 1);
+  }
+  return count > 0 ? ((count - 1) % 10) + 1 : null;
+}
 
-saveConfigBtn.addEventListener('click', () => {
-  localStorage.setItem('tt-server', serverUrlEl.value.trim().replace(/\/$/, ''));
-  localStorage.setItem('tt-pw', adminPwEl.value);
-  saveConfigBtn.textContent = '✓ Saved';
-  setTimeout(() => saveConfigBtn.textContent = 'Save Settings', 2000);
-});
-
-function getServer() { return (serverUrlEl.value.trim() || localStorage.getItem('tt-server') || '').replace(/\/$/, ''); }
-function getPw()     { return adminPwEl.value || localStorage.getItem('tt-pw') || ''; }
+function updateCycleDisplay() {
+  const dow = new Date().getDay();
+  const isWeekend = dow === 0 || dow === 6;
+  const dayNum = getTodayDayNumber();
+  document.getElementById('cycleDayLabel').textContent = (isWeekend || !dayNum) ? 'Weekend' : `Day ${dayNum}`;
+  document.getElementById('cycleWeekLabel').textContent = (isWeekend || !dayNum) ? 'No timetable today' : (dayNum <= 5 ? 'Week 1' : 'Week 2');
+}
 
 // ── Date / theme ───────────────────────────────────────────────────────────
-const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const now = new Date();
 document.getElementById('todayLabel').textContent =
-  DAYS[now.getDay()] + ' · ' + now.toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
+  DAYS_LONG[now.getDay()] + ' · ' + now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+updateCycleDisplay();
 
 const html = document.documentElement;
-const saved = localStorage.getItem('tt-theme') || 'light';
-html.setAttribute('data-theme', saved);
-document.getElementById('toggleLabel').textContent = saved === 'dark' ? 'Dark' : 'Light';
+const savedTheme = localStorage.getItem('tt-theme') || 'light';
+html.setAttribute('data-theme', savedTheme);
+document.getElementById('toggleLabel').textContent = savedTheme === 'dark' ? 'Dark' : 'Light';
 document.getElementById('themeToggle').addEventListener('click', () => {
   const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   html.setAttribute('data-theme', next);
@@ -206,29 +281,163 @@ document.getElementById('themeToggle').addEventListener('click', () => {
   localStorage.setItem('tt-theme', next);
 });
 
-// ── DOM ────────────────────────────────────────────────────────────────────
-const pasteZone   = document.getElementById('pasteZone');
-const pasteStatus = document.getElementById('pasteStatus');
-const app         = document.getElementById('app');
-const classNav    = document.getElementById('classNav');
-const contentArea = document.getElementById('contentArea');
-const statusBar   = document.getElementById('statusBar');
-const clearBtn    = document.getElementById('clearBtn');
-
-pasteZone.addEventListener('click', () => pasteZone.focus());
-document.addEventListener('paste', handlePaste);
-
-clearBtn.addEventListener('click', () => {
-  app.classList.remove('visible');
-  document.querySelector('.paste-wrap').style.display = '';
-  classNav.innerHTML = '';
-  contentArea.innerHTML = '';
-  statusBar.textContent = '';
-  pasteStatus.textContent = '';
-  currentGroupMap = null;
+// ── Settings drawer ────────────────────────────────────────────────────────
+const drawer = document.getElementById('settingsDrawer');
+const toggleBtn = document.getElementById('settingsToggle');
+toggleBtn.addEventListener('click', () => {
+  const open = drawer.classList.toggle('open');
+  toggleBtn.classList.toggle('active', open);
+  toggleBtn.textContent = open ? '✕ Close' : '⚙ Settings';
+  if (open) refreshColourNameList();
 });
 
-// ── Colour helpers (shared logic) ──────────────────────────────────────────
+// ── Server config ──────────────────────────────────────────────────────────
+const serverUrlEl = document.getElementById('serverUrl');
+const adminPwEl   = document.getElementById('adminPw');
+serverUrlEl.value = localStorage.getItem('tt-server') || '';
+adminPwEl.value   = localStorage.getItem('tt-pw') || '';
+
+function getServer() { return (serverUrlEl.value.trim() || localStorage.getItem('tt-server') || '').replace(/\/$/, ''); }
+function getPw()     { return adminPwEl.value || localStorage.getItem('tt-pw') || ''; }
+function setStatus(id, msg, type) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = type === 'green' ? '#22a85a' : type === 'red' ? '#e05151' : 'var(--muted)';
+  if (type) setTimeout(() => { if (el.textContent === msg) el.textContent = ''; }, 4000);
+}
+
+document.getElementById('saveConfigBtn').addEventListener('click', () => {
+  localStorage.setItem('tt-server', serverUrlEl.value.trim().replace(/\/$/, ''));
+  localStorage.setItem('tt-pw', adminPwEl.value);
+  setStatus('serverStatus', '✓ Saved', 'green');
+});
+
+document.getElementById('testServerBtn').addEventListener('click', async () => {
+  const url = getServer();
+  if (!url) { setStatus('serverStatus', '✕ No URL set', 'red'); return; }
+  setStatus('serverStatus', 'Testing…', '');
+  try {
+    const res = await fetch(`${url}/`);
+    const data = await res.json();
+    setStatus('serverStatus', `✓ Connected · today: ${data.todaySheet || '?'}`, 'green');
+  } catch(e) {
+    setStatus('serverStatus', '✕ Could not reach server', 'red');
+  }
+});
+
+// ── SharePoint quick-open ──────────────────────────────────────────────────
+const spUrlEl = document.getElementById('sharepointUrl');
+spUrlEl.value = localStorage.getItem('tt-sharepoint') || '';
+spUrlEl.addEventListener('change', () => localStorage.setItem('tt-sharepoint', spUrlEl.value.trim()));
+
+document.getElementById('openSheetBtn').addEventListener('click', () => {
+  const base = spUrlEl.value.trim() || localStorage.getItem('tt-sharepoint') || '';
+  if (!base) { alert('Enter your SharePoint file URL above first.'); return; }
+  const dayNum = getTodayDayNumber();
+  if (!dayNum) { alert('Today is a weekend — no sheet to open.'); return; }
+  localStorage.setItem('tt-sharepoint', base);
+  const sep = base.includes('?') ? '&' : '?';
+  window.open(`${base}${sep}activeCell=%27Day%20${dayNum}%27!A1&action=default`, '_blank');
+});
+
+// ── Colour name manager ────────────────────────────────────────────────────
+function refreshColourNameList() {
+  const list = document.getElementById('colourNameList');
+  if (!currentGroupMap || currentGroupMap.size === 0) {
+    list.innerHTML = '<div class="no-colours-msg">No colours loaded yet — paste a timetable to see them here.</div>';
+    return;
+  }
+  const sorted = [...currentGroupMap.entries()].sort((a,b) => getLuminance(a[1].bg) - getLuminance(b[1].bg));
+  list.innerHTML = '';
+  sorted.forEach(([key, {bg, fg}], i) => {
+    const row = document.createElement('div');
+    row.className = 'colour-name-row';
+
+    const swatch = document.createElement('div');
+    swatch.className = 'colour-swatch';
+    swatch.style.background = bg;
+    if (fg) swatch.style.outline = `2px solid ${fg}`;
+
+    const hex = document.createElement('div');
+    hex.className = 'colour-hex';
+    hex.textContent = bg;
+    hex.title = key;
+
+    const input = document.createElement('input');
+    input.className = 'colour-name-input';
+    input.type = 'text';
+    input.placeholder = `Name ${i + 1}`;
+    input.value = colorNames[key] || '';
+    input.dataset.key = key;
+
+    input.addEventListener('input', () => {
+      const val = input.value.trim();
+      if (val) colorNames[key] = val; else delete colorNames[key];
+      // Live-update nav label + panel title
+      const navBtn = document.querySelector(`.class-btn[data-ckey="${CSS.escape(key)}"]`);
+      if (navBtn) {
+        const lbl = navBtn.querySelector('.btn-label');
+        if (lbl) lbl.textContent = val || `Name ${i+1}`;
+        const ptId = navBtn.dataset.target;
+        const pt = document.getElementById('ptitle-' + ptId);
+        if (pt) pt.textContent = val || `Name ${i+1}`;
+      }
+    });
+
+    row.appendChild(swatch);
+    row.appendChild(hex);
+    row.appendChild(input);
+    list.appendChild(row);
+  });
+}
+
+document.getElementById('saveNamesBtn').addEventListener('click', async () => {
+  document.querySelectorAll('.colour-name-input').forEach(inp => {
+    const val = inp.value.trim();
+    if (val) colorNames[inp.dataset.key] = val;
+    else delete colorNames[inp.dataset.key];
+  });
+  localStorage.setItem('tt-colornames', JSON.stringify(colorNames));
+  if (currentGroupMap) {
+    await pushNames();
+    setStatus('namesStatus', '✓ Saved & pushed to server', 'green');
+  } else {
+    setStatus('namesStatus', '✓ Saved locally (paste a timetable to push to server)', 'green');
+  }
+});
+
+document.getElementById('clearNamesBtn').addEventListener('click', () => {
+  if (!confirm('Clear all saved names?')) return;
+  Object.keys(colorNames).forEach(k => delete colorNames[k]);
+  localStorage.removeItem('tt-colornames');
+  document.querySelectorAll('.colour-name-input').forEach(inp => inp.value = '');
+  setStatus('namesStatus', 'Names cleared', '');
+});
+
+// ── Actions ────────────────────────────────────────────────────────────────
+document.getElementById('exportKeysBtn').addEventListener('click', () => {
+  if (!currentGroupMap || currentGroupMap.size === 0) {
+    setStatus('actionStatus', 'Paste a timetable first', 'red'); return;
+  }
+  const keys = [...currentGroupMap.entries()].map(([k,v]) => ({ key: k, bg: v.bg, fg: v.fg }));
+  navigator.clipboard.writeText(JSON.stringify(keys, null, 2))
+    .then(() => setStatus('actionStatus', '✓ Colour keys copied to clipboard', 'green'));
+});
+
+document.getElementById('clearServerBtn').addEventListener('click', async () => {
+  if (!confirm('Clear today\'s timetable from the server? Viewers will see "no timetable" until you paste again.')) return;
+  const url = getServer();
+  if (!url) { setStatus('actionStatus', 'No server URL set', 'red'); return; }
+  try {
+    await fetch(`${url}/timetable`, { method: 'DELETE', headers: { 'X-Admin-Password': getPw() } });
+    setStatus('actionStatus', '✓ Server timetable cleared', 'green');
+  } catch(e) {
+    setStatus('actionStatus', '✕ Could not reach server', 'red');
+  }
+});
+
+// ── Colour helpers ─────────────────────────────────────────────────────────
 const EXCLUDED = new Set(['#ffffe1','#ffffe0','rgb(255,255,225)','rgb(255,255,224)']);
 function isExcluded(c){return EXCLUDED.has((c||'').toLowerCase().replace(/\s/g,''));}
 function isWhiteish(r,g,b){return r>235&&g>235&&b>235;}
@@ -244,12 +453,12 @@ function getLuminance(c){const n=(c||'').match(/\d+/g);return(!n||n.length<3)?99
 function escapeHTML(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 // ── State ──────────────────────────────────────────────────────────────────
-const colorNames = {};
+const colorNames = JSON.parse(localStorage.getItem('tt-colornames') || '{}');
 let currentGroupMap = null;
 
 async function pushToServer(groupMap) {
   const url = getServer();
-  if (!url) { pasteStatus.textContent = '⚠ No server URL set — add it above and save.'; pasteStatus.className='paste-status err'; return; }
+  if (!url) { setMsg('⚠ No server URL — open Settings and add it.', 'err'); return; }
   const mapObj = {};
   groupMap.forEach((val, key) => { mapObj[key] = JSON.parse(JSON.stringify(val)); });
   try {
@@ -259,25 +468,18 @@ async function pushToServer(groupMap) {
       body: JSON.stringify({ map: mapObj, names: { ...colorNames } })
     });
     if (res.ok) {
-      statusBar.textContent = `${groupMap.size} found · pushed to server · viewers can see it now`;
+      document.getElementById('statusBar').textContent = `${groupMap.size} found · pushed to server · viewers can see it now`;
     } else if (res.status === 401) {
-      pasteStatus.textContent = '✕ Wrong password — check your admin password above.';
-      pasteStatus.className = 'paste-status err';
+      setMsg('✕ Wrong password — check Settings.', 'err');
     } else {
-      pasteStatus.textContent = `✕ Server error ${res.status}`;
-      pasteStatus.className = 'paste-status err';
+      setMsg(`✕ Server error ${res.status}`, 'err');
     }
-  } catch(e) {
-    pasteStatus.textContent = '✕ Could not reach server — check your URL.';
-    pasteStatus.className = 'paste-status err';
-  }
+  } catch(e) { setMsg('✕ Could not reach server — check Settings.', 'err'); }
 }
 
 async function pushNames() {
   const url = getServer();
   if (!url || !currentGroupMap) return;
-  const mapObj = {};
-  currentGroupMap.forEach((val, key) => { mapObj[key] = JSON.parse(JSON.stringify(val)); });
   try {
     await fetch(`${url}/names`, {
       method: 'POST',
@@ -287,14 +489,40 @@ async function pushNames() {
   } catch(e) {}
 }
 
+function setMsg(msg, type) {
+  const el = document.getElementById('pasteStatus');
+  el.textContent = msg;
+  el.className = 'paste-status' + (type === 'err' ? ' err' : type === 'ok' ? ' ok' : '');
+}
+
+// ── DOM ────────────────────────────────────────────────────────────────────
+const pasteZone = document.getElementById('pasteZone');
+const app       = document.getElementById('app');
+const classNav  = document.getElementById('classNav');
+const contentArea = document.getElementById('contentArea');
+const pasteWrap = document.getElementById('pasteWrap');
+
+pasteZone.addEventListener('click', () => pasteZone.focus());
+document.addEventListener('paste', handlePaste);
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  app.classList.remove('visible');
+  pasteWrap.style.display = '';
+  classNav.innerHTML = '';
+  contentArea.innerHTML = '';
+  document.getElementById('statusBar').textContent = '';
+  document.getElementById('pasteStatus').textContent = '';
+  currentGroupMap = null;
+  refreshColourNameList();
+});
+
 // ── Paste ──────────────────────────────────────────────────────────────────
 function handlePaste(e) {
-  const html = e.clipboardData.getData('text/html');
-  if (html && (html.includes('<td') || html.includes('<TD'))) {
-    processHTMLData(html);
+  const h = e.clipboardData.getData('text/html');
+  if (h && (h.includes('<td') || h.includes('<TD'))) {
+    processHTMLData(h);
   } else {
-    pasteStatus.textContent = 'No table data found — copy directly from Excel (Ctrl+A, Ctrl+C).';
-    pasteStatus.className = 'paste-status err';
+    setMsg('No table data — copy directly from Excel (Ctrl+A, Ctrl+C).', 'err');
   }
 }
 
@@ -311,25 +539,16 @@ function processHTMLData(htmlStr) {
     }
   });
   const rows = doc.querySelectorAll('tr');
-  if(!rows.length){pasteStatus.textContent='No rows found.';pasteStatus.className='paste-status err';return;}
+  if(!rows.length){setMsg('No rows found.','err');return;}
   const grid=[];
-  rows.forEach(tr=>{
-    const row=[];
-    tr.querySelectorAll('td,th').forEach(td=>{
-      const colspan=parseInt(td.getAttribute('colspan')||'1',10);
-      const text=td.textContent.trim();
-      const{bg,fg}=cellColors(td,ccm,fgcm);
-      for(let s=0;s<colspan;s++)row.push({text,bg,fg});
-    });
-    grid.push(row);
-  });
+  rows.forEach(tr=>{const row=[];tr.querySelectorAll('td,th').forEach(td=>{const colspan=parseInt(td.getAttribute('colspan')||'1',10);const text=td.textContent.trim();const{bg,fg}=cellColors(td,ccm,fgcm);for(let s=0;s<colspan;s++)row.push({text,bg,fg});});grid.push(row);});
   const numCols=Math.max(...grid.map(r=>r.length));
   const refRow=grid[REF_ROW]||[];
   const periodNums=[];
   for(let c=0;c<numCols;c++){const txt=refRow[c]?refRow[c].text:'';const n=parseInt(txt,10);periodNums[c]=(n>=1&&n<=6)?n:null;}
   let dataStartCol=null;
   outerLoop:for(let c=0;c<numCols;c++)for(let r=0;r<grid.length;r++){if(r===REF_ROW)continue;const cell=grid[r][c];if(cell&&cell.bg&&!isExcluded(cell.bg)){dataStartCol=c;break outerLoop;}}
-  if(dataStartCol===null){pasteStatus.textContent='No coloured cells found.';pasteStatus.className='paste-status err';return;}
+  if(dataStartCol===null){setMsg('No coloured cells found.','err');return;}
   const groupMap=new Map();
   for(let r=0;r<grid.length;r++){
     if(r===REF_ROW)continue;
@@ -349,15 +568,15 @@ function processHTMLData(htmlStr) {
       grp.slots[periodNum].push({d1,d2,d3});
     }
   }
-  if(groupMap.size===0){pasteStatus.textContent='No coloured groups found.';pasteStatus.className='paste-status err';return;}
+  if(groupMap.size===0){setMsg('No coloured groups found.','err');return;}
   currentGroupMap = groupMap;
-  pasteStatus.textContent = 'Parsed — pushing to server…';
-  pasteStatus.className = 'paste-status';
+  setMsg('Parsed — pushing to server…', '');
+  if (drawer.classList.contains('open')) refreshColourNameList();
   pushToServer(groupMap);
   renderApp(groupMap);
 }
 
-// ── Render ──────────────────────────────────────────────────────────────────
+// ── Render ─────────────────────────────────────────────────────────────────
 function renderApp(groupMap) {
   classNav.innerHTML='';
   contentArea.innerHTML='';
@@ -371,7 +590,7 @@ function renderApp(groupMap) {
     const savedName=colorNames[key]||defaultName;
 
     const btn=document.createElement('button');
-    btn.className='class-btn'; btn.dataset.target=id;
+    btn.className='class-btn'; btn.dataset.target=id; btn.dataset.ckey=key;
     const dot=document.createElement('span');
     dot.className='btn-dot'; dot.style.background=bg;
     if(fg)dot.style.borderColor=fg;
@@ -381,7 +600,16 @@ function renderApp(groupMap) {
     label.title='Double-click to rename';
 
     function startEditing(e){e.stopPropagation();label.contentEditable='true';label.classList.add('editing');label.focus();const range=document.createRange();range.selectNodeContents(label);range.collapse(false);const sel=window.getSelection();sel.removeAllRanges();sel.addRange(range);}
-    function stopEditing(){label.contentEditable='false';label.classList.remove('editing');const name=label.textContent.trim()||defaultName;label.textContent=name;colorNames[key]=name;const pt=document.getElementById('ptitle-'+id);if(pt)pt.textContent=name;pushNames();}
+    function stopEditing(){
+      label.contentEditable='false';label.classList.remove('editing');
+      const name=label.textContent.trim()||defaultName;
+      label.textContent=name;
+      if(name!==defaultName) colorNames[key]=name; else delete colorNames[key];
+      localStorage.setItem('tt-colornames',JSON.stringify(colorNames));
+      const pt=document.getElementById('ptitle-'+id);if(pt)pt.textContent=name;
+      pushNames();
+      if(drawer.classList.contains('open'))refreshColourNameList();
+    }
     label.addEventListener('input',()=>{const pt=document.getElementById('ptitle-'+id);if(pt)pt.textContent=label.textContent.trim()||defaultName;});
     label.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();label.blur();}if(e.key==='Escape'){label.textContent=colorNames[key]||defaultName;label.blur();}e.stopPropagation();});
     label.addEventListener('blur',stopEditing);
@@ -419,22 +647,20 @@ function renderApp(groupMap) {
       <div class="period-grid">${periodRows}</div>`;
 
     panel.querySelector('.copy-btn').addEventListener('click',function(){
-      const btn=this;
-      const grp=currentGroupMap.get(key);if(!grp)return;
+      const b=this;const grp=currentGroupMap.get(key);if(!grp)return;
       const text=[1,2,3,4,5,6].map(p=>{const ent=grp.slots[p];if(!ent||ent.length===0)return`P${p} - \t\t`;return ent.map(({d1,d2,d3})=>`P${p} - ${d1}\t${d2}\t${d3}`).join('\n');}).join('\n');
-      navigator.clipboard.writeText(text).then(()=>flash(btn)).catch(()=>{const ta=Object.assign(document.createElement('textarea'),{value:text,style:'position:fixed;opacity:0'});document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);flash(btn);});
+      navigator.clipboard.writeText(text).then(()=>flash(b)).catch(()=>{const ta=Object.assign(document.createElement('textarea'),{value:text,style:'position:fixed;opacity:0'});document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);flash(b);});
     });
     contentArea.appendChild(panel);
   });
 
   contentArea.addEventListener('click',e=>{
-    const cell=e.target.closest('.cell-data:not(.empty)');
-    if(!cell)return;
+    const cell=e.target.closest('.cell-data:not(.empty)');if(!cell)return;
     const text=cell.dataset.copy;if(!text)return;
     navigator.clipboard.writeText(text).then(()=>{cell.classList.add('flash-copy');setTimeout(()=>cell.classList.remove('flash-copy'),1200);}).catch(()=>{});
   });
 
-  document.querySelector('.paste-wrap').style.display='none';
+  pasteWrap.style.display='none';
   app.classList.add('visible');
   if(firstId)activateGroup(firstId);
 }
