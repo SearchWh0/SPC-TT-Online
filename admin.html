@@ -21,15 +21,25 @@
 }
 body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif; min-height:100vh; transition:background .25s,color .25s; }
 
-/* Header */
-.site-header { background:var(--surface); border-bottom:1px solid var(--border); padding:18px 32px; display:flex; align-items:center; gap:16px; position:sticky; top:0; z-index:200; box-shadow:var(--shadow); }
+/* ── Header ── */
+.site-header { background:var(--surface); border-bottom:1px solid var(--border); padding:0 32px; display:flex; align-items:stretch; gap:0; position:sticky; top:0; z-index:200; box-shadow:var(--shadow); }
+.header-left { display:flex; align-items:center; gap:14px; padding:16px 0; }
 .site-title { font-size:1.8rem; font-weight:900; color:var(--text); letter-spacing:-0.04em; line-height:1; }
 .site-badge { background:#e05151; color:#fff; font-family:'DM Mono',monospace; font-size:0.62rem; padding:3px 8px; border-radius:4px; letter-spacing:0.08em; text-transform:uppercase; }
-.site-day { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; margin-left:auto; }
-.header-actions { display:flex; align-items:center; gap:10px; }
-.settings-btn { background:var(--soft); border:1px solid var(--border); color:var(--text); font-family:'Outfit',sans-serif; font-size:0.82rem; font-weight:600; padding:8px 16px; border-radius:8px; cursor:pointer; transition:all .15s; }
-.settings-btn:hover { background:var(--border); }
-.settings-btn.active { background:var(--text); color:var(--bg); border-color:var(--text); }
+
+/* Tab bar */
+.tab-bar { display:flex; align-items:stretch; margin-left:32px; gap:0; }
+.tab-btn {
+  background:none; border:none; border-bottom:3px solid transparent;
+  color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.88rem; font-weight:600;
+  padding:0 20px; cursor:pointer; transition:color .15s, border-color .15s;
+  display:flex; align-items:center; gap:7px; white-space:nowrap;
+}
+.tab-btn:hover { color:var(--text); }
+.tab-btn.active { color:var(--text); border-bottom-color:var(--text); }
+
+.header-right { margin-left:auto; display:flex; align-items:center; gap:10px; padding:16px 0; }
+.site-day { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; }
 .theme-toggle { display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; }
 .toggle-label { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; }
 .toggle-track { width:36px; height:20px; border-radius:10px; background:var(--toggle-track); position:relative; transition:background .2s; flex-shrink:0; }
@@ -37,46 +47,49 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 [data-theme="dark"] .toggle-track { background:#c8f542; }
 [data-theme="dark"] .toggle-track::after { transform:translateX(16px); background:#111010; }
 
-/* Settings drawer */
-.settings-drawer { background:var(--surface); border-bottom:1px solid var(--border); overflow:hidden; max-height:0; transition:max-height .35s ease; }
-.settings-drawer.open { max-height:1400px; box-shadow:var(--shadow-lg); }
-.settings-inner { max-width:1000px; margin:0 auto; padding:28px 32px 32px; }
+/* ── Tab pages ── */
+.tab-page { display:none; }
+.tab-page.active { display:block; animation:fadeIn .2s ease both; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── Settings page ── */
+.settings-page { max-width:1000px; margin:0 auto; padding:32px 28px 80px; }
 .settings-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
 @media(max-width:680px){ .settings-grid { grid-template-columns:1fr; } }
-.settings-section { background:var(--surface2); border:1px solid var(--border); border-radius:14px; padding:20px; }
+.settings-section { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:22px; }
 .settings-section.full { grid-column:1/-1; }
-.section-title { font-size:0.7rem; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:14px; }
-.field-group { display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
+.section-title { font-size:0.7rem; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:16px; }
+.field-group { display:flex; flex-direction:column; gap:5px; margin-bottom:14px; }
 .field-group:last-child { margin-bottom:0; }
 .field-label { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; }
-.field-input { background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'DM Mono',monospace; font-size:0.82rem; padding:9px 13px; outline:none; transition:border-color .2s; width:100%; }
+.field-input { background:var(--surface2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'DM Mono',monospace; font-size:0.82rem; padding:9px 13px; outline:none; transition:border-color .2s; width:100%; }
 .field-input:focus { border-color:var(--text); }
-.btn-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+.btn-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
 .s-btn { background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.82rem; font-weight:600; padding:9px 18px; border-radius:8px; cursor:pointer; transition:opacity .15s; white-space:nowrap; }
 .s-btn:hover { opacity:0.82; }
 .s-btn.secondary { background:var(--soft); color:var(--text); border:1px solid var(--border); }
 .s-btn.secondary:hover { background:var(--border); opacity:1; }
 .s-btn.danger { background:#e05151; color:#fff; }
 .s-btn.green { background:#22a85a; color:#fff; }
-.field-status { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); margin-top:6px; min-height:16px; }
+.field-status { font-family:'DM Mono',monospace; font-size:0.68rem; min-height:16px; margin-top:8px; }
 
-/* Cycle info box */
-.cycle-info { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; margin-bottom:12px; }
+/* Cycle info */
+.cycle-info { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-bottom:14px; }
 .cycle-day-num { font-size:1.6rem; font-weight:900; letter-spacing:-0.03em; line-height:1; }
-.cycle-week { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); margin-top:2px; }
-.open-sheet-btn { width:100%; background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.88rem; font-weight:700; padding:11px; border-radius:10px; cursor:pointer; transition:opacity .15s; }
+.cycle-week { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); margin-top:3px; }
+.open-sheet-btn { width:100%; background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.88rem; font-weight:700; padding:12px; border-radius:10px; cursor:pointer; transition:opacity .15s; }
 .open-sheet-btn:hover { opacity:0.82; }
 
 /* Colour name list */
 .colour-name-list { display:flex; flex-direction:column; gap:8px; }
-.colour-name-row { display:flex; align-items:center; gap:10px; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 14px; }
-.colour-swatch { width:30px; height:30px; border-radius:7px; flex-shrink:0; border:1px solid rgba(0,0,0,0.08); }
-.colour-hex { font-family:'DM Mono',monospace; font-size:0.66rem; color:var(--muted); flex-shrink:0; width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.colour-name-input { flex:1; background:transparent; border:none; border-bottom:1.5px solid var(--border); color:var(--text); font-family:'Outfit',sans-serif; font-size:0.9rem; font-weight:600; padding:3px 4px; outline:none; transition:border-color .2s; }
+.colour-name-row { display:flex; align-items:center; gap:12px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:11px 14px; }
+.colour-swatch { width:32px; height:32px; border-radius:8px; flex-shrink:0; border:1px solid rgba(0,0,0,0.08); }
+.colour-hex { font-family:'DM Mono',monospace; font-size:0.66rem; color:var(--muted); flex-shrink:0; width:92px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.colour-name-input { flex:1; background:transparent; border:none; border-bottom:1.5px solid var(--border); color:var(--text); font-family:'Outfit',sans-serif; font-size:0.92rem; font-weight:600; padding:3px 4px; outline:none; transition:border-color .2s; }
 .colour-name-input:focus { border-bottom-color:var(--text); }
 .no-colours-msg { font-size:0.84rem; color:var(--muted); font-style:italic; padding:6px 2px; }
 
-/* Paste zone */
+/* ── Timetable tab ── */
 .paste-wrap { max-width:860px; margin:28px auto; padding:0 24px; }
 .paste-zone { border:2px dashed var(--border); border-radius:20px; padding:44px 48px; cursor:pointer; transition:border-color .2s,background .2s; background:var(--surface); text-align:center; }
 .paste-zone:hover { border-color:var(--text); background:var(--soft); }
@@ -88,10 +101,9 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .paste-status.err { color:#e05151; }
 .paste-status.ok { color:#22a85a; }
 
-/* App */
-.app { display:none; }
-.app.visible { display:block; }
-.class-nav-wrap { background:var(--surface); border-bottom:1px solid var(--border); padding:0 32px; position:sticky; top:57px; z-index:100; box-shadow:var(--shadow); }
+.app-wrap { display:none; }
+.app-wrap.visible { display:block; }
+.class-nav-wrap { background:var(--surface); border-bottom:1px solid var(--border); padding:0 32px; box-shadow:var(--shadow); }
 .class-nav { display:flex; gap:6px; overflow-x:auto; padding:12px 0; scrollbar-width:none; }
 .class-nav::-webkit-scrollbar { display:none; }
 .class-btn { display:flex; align-items:center; gap:8px; padding:10px 18px; border-radius:10px; border:2px solid transparent; cursor:pointer; font-family:'Outfit',sans-serif; font-size:0.86rem; font-weight:600; white-space:nowrap; transition:all .18s ease; background:var(--soft); color:var(--text); }
@@ -99,7 +111,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .class-btn:hover { background:var(--border); transform:translateY(-1px); }
 .class-btn.active { background:var(--text); color:var(--bg); border-color:var(--text); box-shadow:0 4px 16px rgba(0,0,0,0.2); }
 [data-theme="dark"] .class-btn.active { color:var(--bg); }
-.btn-label { outline:none; background:transparent; border:none; font:inherit; color:inherit; cursor:inherit; min-width:40px; max-width:160px; pointer-events:none; border-radius:3px; padding:1px 3px; margin:-1px -3px; transition:background .15s; }
+.btn-label { outline:none; background:transparent; border:none; font:inherit; color:inherit; cursor:inherit; min-width:40px; max-width:160px; pointer-events:none; border-radius:3px; padding:1px 3px; margin:-1px -3px; }
 .btn-label.editing { pointer-events:auto; cursor:text; background:rgba(255,255,255,0.15); text-decoration:underline; text-decoration-style:dashed; text-underline-offset:3px; }
 .toolbar { max-width:1000px; margin:0 auto; padding:14px 24px 0; display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .status-bar { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted); }
@@ -107,8 +119,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .clear-btn:hover { border-color:#e05151; color:#e05151; }
 .content-area { max-width:1000px; margin:0 auto; padding:28px 24px 100px; }
 .panel { display:none; }
-.panel.active { display:block; animation:panelIn .22s ease both; }
-@keyframes panelIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.panel.active { display:block; animation:fadeIn .22s ease both; }
 .panel-header { display:flex; align-items:center; gap:16px; margin-bottom:28px; flex-wrap:wrap; }
 .panel-colour-bar { width:7px; height:54px; border-radius:4px; flex-shrink:0; }
 .panel-title { font-size:1.8rem; font-weight:800; letter-spacing:-0.03em; line-height:1.1; }
@@ -138,11 +149,18 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 <body>
 
 <header class="site-header">
-  <div class="site-title">Timetable</div>
-  <div class="site-badge">Admin</div>
-  <div class="site-day" id="todayLabel"></div>
-  <div class="header-actions">
-    <button class="settings-btn" id="settingsToggle">⚙ Settings</button>
+  <div class="header-left">
+    <div class="site-title">Timetable</div>
+    <div class="site-badge">Admin</div>
+  </div>
+
+  <nav class="tab-bar">
+    <button class="tab-btn active" data-tab="timetableTab">📋 Timetable</button>
+    <button class="tab-btn" data-tab="settingsTab">⚙ Settings</button>
+  </nav>
+
+  <div class="header-right">
+    <div class="site-day" id="todayLabel"></div>
     <div class="theme-toggle" id="themeToggle">
       <span class="toggle-label" id="toggleLabel">Light</span>
       <div class="toggle-track"></div>
@@ -150,9 +168,32 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   </div>
 </header>
 
-<!-- Settings Drawer -->
-<div class="settings-drawer" id="settingsDrawer">
-  <div class="settings-inner">
+<!-- ══ TIMETABLE TAB ══ -->
+<div class="tab-page active" id="timetableTab">
+  <div class="paste-wrap" id="pasteWrap">
+    <div class="paste-zone" id="pasteZone" tabindex="0">
+      <div class="paste-icon">📋</div>
+      <h2>Paste your timetable</h2>
+      <p>Open your Excel timetable · select all <span class="key">Ctrl+A</span> · copy <span class="key">Ctrl+C</span> · click here and press <span class="key">Ctrl+V</span></p>
+    </div>
+    <div class="paste-status" id="pasteStatus"></div>
+  </div>
+
+  <div class="app-wrap" id="appWrap">
+    <div class="class-nav-wrap">
+      <div class="class-nav" id="classNav"></div>
+    </div>
+    <div class="toolbar">
+      <div class="status-bar" id="statusBar"></div>
+      <button class="clear-btn" id="clearBtn">↩ Paste new timetable</button>
+    </div>
+    <div class="content-area" id="contentArea"></div>
+  </div>
+</div>
+
+<!-- ══ SETTINGS TAB ══ -->
+<div class="tab-page" id="settingsTab">
+  <div class="settings-page">
     <div class="settings-grid">
 
       <!-- Server -->
@@ -186,18 +227,18 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
           <input id="sharepointUrl" class="field-input" type="text" placeholder="https://stpeterscollege.sharepoint.com/..." />
         </div>
         <button class="open-sheet-btn" id="openSheetBtn">📂 Open Today's Sheet in Excel</button>
-        <div class="field-status">Opens the right sheet so you can Ctrl+A → Ctrl+C → paste here</div>
+        <div class="field-status">Opens the right sheet — Ctrl+A → Ctrl+C → switch back and paste</div>
       </div>
 
-      <!-- Colour names -->
+      <!-- Colour names — full width -->
       <div class="settings-section full">
         <div class="section-title">Colour → Name Mapping</div>
-        <div style="font-size:0.82rem;color:var(--muted);margin-bottom:14px">Set permanent names for each colour. Saved locally and pushed to viewers when you upload. Paste a timetable first to see the colours.</div>
+        <p style="font-size:0.83rem;color:var(--muted);margin-bottom:16px;line-height:1.6">Set a permanent name for each colour group. Names are saved in your browser and pushed to the server whenever you upload a timetable. Paste a timetable on the Timetable tab first to see the colours appear here.</p>
         <div class="colour-name-list" id="colourNameList">
-          <div class="no-colours-msg">No colours loaded yet — paste a timetable to see them here.</div>
+          <div class="no-colours-msg">No colours loaded yet — paste a timetable first.</div>
         </div>
         <div class="btn-row">
-          <button class="s-btn green" id="saveNamesBtn">Save & push names</button>
+          <button class="s-btn green" id="saveNamesBtn">Save & push names to server</button>
           <button class="s-btn secondary" id="clearNamesBtn">Clear all names</button>
         </div>
         <div class="field-status" id="namesStatus"></div>
@@ -217,78 +258,49 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   </div>
 </div>
 
-<!-- Paste zone -->
-<div class="paste-wrap" id="pasteWrap">
-  <div class="paste-zone" id="pasteZone" tabindex="0">
-    <div class="paste-icon">📋</div>
-    <h2>Paste your timetable</h2>
-    <p>Open your Excel timetable · select all <span class="key">Ctrl+A</span> · copy <span class="key">Ctrl+C</span> · click here and press <span class="key">Ctrl+V</span></p>
-  </div>
-  <div class="paste-status" id="pasteStatus"></div>
-</div>
-
-<!-- App -->
-<div class="app" id="app">
-  <div class="class-nav-wrap">
-    <div class="class-nav" id="classNav"></div>
-  </div>
-  <div class="toolbar">
-    <div class="status-bar" id="statusBar"></div>
-    <button class="clear-btn" id="clearBtn">↩ Paste new timetable</button>
-  </div>
-  <div class="content-area" id="contentArea"></div>
-</div>
-
 <script>
-// ── Cycle calculation ──────────────────────────────────────────────────────
+// ── Cycle ──────────────────────────────────────────────────────────────────
 const CYCLE_START = new Date('2026-02-23T00:00:00');
 const DAYS_LONG = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-
 function getTodayDayNumber() {
   const today = new Date(); today.setHours(0,0,0,0);
   const start = new Date(CYCLE_START); start.setHours(0,0,0,0);
-  let count = 0;
-  const d = new Date(start);
-  while (d <= today) {
-    if (d.getDay() !== 0 && d.getDay() !== 6) count++;
-    d.setDate(d.getDate() + 1);
-  }
-  return count > 0 ? ((count - 1) % 10) + 1 : null;
-}
-
-function updateCycleDisplay() {
-  const dow = new Date().getDay();
-  const isWeekend = dow === 0 || dow === 6;
-  const dayNum = getTodayDayNumber();
-  document.getElementById('cycleDayLabel').textContent = (isWeekend || !dayNum) ? 'Weekend' : `Day ${dayNum}`;
-  document.getElementById('cycleWeekLabel').textContent = (isWeekend || !dayNum) ? 'No timetable today' : (dayNum <= 5 ? 'Week 1' : 'Week 2');
+  let count = 0; const d = new Date(start);
+  while (d <= today) { if (d.getDay()!==0&&d.getDay()!==6) count++; d.setDate(d.getDate()+1); }
+  return count > 0 ? ((count-1)%10)+1 : null;
 }
 
 // ── Date / theme ───────────────────────────────────────────────────────────
 const now = new Date();
 document.getElementById('todayLabel').textContent =
   DAYS_LONG[now.getDay()] + ' · ' + now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-updateCycleDisplay();
+
+const dayNum = getTodayDayNumber();
+const isWeekend = now.getDay()===0||now.getDay()===6;
+document.getElementById('cycleDayLabel').textContent = (!isWeekend&&dayNum) ? `Day ${dayNum}` : 'Weekend';
+document.getElementById('cycleWeekLabel').textContent = (!isWeekend&&dayNum) ? (dayNum<=5?'Week 1':'Week 2') : 'No timetable today';
 
 const html = document.documentElement;
 const savedTheme = localStorage.getItem('tt-theme') || 'light';
 html.setAttribute('data-theme', savedTheme);
-document.getElementById('toggleLabel').textContent = savedTheme === 'dark' ? 'Dark' : 'Light';
+document.getElementById('toggleLabel').textContent = savedTheme==='dark'?'Dark':'Light';
 document.getElementById('themeToggle').addEventListener('click', () => {
-  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  const next = html.getAttribute('data-theme')==='dark'?'light':'dark';
   html.setAttribute('data-theme', next);
-  document.getElementById('toggleLabel').textContent = next === 'dark' ? 'Dark' : 'Light';
+  document.getElementById('toggleLabel').textContent = next==='dark'?'Dark':'Light';
   localStorage.setItem('tt-theme', next);
 });
 
-// ── Settings drawer ────────────────────────────────────────────────────────
-const drawer = document.getElementById('settingsDrawer');
-const toggleBtn = document.getElementById('settingsToggle');
-toggleBtn.addEventListener('click', () => {
-  const open = drawer.classList.toggle('open');
-  toggleBtn.classList.toggle('active', open);
-  toggleBtn.textContent = open ? '✕ Close' : '⚙ Settings';
-  if (open) refreshColourNameList();
+// ── Tab switching ──────────────────────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+    // Refresh colour list when switching to settings
+    if (btn.dataset.tab === 'settingsTab') refreshColourNameList();
+  });
 });
 
 // ── Server config ──────────────────────────────────────────────────────────
@@ -297,33 +309,30 @@ const adminPwEl   = document.getElementById('adminPw');
 serverUrlEl.value = localStorage.getItem('tt-server') || '';
 adminPwEl.value   = localStorage.getItem('tt-pw') || '';
 
-function getServer() { return (serverUrlEl.value.trim() || localStorage.getItem('tt-server') || '').replace(/\/$/, ''); }
-function getPw()     { return adminPwEl.value || localStorage.getItem('tt-pw') || ''; }
+function getServer() { return (serverUrlEl.value.trim()||localStorage.getItem('tt-server')||'').replace(/\/$/,''); }
+function getPw()     { return adminPwEl.value||localStorage.getItem('tt-pw')||''; }
 function setStatus(id, msg, type) {
-  const el = document.getElementById(id);
-  if (!el) return;
+  const el = document.getElementById(id); if(!el) return;
   el.textContent = msg;
-  el.style.color = type === 'green' ? '#22a85a' : type === 'red' ? '#e05151' : 'var(--muted)';
-  if (type) setTimeout(() => { if (el.textContent === msg) el.textContent = ''; }, 4000);
+  el.style.color = type==='green'?'#22a85a':type==='red'?'#e05151':'var(--muted)';
+  if (type) setTimeout(()=>{ if(el.textContent===msg) el.textContent=''; }, 4000);
 }
 
 document.getElementById('saveConfigBtn').addEventListener('click', () => {
-  localStorage.setItem('tt-server', serverUrlEl.value.trim().replace(/\/$/, ''));
+  localStorage.setItem('tt-server', serverUrlEl.value.trim().replace(/\/$/,''));
   localStorage.setItem('tt-pw', adminPwEl.value);
-  setStatus('serverStatus', '✓ Saved', 'green');
+  setStatus('serverStatus','✓ Saved','green');
 });
 
 document.getElementById('testServerBtn').addEventListener('click', async () => {
   const url = getServer();
-  if (!url) { setStatus('serverStatus', '✕ No URL set', 'red'); return; }
-  setStatus('serverStatus', 'Testing…', '');
+  if (!url) { setStatus('serverStatus','✕ No URL set','red'); return; }
+  setStatus('serverStatus','Testing…','');
   try {
     const res = await fetch(`${url}/`);
     const data = await res.json();
-    setStatus('serverStatus', `✓ Connected · today: ${data.todaySheet || '?'}`, 'green');
-  } catch(e) {
-    setStatus('serverStatus', '✕ Could not reach server', 'red');
-  }
+    setStatus('serverStatus',`✓ Connected · today: ${data.todaySheet||'?'}`,'green');
+  } catch(e) { setStatus('serverStatus','✕ Could not reach server','red'); }
 });
 
 // ── SharePoint quick-open ──────────────────────────────────────────────────
@@ -332,113 +341,79 @@ spUrlEl.value = localStorage.getItem('tt-sharepoint') || '';
 spUrlEl.addEventListener('change', () => localStorage.setItem('tt-sharepoint', spUrlEl.value.trim()));
 
 document.getElementById('openSheetBtn').addEventListener('click', () => {
-  const base = spUrlEl.value.trim() || localStorage.getItem('tt-sharepoint') || '';
+  const base = spUrlEl.value.trim()||localStorage.getItem('tt-sharepoint')||'';
   if (!base) { alert('Enter your SharePoint file URL above first.'); return; }
-  const dayNum = getTodayDayNumber();
-  if (!dayNum) { alert('Today is a weekend — no sheet to open.'); return; }
+  if (!dayNum||isWeekend) { alert('Today is a weekend — no sheet to open.'); return; }
   localStorage.setItem('tt-sharepoint', base);
-  const sep = base.includes('?') ? '&' : '?';
+  const sep = base.includes('?')?'&':'?';
   window.open(`${base}${sep}activeCell=%27Day%20${dayNum}%27!A1&action=default`, '_blank');
 });
 
 // ── Colour name manager ────────────────────────────────────────────────────
 function refreshColourNameList() {
   const list = document.getElementById('colourNameList');
-  if (!currentGroupMap || currentGroupMap.size === 0) {
-    list.innerHTML = '<div class="no-colours-msg">No colours loaded yet — paste a timetable to see them here.</div>';
+  if (!currentGroupMap||currentGroupMap.size===0) {
+    list.innerHTML='<div class="no-colours-msg">No colours loaded yet — paste a timetable first.</div>';
     return;
   }
-  const sorted = [...currentGroupMap.entries()].sort((a,b) => getLuminance(a[1].bg) - getLuminance(b[1].bg));
+  const sorted = [...currentGroupMap.entries()].sort((a,b)=>getLuminance(a[1].bg)-getLuminance(b[1].bg));
   list.innerHTML = '';
-  sorted.forEach(([key, {bg, fg}], i) => {
-    const row = document.createElement('div');
-    row.className = 'colour-name-row';
-
-    const swatch = document.createElement('div');
-    swatch.className = 'colour-swatch';
-    swatch.style.background = bg;
-    if (fg) swatch.style.outline = `2px solid ${fg}`;
-
-    const hex = document.createElement('div');
-    hex.className = 'colour-hex';
-    hex.textContent = bg;
-    hex.title = key;
-
-    const input = document.createElement('input');
-    input.className = 'colour-name-input';
-    input.type = 'text';
-    input.placeholder = `Name ${i + 1}`;
-    input.value = colorNames[key] || '';
-    input.dataset.key = key;
-
+  sorted.forEach(([key,{bg,fg}], i) => {
+    const row = document.createElement('div'); row.className='colour-name-row';
+    const swatch = document.createElement('div'); swatch.className='colour-swatch';
+    swatch.style.background=bg; if(fg) swatch.style.outline=`2px solid ${fg}`;
+    const hex = document.createElement('div'); hex.className='colour-hex';
+    hex.textContent=bg; hex.title=key;
+    const input = document.createElement('input'); input.className='colour-name-input';
+    input.type='text'; input.placeholder=`Name ${i+1}`; input.value=colorNames[key]||''; input.dataset.key=key;
     input.addEventListener('input', () => {
-      const val = input.value.trim();
-      if (val) colorNames[key] = val; else delete colorNames[key];
-      // Live-update nav label + panel title
-      const navBtn = document.querySelector(`.class-btn[data-ckey="${CSS.escape(key)}"]`);
-      if (navBtn) {
-        const lbl = navBtn.querySelector('.btn-label');
-        if (lbl) lbl.textContent = val || `Name ${i+1}`;
-        const ptId = navBtn.dataset.target;
-        const pt = document.getElementById('ptitle-' + ptId);
-        if (pt) pt.textContent = val || `Name ${i+1}`;
-      }
+      const val=input.value.trim();
+      if(val) colorNames[key]=val; else delete colorNames[key];
+      // live-update nav + panel
+      const navBtn=document.querySelector(`.class-btn[data-ckey="${CSS.escape(key)}"]`);
+      if(navBtn){const lbl=navBtn.querySelector('.btn-label');if(lbl)lbl.textContent=val||`Name ${i+1}`;const pt=document.getElementById('ptitle-'+navBtn.dataset.target);if(pt)pt.textContent=val||`Name ${i+1}`;}
     });
-
-    row.appendChild(swatch);
-    row.appendChild(hex);
-    row.appendChild(input);
+    row.appendChild(swatch); row.appendChild(hex); row.appendChild(input);
     list.appendChild(row);
   });
 }
 
 document.getElementById('saveNamesBtn').addEventListener('click', async () => {
-  document.querySelectorAll('.colour-name-input').forEach(inp => {
-    const val = inp.value.trim();
-    if (val) colorNames[inp.dataset.key] = val;
-    else delete colorNames[inp.dataset.key];
+  document.querySelectorAll('.colour-name-input').forEach(inp=>{
+    const val=inp.value.trim();
+    if(val) colorNames[inp.dataset.key]=val; else delete colorNames[inp.dataset.key];
   });
-  localStorage.setItem('tt-colornames', JSON.stringify(colorNames));
-  if (currentGroupMap) {
-    await pushNames();
-    setStatus('namesStatus', '✓ Saved & pushed to server', 'green');
-  } else {
-    setStatus('namesStatus', '✓ Saved locally (paste a timetable to push to server)', 'green');
-  }
+  localStorage.setItem('tt-colornames',JSON.stringify(colorNames));
+  if(currentGroupMap){ await pushNames(); setStatus('namesStatus','✓ Saved & pushed to server','green'); }
+  else setStatus('namesStatus','✓ Saved locally (paste a timetable to push to server)','green');
 });
 
 document.getElementById('clearNamesBtn').addEventListener('click', () => {
-  if (!confirm('Clear all saved names?')) return;
-  Object.keys(colorNames).forEach(k => delete colorNames[k]);
+  if(!confirm('Clear all saved names?')) return;
+  Object.keys(colorNames).forEach(k=>delete colorNames[k]);
   localStorage.removeItem('tt-colornames');
-  document.querySelectorAll('.colour-name-input').forEach(inp => inp.value = '');
-  setStatus('namesStatus', 'Names cleared', '');
+  document.querySelectorAll('.colour-name-input').forEach(inp=>inp.value='');
+  setStatus('namesStatus','Names cleared','');
 });
 
 // ── Actions ────────────────────────────────────────────────────────────────
 document.getElementById('exportKeysBtn').addEventListener('click', () => {
-  if (!currentGroupMap || currentGroupMap.size === 0) {
-    setStatus('actionStatus', 'Paste a timetable first', 'red'); return;
-  }
-  const keys = [...currentGroupMap.entries()].map(([k,v]) => ({ key: k, bg: v.bg, fg: v.fg }));
-  navigator.clipboard.writeText(JSON.stringify(keys, null, 2))
-    .then(() => setStatus('actionStatus', '✓ Colour keys copied to clipboard', 'green'));
+  if(!currentGroupMap||currentGroupMap.size===0){setStatus('actionStatus','Paste a timetable first','red');return;}
+  const keys=[...currentGroupMap.entries()].map(([k,v])=>({key:k,bg:v.bg,fg:v.fg}));
+  navigator.clipboard.writeText(JSON.stringify(keys,null,2)).then(()=>setStatus('actionStatus','✓ Copied to clipboard','green'));
 });
 
 document.getElementById('clearServerBtn').addEventListener('click', async () => {
-  if (!confirm('Clear today\'s timetable from the server? Viewers will see "no timetable" until you paste again.')) return;
-  const url = getServer();
-  if (!url) { setStatus('actionStatus', 'No server URL set', 'red'); return; }
+  if(!confirm('Clear today\'s timetable from the server?')) return;
+  const url=getServer(); if(!url){setStatus('actionStatus','No server URL set','red');return;}
   try {
-    await fetch(`${url}/timetable`, { method: 'DELETE', headers: { 'X-Admin-Password': getPw() } });
-    setStatus('actionStatus', '✓ Server timetable cleared', 'green');
-  } catch(e) {
-    setStatus('actionStatus', '✕ Could not reach server', 'red');
-  }
+    await fetch(`${url}/timetable`,{method:'DELETE',headers:{'X-Admin-Password':getPw()}});
+    setStatus('actionStatus','✓ Server timetable cleared','green');
+  } catch(e){setStatus('actionStatus','✕ Could not reach server','red');}
 });
 
 // ── Colour helpers ─────────────────────────────────────────────────────────
-const EXCLUDED = new Set(['#ffffe1','#ffffe0','rgb(255,255,225)','rgb(255,255,224)']);
+const EXCLUDED=new Set(['#ffffe1','#ffffe0','rgb(255,255,225)','rgb(255,255,224)']);
 function isExcluded(c){return EXCLUDED.has((c||'').toLowerCase().replace(/\s/g,''));}
 function isWhiteish(r,g,b){return r>235&&g>235&&b>235;}
 function isBlackish(r,g,b){return r<20&&g<20&&b<20;}
@@ -453,92 +428,68 @@ function getLuminance(c){const n=(c||'').match(/\d+/g);return(!n||n.length<3)?99
 function escapeHTML(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 // ── State ──────────────────────────────────────────────────────────────────
-const colorNames = JSON.parse(localStorage.getItem('tt-colornames') || '{}');
+const colorNames = JSON.parse(localStorage.getItem('tt-colornames')||'{}');
 let currentGroupMap = null;
 
 async function pushToServer(groupMap) {
-  const url = getServer();
-  if (!url) { setMsg('⚠ No server URL — open Settings and add it.', 'err'); return; }
-  const mapObj = {};
-  groupMap.forEach((val, key) => { mapObj[key] = JSON.parse(JSON.stringify(val)); });
+  const url=getServer();
+  if(!url){setMsg('⚠ No server URL — go to Settings tab.','err');return;}
+  const mapObj={};
+  groupMap.forEach((val,key)=>{mapObj[key]=JSON.parse(JSON.stringify(val));});
   try {
-    const res = await fetch(`${url}/timetable`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Admin-Password': getPw() },
-      body: JSON.stringify({ map: mapObj, names: { ...colorNames } })
-    });
-    if (res.ok) {
-      document.getElementById('statusBar').textContent = `${groupMap.size} found · pushed to server · viewers can see it now`;
-    } else if (res.status === 401) {
-      setMsg('✕ Wrong password — check Settings.', 'err');
-    } else {
-      setMsg(`✕ Server error ${res.status}`, 'err');
-    }
-  } catch(e) { setMsg('✕ Could not reach server — check Settings.', 'err'); }
+    const res=await fetch(`${url}/timetable`,{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Password':getPw()},body:JSON.stringify({map:mapObj,names:{...colorNames}})});
+    if(res.ok) document.getElementById('statusBar').textContent=`${groupMap.size} groups found · pushed to server · viewers can see it now`;
+    else if(res.status===401) setMsg('✕ Wrong password — check Settings tab.','err');
+    else setMsg(`✕ Server error ${res.status}`,'err');
+  } catch(e){setMsg('✕ Could not reach server — check Settings tab.','err');}
 }
 
 async function pushNames() {
-  const url = getServer();
-  if (!url || !currentGroupMap) return;
-  try {
-    await fetch(`${url}/names`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Admin-Password': getPw() },
-      body: JSON.stringify({ names: { ...colorNames } })
-    });
-  } catch(e) {}
+  const url=getServer(); if(!url||!currentGroupMap) return;
+  try { await fetch(`${url}/names`,{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Password':getPw()},body:JSON.stringify({names:{...colorNames}})}); } catch(e){}
 }
 
-function setMsg(msg, type) {
-  const el = document.getElementById('pasteStatus');
-  el.textContent = msg;
-  el.className = 'paste-status' + (type === 'err' ? ' err' : type === 'ok' ? ' ok' : '');
+function setMsg(msg,type) {
+  const el=document.getElementById('pasteStatus');
+  el.textContent=msg;
+  el.className='paste-status'+(type==='err'?' err':type==='ok'?' ok':'');
 }
-
-// ── DOM ────────────────────────────────────────────────────────────────────
-const pasteZone = document.getElementById('pasteZone');
-const app       = document.getElementById('app');
-const classNav  = document.getElementById('classNav');
-const contentArea = document.getElementById('contentArea');
-const pasteWrap = document.getElementById('pasteWrap');
-
-pasteZone.addEventListener('click', () => pasteZone.focus());
-document.addEventListener('paste', handlePaste);
-
-document.getElementById('clearBtn').addEventListener('click', () => {
-  app.classList.remove('visible');
-  pasteWrap.style.display = '';
-  classNav.innerHTML = '';
-  contentArea.innerHTML = '';
-  document.getElementById('statusBar').textContent = '';
-  document.getElementById('pasteStatus').textContent = '';
-  currentGroupMap = null;
-  refreshColourNameList();
-});
 
 // ── Paste ──────────────────────────────────────────────────────────────────
+const pasteZone=document.getElementById('pasteZone');
+const pasteWrap=document.getElementById('pasteWrap');
+const appWrap=document.getElementById('appWrap');
+const classNav=document.getElementById('classNav');
+const contentArea=document.getElementById('contentArea');
+
+pasteZone.addEventListener('click',()=>pasteZone.focus());
+document.addEventListener('paste',handlePaste);
+
+document.getElementById('clearBtn').addEventListener('click',()=>{
+  appWrap.classList.remove('visible');
+  pasteWrap.style.display='';
+  classNav.innerHTML=''; contentArea.innerHTML='';
+  document.getElementById('statusBar').textContent='';
+  document.getElementById('pasteStatus').textContent='';
+  currentGroupMap=null;
+});
+
 function handlePaste(e) {
-  const h = e.clipboardData.getData('text/html');
-  if (h && (h.includes('<td') || h.includes('<TD'))) {
-    processHTMLData(h);
-  } else {
-    setMsg('No table data — copy directly from Excel (Ctrl+A, Ctrl+C).', 'err');
-  }
+  const h=e.clipboardData.getData('text/html');
+  if(h&&(h.includes('<td')||h.includes('<TD'))) processHTMLData(h);
+  else setMsg('No table data — copy directly from Excel (Ctrl+A, Ctrl+C).','err');
 }
 
 function processHTMLData(htmlStr) {
-  const REF_ROW = 2;
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(htmlStr, 'text/html');
-  const ccm={}, fgcm={};
-  doc.querySelectorAll('style').forEach(el => {
-    const re=/\.([a-zA-Z0-9_-]+)\s*\{([^}]+)\}/g; let m;
-    while((m=re.exec(el.textContent))!==null){
-      const bg=extractBg(m[2]); if(bg)ccm[m[1]]=bg;
-      const fg=extractFg(m[2]); if(fg)fgcm[m[1]]=fg;
-    }
+  const REF_ROW=2;
+  const parser=new DOMParser();
+  const doc=parser.parseFromString(htmlStr,'text/html');
+  const ccm={},fgcm={};
+  doc.querySelectorAll('style').forEach(el=>{
+    const re=/\.([a-zA-Z0-9_-]+)\s*\{([^}]+)\}/g;let m;
+    while((m=re.exec(el.textContent))!==null){const bg=extractBg(m[2]);if(bg)ccm[m[1]]=bg;const fg=extractFg(m[2]);if(fg)fgcm[m[1]]=fg;}
   });
-  const rows = doc.querySelectorAll('tr');
+  const rows=doc.querySelectorAll('tr');
   if(!rows.length){setMsg('No rows found.','err');return;}
   const grid=[];
   rows.forEach(tr=>{const row=[];tr.querySelectorAll('td,th').forEach(td=>{const colspan=parseInt(td.getAttribute('colspan')||'1',10);const text=td.textContent.trim();const{bg,fg}=cellColors(td,ccm,fgcm);for(let s=0;s<colspan;s++)row.push({text,bg,fg});});grid.push(row);});
@@ -554,13 +505,10 @@ function processHTMLData(htmlStr) {
     if(r===REF_ROW)continue;
     const row=grid[r];
     for(let c=dataStartCol;c<numCols;c+=3){
-      const c0=row[c]||{text:'',bg:null,fg:null};
-      const c1=row[c+1]||{text:'',bg:null,fg:null};
-      const c2=row[c+2]||{text:'',bg:null,fg:null};
+      const c0=row[c]||{text:'',bg:null,fg:null};const c1=row[c+1]||{text:'',bg:null,fg:null};const c2=row[c+2]||{text:'',bg:null,fg:null};
       const bg=c0.bg;if(!bg||isExcluded(bg))continue;
       const d1=c0.text,d2=c1.text,d3=c2.text;if(!d1&&!d2&&!d3)continue;
-      const fg=c0.fg||null;
-      const key=bg+'||'+(fg||'');
+      const fg=c0.fg||null;const key=bg+'||'+(fg||'');
       const periodNum=periodNums[c];if(!periodNum)continue;
       if(!groupMap.has(key))groupMap.set(key,{bg,fg,slots:{}});
       const grp=groupMap.get(key);
@@ -569,46 +517,36 @@ function processHTMLData(htmlStr) {
     }
   }
   if(groupMap.size===0){setMsg('No coloured groups found.','err');return;}
-  currentGroupMap = groupMap;
-  setMsg('Parsed — pushing to server…', '');
-  if (drawer.classList.contains('open')) refreshColourNameList();
+  currentGroupMap=groupMap;
+  setMsg('Parsed — pushing to server…','');
   pushToServer(groupMap);
   renderApp(groupMap);
 }
 
 // ── Render ─────────────────────────────────────────────────────────────────
 function renderApp(groupMap) {
-  classNav.innerHTML='';
-  contentArea.innerHTML='';
+  classNav.innerHTML=''; contentArea.innerHTML='';
   const sorted=[...groupMap.entries()].sort((a,b)=>getLuminance(a[1].bg)-getLuminance(b[1].bg));
   let firstId=null;
 
   sorted.forEach(([key,{bg,fg,slots}],gi)=>{
-    const id='grp'+gi;
-    if(gi===0)firstId=id;
+    const id='grp'+gi; if(gi===0)firstId=id;
     const defaultName=`Name ${gi+1}`;
     const savedName=colorNames[key]||defaultName;
 
     const btn=document.createElement('button');
     btn.className='class-btn'; btn.dataset.target=id; btn.dataset.ckey=key;
-    const dot=document.createElement('span');
-    dot.className='btn-dot'; dot.style.background=bg;
-    if(fg)dot.style.borderColor=fg;
-    const label=document.createElement('span');
-    label.className='btn-label'; label.contentEditable='false';
-    label.spellcheck=false; label.textContent=savedName;
-    label.title='Double-click to rename';
+    const dot=document.createElement('span'); dot.className='btn-dot'; dot.style.background=bg; if(fg)dot.style.borderColor=fg;
+    const label=document.createElement('span'); label.className='btn-label'; label.contentEditable='false'; label.spellcheck=false; label.textContent=savedName; label.title='Double-click to rename';
 
     function startEditing(e){e.stopPropagation();label.contentEditable='true';label.classList.add('editing');label.focus();const range=document.createRange();range.selectNodeContents(label);range.collapse(false);const sel=window.getSelection();sel.removeAllRanges();sel.addRange(range);}
     function stopEditing(){
       label.contentEditable='false';label.classList.remove('editing');
-      const name=label.textContent.trim()||defaultName;
-      label.textContent=name;
+      const name=label.textContent.trim()||defaultName; label.textContent=name;
       if(name!==defaultName) colorNames[key]=name; else delete colorNames[key];
       localStorage.setItem('tt-colornames',JSON.stringify(colorNames));
-      const pt=document.getElementById('ptitle-'+id);if(pt)pt.textContent=name;
+      const pt=document.getElementById('ptitle-'+id); if(pt)pt.textContent=name;
       pushNames();
-      if(drawer.classList.contains('open'))refreshColourNameList();
     }
     label.addEventListener('input',()=>{const pt=document.getElementById('ptitle-'+id);if(pt)pt.textContent=label.textContent.trim()||defaultName;});
     label.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();label.blur();}if(e.key==='Escape'){label.textContent=colorNames[key]||defaultName;label.blur();}e.stopPropagation();});
@@ -619,13 +557,10 @@ function renderApp(groupMap) {
     btn.addEventListener('dblclick',startEditing);
     classNav.appendChild(btn);
 
-    const panel=document.createElement('div');
-    panel.className='panel'; panel.id=id;
+    const panel=document.createElement('div'); panel.className='panel'; panel.id=id;
     const periodRows=[1,2,3,4,5,6].map(p=>{
       const entries=slots[p];
-      if(!entries||entries.length===0){
-        return `<div class="period-row empty-row"><div class="accent-bar" style="background:${bg}"></div><div class="cell-period">P${p}</div><div class="cell-dash">—</div><div class="cell-data empty" style="grid-column:4/-1"></div></div>`;
-      }
+      if(!entries||entries.length===0) return `<div class="period-row empty-row"><div class="accent-bar" style="background:${bg}"></div><div class="cell-period">P${p}</div><div class="cell-dash">—</div><div class="cell-data empty" style="grid-column:4/-1"></div></div>`;
       return entries.map(({d1,d2,d3})=>`
         <div class="period-row">
           <div class="accent-bar" style="background:${bg}"></div>
@@ -647,7 +582,7 @@ function renderApp(groupMap) {
       <div class="period-grid">${periodRows}</div>`;
 
     panel.querySelector('.copy-btn').addEventListener('click',function(){
-      const b=this;const grp=currentGroupMap.get(key);if(!grp)return;
+      const b=this; const grp=currentGroupMap.get(key); if(!grp)return;
       const text=[1,2,3,4,5,6].map(p=>{const ent=grp.slots[p];if(!ent||ent.length===0)return`P${p} - \t\t`;return ent.map(({d1,d2,d3})=>`P${p} - ${d1}\t${d2}\t${d3}`).join('\n');}).join('\n');
       navigator.clipboard.writeText(text).then(()=>flash(b)).catch(()=>{const ta=Object.assign(document.createElement('textarea'),{value:text,style:'position:fixed;opacity:0'});document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);flash(b);});
     });
@@ -661,7 +596,7 @@ function renderApp(groupMap) {
   });
 
   pasteWrap.style.display='none';
-  app.classList.add('visible');
+  appWrap.classList.add('visible');
   if(firstId)activateGroup(firstId);
 }
 
