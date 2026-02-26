@@ -23,18 +23,8 @@
 }
 body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif; min-height:100vh; transition:background .25s,color .25s; }
 
-/* ── Header ── */
-.site-header {
-  background:var(--surface); border-bottom:1px solid var(--border);
-  padding:20px 32px; display:flex; align-items:center; gap:16px;
-  position:sticky; top:0; z-index:100; box-shadow:var(--shadow);
-  transition:background .25s, border-color .25s;
-}
-.back-btn {
-  background:none; border:none; color:var(--text); font-size:1.4rem;
-  cursor:pointer; padding:4px 8px 4px 0; line-height:1;
-  display:none; transition:opacity .15s;
-}
+.site-header { background:var(--surface); border-bottom:1px solid var(--border); padding:20px 32px; display:flex; align-items:center; gap:16px; position:sticky; top:0; z-index:100; box-shadow:var(--shadow); transition:background .25s, border-color .25s; }
+.back-btn { background:none; border:none; color:var(--text); font-size:1.4rem; cursor:pointer; padding:4px 8px 4px 0; line-height:1; display:none; transition:opacity .15s; }
 .back-btn:hover { opacity:0.6; }
 .back-btn.visible { display:block; }
 .site-title { font-size:1.9rem; font-weight:900; color:var(--text); letter-spacing:-0.04em; line-height:1; }
@@ -49,7 +39,6 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 [data-theme="dark"] .toggle-track { background:#c8f542; }
 [data-theme="dark"] .toggle-track::after { transform:translateX(16px); background:#111010; }
 
-/* ── States ── */
 .state-wrap { max-width:560px; margin:80px auto; padding:0 24px; text-align:center; }
 .state-icon { font-size:3rem; margin-bottom:20px; opacity:0.4; }
 .state-title { font-size:1.3rem; font-weight:700; margin-bottom:8px; }
@@ -57,7 +46,6 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .spinner { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--text); border-radius:50%; animation:spin .7s linear infinite; margin:0 auto 20px; }
 @keyframes spin { to { transform:rotate(360deg); } }
 
-/* Server setup */
 .server-setup { max-width:560px; margin:0 auto; padding:0 24px 24px; display:none; }
 .server-setup.visible { display:block; }
 .setup-row { display:flex; gap:10px; align-items:center; margin-top:20px; }
@@ -65,48 +53,23 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .setup-input:focus { border-color:var(--text); }
 .setup-btn { background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.85rem; font-weight:600; padding:10px 20px; border-radius:8px; cursor:pointer; white-space:nowrap; }
 
-/* ── Tile grid (home screen) ── */
 .tile-view { display:none; }
 .tile-view.visible { display:block; }
-.tile-grid {
-  max-width:1100px; margin:0 auto;
-  padding:36px 28px 100px;
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
-  gap:18px;
-}
-.tile {
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:0;
-  cursor:pointer;
-  transition:transform .18s ease, box-shadow .18s ease, border-color .18s;
-  overflow:hidden;
-  box-shadow:var(--shadow);
-  display:flex;
-  flex-direction:column;
-  min-height:160px;
-}
+.tile-grid { max-width:1100px; margin:0 auto; padding:36px 28px 100px; display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:18px; }
+.tile { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:0; cursor:pointer; transition:transform .18s ease, box-shadow .18s ease, border-color .18s; overflow:hidden; box-shadow:var(--shadow); display:flex; flex-direction:column; min-height:160px; }
 .tile:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); border-color:var(--muted); }
 .tile:active { transform:translateY(-2px); }
 .tile-colour-bar { height:8px; width:100%; flex-shrink:0; }
 .tile-body { padding:20px 20px 18px; flex:1; display:flex; flex-direction:column; }
 .tile-name { font-size:1.1rem; font-weight:800; letter-spacing:-0.02em; line-height:1.2; margin-bottom:12px; }
 .tile-periods { display:flex; flex-wrap:wrap; gap:5px; margin-top:auto; }
-.tile-period-chip {
-  font-family:'DM Mono',monospace; font-size:0.65rem; font-weight:500;
-  padding:3px 8px; border-radius:5px; background:var(--soft); color:var(--muted);
-  border:1px solid var(--border);
-}
+.tile-period-chip { font-family:'DM Mono',monospace; font-size:0.65rem; font-weight:500; padding:3px 8px; border-radius:5px; background:var(--soft); color:var(--muted); border:1px solid var(--border); }
 .tile-period-chip.has-data { color:var(--text); border-color:var(--muted); }
 .tile-empty-label { font-size:0.78rem; color:var(--muted); font-style:italic; margin-top:auto; }
 
-/* ── Detail view ── */
 .detail-view { display:none; }
 .detail-view.visible { display:block; }
 .detail-inner { max-width:1000px; margin:0 auto; padding:32px 24px 100px; }
-
 .detail-header { display:flex; align-items:center; gap:16px; margin-bottom:32px; flex-wrap:wrap; }
 .detail-colour-bar { width:7px; height:54px; border-radius:4px; flex-shrink:0; }
 .detail-title { font-size:2rem; font-weight:900; letter-spacing:-0.04em; line-height:1.1; }
@@ -115,14 +78,13 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .copy-btn { background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.85rem; font-weight:600; padding:11px 22px; border-radius:10px; cursor:pointer; transition:opacity .15s,transform .15s; white-space:nowrap; }
 .copy-btn:hover { opacity:0.82; transform:translateY(-1px); }
 .copy-btn.copied { background:#22a85a; color:#fff; }
-.email-lso-btn { background:var(--email-btn); color:#fff; border:none; font-family:'Outfit',sans-serif; font-size:0.85rem; font-weight:600; padding:11px 22px; border-radius:10px; cursor:pointer; transition:opacity .15s,transform .15s; white-space:nowrap; display:flex; align-items:center; gap:7px; }
+.email-lso-btn { background:var(--email-btn); color:#fff; border:none; font-family:'Outfit',sans-serif; font-size:0.85rem; font-weight:600; padding:11px 22px; border-radius:10px; cursor:pointer; transition:opacity .15s,transform .15s; white-space:nowrap; }
 .email-lso-btn:hover { opacity:0.85; transform:translateY(-1px); }
 
 .period-grid { display:flex; flex-direction:column; gap:12px; }
 .period-row { display:grid; grid-template-columns:6px 70px 28px 1fr 1fr 1fr; align-items:stretch; background:var(--surface); border-radius:14px; overflow:hidden; box-shadow:var(--shadow); border:1px solid var(--border); min-height:64px; transition:box-shadow .15s,border-color .15s; }
 .period-row:hover { box-shadow:var(--shadow-lg); border-color:var(--muted); }
 .period-row.empty-row { opacity:0.28; }
-.period-row.empty-row:hover { box-shadow:var(--shadow); border-color:var(--border); }
 .period-row > div { display:flex; align-items:center; padding:18px 20px; }
 .period-row > div + div { border-left:1px solid var(--border); }
 .accent-bar { padding:0!important; border-left:none!important; width:6px; flex-shrink:0; }
@@ -137,45 +99,19 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .cell-data.empty { cursor:default; }
 
 /* ── LSO Email Panel ── */
-.lso-panel {
-  margin-top:32px;
-  background:var(--email-bg);
-  border:1px solid var(--email-border);
-  border-radius:16px;
-  overflow:hidden;
-  display:none;
-}
+.lso-panel { margin-top:32px; background:var(--email-bg); border:1px solid var(--email-border); border-radius:16px; overflow:hidden; display:none; }
 .lso-panel.visible { display:block; }
-.lso-panel-header {
-  padding:18px 24px;
-  border-bottom:1px solid var(--email-border);
-  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
-}
+.lso-panel-header { padding:18px 24px; border-bottom:1px solid var(--email-border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
 .lso-panel-title { font-size:1rem; font-weight:700; display:flex; align-items:center; gap:8px; }
-.lso-panel-title span { font-size:1.1rem; }
 .lso-panel-body { padding:20px 24px; }
-
 .lso-field { margin-bottom:14px; }
 .lso-label { display:block; font-size:0.72rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:5px; }
-.lso-value {
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:8px;
-  padding:10px 14px;
-  font-family:'DM Mono',monospace;
-  font-size:0.82rem;
-  color:var(--text);
-  line-height:1.6;
-  white-space:pre-wrap;
-  word-break:break-all;
-}
+.lso-value { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-family:'DM Mono',monospace; font-size:0.82rem; color:var(--text); line-height:1.6; white-space:pre-wrap; word-break:break-all; }
 .lso-row2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-
 .lso-settings { padding:0 24px 20px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
 .lso-input-wrap label { display:block; font-size:0.7rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:5px; }
 .lso-input { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:7px; color:var(--text); font-family:'DM Mono',monospace; font-size:0.8rem; padding:8px 12px; outline:none; transition:border-color .2s; }
 .lso-input:focus { border-color:var(--email-btn); }
-
 .lso-actions { padding:0 24px 20px; display:flex; gap:10px; flex-wrap:wrap; }
 .lso-open-btn { background:var(--email-btn); color:#fff; border:none; font-family:'Outfit',sans-serif; font-size:0.88rem; font-weight:600; padding:11px 24px; border-radius:9px; cursor:pointer; transition:opacity .15s; }
 .lso-open-btn:hover { opacity:0.85; }
@@ -186,8 +122,8 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .teacher-chip { background:var(--soft); border:1px solid var(--border); border-radius:6px; padding:3px 10px; font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--text); }
 .teacher-chip .arrow { color:var(--muted); margin:0 4px; }
 .teacher-chip .email-part { color:var(--email-btn); }
+.teacher-chip .override-badge { font-size:0.6rem; background:var(--email-btn); color:#fff; border-radius:3px; padding:1px 4px; margin-left:4px; vertical-align:middle; }
 
-/* Animations */
 .tile-view.visible { animation:fadeUp .25s ease both; }
 .detail-view.visible { animation:fadeUp .22s ease both; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
@@ -216,20 +152,15 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   </div>
 </header>
 
-<!-- Loading -->
 <div class="state-wrap" id="loadingState">
   <div class="spinner"></div>
   <div class="state-title">Loading timetable…</div>
 </div>
-
-<!-- No timetable -->
 <div class="state-wrap" id="emptyState" style="display:none">
   <div class="state-icon">📭</div>
   <div class="state-title">No timetable yet today</div>
   <div class="state-sub">The admin hasn't uploaded today's timetable yet. Check back soon.</div>
 </div>
-
-<!-- No server -->
 <div class="state-wrap" id="noServerState" style="display:none">
   <div class="state-icon">🔌</div>
   <div class="state-title">Server not configured</div>
@@ -242,67 +173,54 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   </div>
 </div>
 
-<!-- Tile grid (home) -->
 <div class="tile-view" id="tileView">
   <div class="tile-grid" id="tileGrid"></div>
 </div>
-
-<!-- Detail view -->
 <div class="detail-view" id="detailView">
   <div class="detail-inner" id="detailInner"></div>
 </div>
 
 <script>
-// ── Cycle day calculation ──────────────────────────────────────────────────
+// ── Cycle ──────────────────────────────────────────────────────────────────
 const CYCLE_START = new Date('2026-02-23T00:00:00');
 function getTodayDayNumber() {
   const today = new Date(); today.setHours(0,0,0,0);
   const start = new Date(CYCLE_START); start.setHours(0,0,0,0);
-  let count = 0;
-  const d = new Date(start);
-  while (d <= today) {
-    if (d.getDay() !== 0 && d.getDay() !== 6) count++;
-    d.setDate(d.getDate() + 1);
-  }
-  return count > 0 ? ((count - 1) % 10) + 1 : null;
+  let count = 0; const d = new Date(start);
+  while (d <= today) { if (d.getDay()!==0&&d.getDay()!==6) count++; d.setDate(d.getDate()+1); }
+  return count > 0 ? ((count-1)%10)+1 : null;
 }
-
-// ── Header title ───────────────────────────────────────────────────────────
 const DAYS_LONG = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const now = new Date();
 const dow = now.getDay();
-const isWeekend = dow === 0 || dow === 6;
+const isWeekend = dow===0||dow===6;
 const dayNum = getTodayDayNumber();
 const siteTitle = document.getElementById('siteTitle');
 const siteSub   = document.getElementById('siteSubtitle');
-
-if (!isWeekend && dayNum) {
+if (!isWeekend&&dayNum) {
   siteTitle.textContent = `Timetable — Day ${dayNum}`;
-  siteSub.textContent   = DAYS_LONG[dow] + ' · ' + now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  siteSub.textContent = DAYS_LONG[dow]+' · '+now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
 } else {
   siteTitle.textContent = 'Timetable';
-  siteSub.textContent   = DAYS_LONG[dow] + ' · ' + now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  siteSub.textContent = DAYS_LONG[dow]+' · '+now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
 }
 
 // ── Theme ──────────────────────────────────────────────────────────────────
 const html = document.documentElement;
 const savedTheme = localStorage.getItem('tt-theme') || 'light';
 html.setAttribute('data-theme', savedTheme);
-document.getElementById('toggleLabel').textContent = savedTheme === 'dark' ? 'Dark' : 'Light';
+document.getElementById('toggleLabel').textContent = savedTheme==='dark'?'Dark':'Light';
 document.getElementById('themeToggle').addEventListener('click', () => {
-  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  const next = html.getAttribute('data-theme')==='dark'?'light':'dark';
   html.setAttribute('data-theme', next);
-  document.getElementById('toggleLabel').textContent = next === 'dark' ? 'Dark' : 'Light';
+  document.getElementById('toggleLabel').textContent = next==='dark'?'Dark':'Light';
   localStorage.setItem('tt-theme', next);
 });
 
-// ── Server URL ─────────────────────────────────────────────────────────────
-function getServerUrl() {
-  return 'https://timetable-server-r6nb.onrender.com';
-}
-
+// ── Server ─────────────────────────────────────────────────────────────────
+function getServerUrl() { return 'https://timetable-server-r6nb.onrender.com'; }
 document.getElementById('connectBtn').addEventListener('click', () => {
-  const url = document.getElementById('serverUrlInput').value.trim().replace(/\/$/, '');
+  const url = document.getElementById('serverUrlInput').value.trim().replace(/\/$/,'');
   if (!url) return;
   localStorage.setItem('tt-viewer-server', url);
   loadTimetable();
@@ -312,49 +230,56 @@ document.getElementById('connectBtn').addEventListener('click', () => {
 function getLuminance(c){const n=(c||'').match(/\d+/g);return(!n||n.length<3)?999:0.299*+n[0]+0.587*+n[1]+0.114*+n[2];}
 function escapeHTML(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
-// ── LSO Email helpers ──────────────────────────────────────────────────────
+// ── Email helpers ──────────────────────────────────────────────────────────
 function getToday_ddmmyy() {
   const d = new Date();
-  const dd = String(d.getDate()).padStart(2,'0');
-  const mm = String(d.getMonth()+1).padStart(2,'0');
-  const yy = String(d.getFullYear()).slice(-2);
-  return `${dd}/${mm}/${yy}`;
+  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getFullYear()).slice(-2)}`;
 }
 
-function codeToEmail(code, domain) {
-  // Last letter moves to front: WARRD → dwarr, KOKF → fkok
-  const lower = code.toLowerCase();
-  const first = lower[lower.length - 1];
-  const rest = lower.slice(0, lower.length - 1);
-  return `${first}${rest}@${domain}`;
+// Load overrides saved by the admin page (same localStorage key)
+function getEmailOverrides() {
+  try { return JSON.parse(localStorage.getItem('tt-email-overrides') || '{}'); }
+  catch(e) { return {}; }
+}
+
+function codeToEmailPrefix(code, overrides) {
+  const upper = code.toUpperCase().trim();
+  // Check override table first
+  if (overrides[upper]) return { prefix: overrides[upper], isOverride: true };
+  // Auto-generate: last letter moves to front
+  const lower = upper.toLowerCase();
+  return { prefix: lower[lower.length-1] + lower.slice(0, lower.length-1), isOverride: false };
 }
 
 function buildLSOEmail(slots, lsoSettings) {
   const { domain, yourName, cc } = lsoSettings;
+  const overrides = getEmailOverrides();
   const dd = getToday_ddmmyy();
   const subject = `LSO ${dd}`;
 
-  // Build period lines from slots
   const periodLines = [];
-  const teachers = new Set();
+  const teacherMap = new Map(); // code → { prefix, isOverride }
 
   for (let p = 1; p <= 6; p++) {
     const entries = slots[p];
     if (entries && entries.length > 0) {
       entries.forEach(({d1, d2, d3}) => {
         if (d1 || d2 || d3) {
-          const line = `P${p} - ${d1 || ''}   ${d2 || ''}   ${d3 || ''}`.trimEnd();
-          periodLines.push(line);
-          if (d3) teachers.add(d3.trim());
+          periodLines.push(`P${p} - ${d1 || ''}   ${d2 || ''}   ${d3 || ''}`.trimEnd());
+          if (d3) {
+            const code = d3.trim().toUpperCase();
+            if (!teacherMap.has(code)) {
+              teacherMap.set(code, codeToEmailPrefix(code, overrides));
+            }
+          }
         }
       });
     }
   }
 
-  const uniqueTeachers = [...teachers];
-  const teacherEmails = uniqueTeachers.map(t => codeToEmail(t, domain));
+  const teacherEntries = [...teacherMap.entries()];
+  const teacherEmails = teacherEntries.map(([code, {prefix}]) => `${prefix}@${domain}`);
 
-  // Body with blank line after intro sentence and after P6
   const body = [
     'Good morning teachers,',
     '',
@@ -369,10 +294,9 @@ function buildLSOEmail(slots, lsoSettings) {
     yourName
   ].join('\n');
 
-  return { subject, body, teacherEmails, uniqueTeachers, cc };
+  return { subject, body, teacherEmails, teacherEntries, cc };
 }
 
-// ── LSO Settings (persisted) ───────────────────────────────────────────────
 function getLSOSettings() {
   return {
     domain: localStorage.getItem('lso-domain') || 'stpeters.vic.edu.au',
@@ -390,82 +314,74 @@ function saveLSOSettings(s) {
 let currentGroupMap = null;
 let currentNames    = {};
 
-// ── Show/hide screens ──────────────────────────────────────────────────────
 function showScreen(id) {
   ['loadingState','emptyState','noServerState','tileView','detailView'].forEach(s => {
     const el = document.getElementById(s);
-    el.style.display = 'none';
-    el.classList.remove('visible');
+    el.style.display = 'none'; el.classList.remove('visible');
   });
-  document.getElementById('serverSetup').classList.toggle('visible', id === 'noServerState');
+  document.getElementById('serverSetup').classList.toggle('visible', id==='noServerState');
   const target = document.getElementById(id);
   target.style.display = '';
   requestAnimationFrame(() => target.classList.add('visible'));
 }
 
-// ── Navigation ─────────────────────────────────────────────────────────────
 const backBtn = document.getElementById('backBtn');
 
 function goHome() {
   backBtn.classList.remove('visible');
-  siteTitle.textContent = dayNum && !isWeekend ? `Timetable — Day ${dayNum}` : 'Timetable';
+  siteTitle.textContent = dayNum&&!isWeekend?`Timetable — Day ${dayNum}`:'Timetable';
   showScreen('tileView');
 }
 
 function openDetail(key) {
   if (!currentGroupMap) return;
-  const grp = currentGroupMap.get(key);
-  if (!grp) return;
+  const grp = currentGroupMap.get(key); if (!grp) return;
   const name = currentNames[key] || '—';
   siteTitle.textContent = name;
   backBtn.classList.add('visible');
   renderDetail(key, grp, name);
   showScreen('detailView');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top:0, behavior:'smooth' });
 }
 
 backBtn.addEventListener('click', goHome);
 
-// ── Load from server ───────────────────────────────────────────────────────
+// ── Load timetable ─────────────────────────────────────────────────────────
 async function loadTimetable() {
   const url = getServerUrl();
   if (!url) { showScreen('noServerState'); return; }
   showScreen('loadingState');
   try {
     const res = await fetch(`${url}/timetable`);
-    if (res.status === 404) { showScreen('emptyState'); return; }
+    if (res.status===404) { showScreen('emptyState'); return; }
     if (!res.ok) { showScreen('emptyState'); return; }
     const state = await res.json();
     if (!state.map) { showScreen('emptyState'); return; }
     const groupMap = new Map();
-    for (const [k,v] of Object.entries(state.map)) groupMap.set(k, v);
+    for (const [k,v] of Object.entries(state.map)) groupMap.set(k,v);
     currentGroupMap = groupMap;
     currentNames    = state.names || {};
-
-    // Cache in localStorage so data survives a Render spin-down
+    // Cache to localStorage for resilience
     try {
       localStorage.setItem('tt-cached-data', JSON.stringify(state));
       localStorage.setItem('tt-cached-time', Date.now().toString());
     } catch(e) {}
-
     renderTiles(groupMap, currentNames);
     showScreen('tileView');
   } catch(e) {
-    // Try to use cached data (survives Render free-tier spin-down)
+    // Fall back to cache
     const cached = localStorage.getItem('tt-cached-data');
-    const cachedTime = parseInt(localStorage.getItem('tt-cached-time') || '0');
-    const ageHours = (Date.now() - cachedTime) / 3600000;
-
+    const cachedTime = parseInt(localStorage.getItem('tt-cached-time')||'0');
+    const ageHours = (Date.now()-cachedTime)/3600000;
     if (cached && ageHours < 20) {
       try {
         const state = JSON.parse(cached);
         const groupMap = new Map();
-        for (const [k,v] of Object.entries(state.map)) groupMap.set(k, v);
+        for (const [k,v] of Object.entries(state.map)) groupMap.set(k,v);
         currentGroupMap = groupMap;
         currentNames    = state.names || {};
         renderTiles(groupMap, currentNames);
         showScreen('tileView');
-        // Show a subtle stale banner
         showStaleBanner();
         return;
       } catch(e2) {}
@@ -475,94 +391,56 @@ async function loadTimetable() {
 }
 
 function showStaleBanner() {
-  const existing = document.getElementById('staleBanner');
-  if (existing) return;
-  const banner = document.createElement('div');
-  banner.id = 'staleBanner';
-  banner.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#b45309;color:#fff;padding:10px 20px;border-radius:10px;font-size:0.82rem;font-family:Outfit,sans-serif;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,0.3);';
-  banner.textContent = '⚠️ Showing cached data — server unreachable';
-  document.body.appendChild(banner);
-  setTimeout(() => banner.remove(), 6000);
+  if (document.getElementById('staleBanner')) return;
+  const b = document.createElement('div');
+  b.id = 'staleBanner';
+  b.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#b45309;color:#fff;padding:10px 20px;border-radius:10px;font-size:0.82rem;font-family:Outfit,sans-serif;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,0.3);';
+  b.textContent = '⚠️ Showing cached data — server unreachable';
+  document.body.appendChild(b);
+  setTimeout(() => b.remove(), 6000);
 }
 
 document.getElementById('refreshBtn').addEventListener('click', loadTimetable);
 setInterval(loadTimetable, 600000);
 
-// ── Render tile grid ───────────────────────────────────────────────────────
+// ── Tiles ──────────────────────────────────────────────────────────────────
 function renderTiles(groupMap, names) {
   const grid = document.getElementById('tileGrid');
   grid.innerHTML = '';
-  const sorted = [...groupMap.entries()].sort((a,b) => getLuminance(a[1].bg) - getLuminance(b[1].bg));
-
-  sorted.forEach(([key, {bg, fg, slots}], gi) => {
-    const name = names[key] || `Name ${gi+1}`;
-    const activePeriods = [1,2,3,4,5,6].filter(p => slots[p] && slots[p].length > 0);
-
-    const tile = document.createElement('div');
-    tile.className = 'tile';
-    tile.addEventListener('click', () => openDetail(key));
-
-    const bar = document.createElement('div');
-    bar.className = 'tile-colour-bar';
-    bar.style.background = bg;
-
-    const body = document.createElement('div');
-    body.className = 'tile-body';
-
-    const nameEl = document.createElement('div');
-    nameEl.className = 'tile-name';
-    nameEl.textContent = name;
-
-    const periods = document.createElement('div');
-    periods.className = 'tile-periods';
-
-    if (activePeriods.length === 0) {
-      const empty = document.createElement('div');
-      empty.className = 'tile-empty-label';
-      empty.textContent = 'No periods today';
-      body.appendChild(nameEl);
-      body.appendChild(empty);
+  const sorted = [...groupMap.entries()].sort((a,b)=>getLuminance(a[1].bg)-getLuminance(b[1].bg));
+  sorted.forEach(([key,{bg,fg,slots}],gi) => {
+    const name = names[key]||`Name ${gi+1}`;
+    const activePeriods = [1,2,3,4,5,6].filter(p=>slots[p]&&slots[p].length>0);
+    const tile = document.createElement('div'); tile.className='tile';
+    tile.addEventListener('click',()=>openDetail(key));
+    const bar = document.createElement('div'); bar.className='tile-colour-bar'; bar.style.background=bg;
+    const body = document.createElement('div'); body.className='tile-body';
+    const nameEl = document.createElement('div'); nameEl.className='tile-name'; nameEl.textContent=name;
+    if (activePeriods.length===0) {
+      const empty = document.createElement('div'); empty.className='tile-empty-label'; empty.textContent='No periods today';
+      body.appendChild(nameEl); body.appendChild(empty);
     } else {
-      [1,2,3,4,5,6].forEach(p => {
-        const chip = document.createElement('div');
-        chip.className = 'tile-period-chip' + (activePeriods.includes(p) ? ' has-data' : '');
-        chip.textContent = `P${p}`;
-        periods.appendChild(chip);
+      const periods = document.createElement('div'); periods.className='tile-periods';
+      [1,2,3,4,5,6].forEach(p=>{
+        const chip=document.createElement('div');
+        chip.className='tile-period-chip'+(activePeriods.includes(p)?' has-data':'');
+        chip.textContent=`P${p}`; periods.appendChild(chip);
       });
-      body.appendChild(nameEl);
-      body.appendChild(periods);
+      body.appendChild(nameEl); body.appendChild(periods);
     }
-
-    tile.appendChild(bar);
-    tile.appendChild(body);
-    grid.appendChild(tile);
+    tile.appendChild(bar); tile.appendChild(body); grid.appendChild(tile);
   });
 }
 
-// ── Render detail view ─────────────────────────────────────────────────────
+// ── Detail ─────────────────────────────────────────────────────────────────
 function renderDetail(key, grp, name) {
   const inner = document.getElementById('detailInner');
   const { bg, fg, slots } = grp;
 
   const periodRows = [1,2,3,4,5,6].map(p => {
     const entries = slots[p];
-    if (!entries || entries.length === 0) {
-      return `<div class="period-row empty-row">
-        <div class="accent-bar" style="background:${bg}"></div>
-        <div class="cell-period">P${p}</div>
-        <div class="cell-dash">—</div>
-        <div class="cell-data empty" style="grid-column:4/-1"></div>
-      </div>`;
-    }
-    return entries.map(({d1,d2,d3}) => `
-      <div class="period-row">
-        <div class="accent-bar" style="background:${bg}"></div>
-        <div class="cell-period has-data">P${p}</div>
-        <div class="cell-dash">—</div>
-        <div class="cell-data${d1?'':' empty'}" data-copy="${escapeHTML(d1||'')}">${escapeHTML(d1||'')}</div>
-        <div class="cell-data${d2?'':' empty'}" data-copy="${escapeHTML(d2||'')}">${escapeHTML(d2||'')}</div>
-        <div class="cell-data${d3?'':' empty'}" data-copy="${escapeHTML(d3||'')}">${escapeHTML(d3||'')}</div>
-      </div>`).join('');
+    if (!entries||entries.length===0) return `<div class="period-row empty-row"><div class="accent-bar" style="background:${bg}"></div><div class="cell-period">P${p}</div><div class="cell-dash">—</div><div class="cell-data empty" style="grid-column:4/-1"></div></div>`;
+    return entries.map(({d1,d2,d3})=>`<div class="period-row"><div class="accent-bar" style="background:${bg}"></div><div class="cell-period has-data">P${p}</div><div class="cell-dash">—</div><div class="cell-data${d1?'':' empty'}" data-copy="${escapeHTML(d1||'')}">${escapeHTML(d1||'')}</div><div class="cell-data${d2?'':' empty'}" data-copy="${escapeHTML(d2||'')}">${escapeHTML(d2||'')}</div><div class="cell-data${d3?'':' empty'}" data-copy="${escapeHTML(d3||'')}">${escapeHTML(d3||'')}</div></div>`).join('');
   }).join('');
 
   const lsoSettings = getLSOSettings();
@@ -572,7 +450,7 @@ function renderDetail(key, grp, name) {
       <div class="detail-colour-bar" style="background:${bg}"></div>
       <div>
         <div class="detail-title">${escapeHTML(name)}</div>
-        <div class="detail-sub">${escapeHTML(bg)}${fg ? ' · ' + escapeHTML(fg) : ''}</div>
+        <div class="detail-sub">${escapeHTML(bg)}${fg?' · '+escapeHTML(fg):''}</div>
       </div>
       <div class="detail-actions">
         <button class="copy-btn" id="copyAllBtn">Copy P1–P6</button>
@@ -581,13 +459,11 @@ function renderDetail(key, grp, name) {
     </div>
     <div class="period-grid">${periodRows}</div>
 
-    <!-- LSO Email Panel -->
     <div class="lso-panel" id="lsoPanel">
       <div class="lso-panel-header">
         <div class="lso-panel-title"><span>✉</span> LSO Email</div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);">Settings are remembered</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);">Settings remembered · overrides from Admin page</div>
       </div>
-
       <div class="lso-settings">
         <div class="lso-input-wrap">
           <label>Your Name</label>
@@ -602,7 +478,6 @@ function renderDetail(key, grp, name) {
           <input class="lso-input" id="lsoCC" type="text" value="${escapeHTML(lsoSettings.cc)}" placeholder="cc@school.edu.au" />
         </div>
       </div>
-
       <div class="lso-panel-body">
         <div class="lso-row2">
           <div class="lso-field">
@@ -623,7 +498,6 @@ function renderDetail(key, grp, name) {
           <div class="lso-value" id="lsoBodyPreview" style="font-size:0.78rem;line-height:1.8;"></div>
         </div>
       </div>
-
       <div class="lso-actions">
         <button class="lso-open-btn" id="lsoOpenBtn">📧 Open in Outlook</button>
         <button class="lso-copy-body-btn" id="lsoCopyBodyBtn">📋 Copy Body</button>
@@ -632,7 +506,6 @@ function renderDetail(key, grp, name) {
     </div>
   `;
 
-  // Store last computed email data
   let lastEmail = null;
 
   function refreshEmail() {
@@ -648,32 +521,31 @@ function renderDetail(key, grp, name) {
     document.getElementById('lsoCCVal').textContent = lastEmail.cc;
     document.getElementById('lsoBodyPreview').textContent = lastEmail.body;
 
-    // Teacher chips
     const chipsEl = document.getElementById('lsoTeacherChips');
-    chipsEl.innerHTML = lastEmail.uniqueTeachers.length === 0
-      ? '<span style="color:var(--muted);font-size:0.8rem;font-style:italic;">No teachers found in timetable data</span>'
-      : lastEmail.uniqueTeachers.map((t, i) =>
-          `<div class="teacher-chip">${t}<span class="arrow">→</span><span class="email-part">${lastEmail.teacherEmails[i]}</span></div>`
-        ).join('');
+    if (lastEmail.teacherEntries.length === 0) {
+      chipsEl.innerHTML = '<span style="color:var(--muted);font-size:0.8rem;font-style:italic;">No teachers found in timetable data</span>';
+    } else {
+      chipsEl.innerHTML = lastEmail.teacherEntries.map(([code, {prefix, isOverride}], i) =>
+        `<div class="teacher-chip">
+          ${escapeHTML(code)}<span class="arrow">→</span>
+          <span class="email-part">${escapeHTML(lastEmail.teacherEmails[i])}</span>
+          ${isOverride ? '<span class="override-badge">override</span>' : ''}
+        </div>`
+      ).join('');
+    }
   }
 
-  // Toggle panel
   inner.querySelector('#emailLSOToggle').addEventListener('click', function() {
     const panel = document.getElementById('lsoPanel');
     const isVisible = panel.classList.toggle('visible');
     this.textContent = isVisible ? '✕ Close' : '✉ Email LSO';
-    if (isVisible) {
-      refreshEmail();
-      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
+    if (isVisible) { refreshEmail(); panel.scrollIntoView({behavior:'smooth',block:'nearest'}); }
   });
 
-  // Live refresh on input change
   ['lsoName','lsoDomain','lsoCC'].forEach(id => {
-    inner.querySelector('#' + id).addEventListener('input', refreshEmail);
+    inner.querySelector('#'+id).addEventListener('input', refreshEmail);
   });
 
-  // Open in Outlook
   inner.querySelector('#lsoOpenBtn').addEventListener('click', () => {
     if (!lastEmail) return;
     const { subject, body, teacherEmails, cc } = lastEmail;
@@ -681,7 +553,6 @@ function renderDetail(key, grp, name) {
     window.location.href = mailto;
   });
 
-  // Copy body
   inner.querySelector('#lsoCopyBodyBtn').addEventListener('click', function() {
     if (!lastEmail) return;
     navigator.clipboard.writeText(lastEmail.body).then(() => {
@@ -690,7 +561,6 @@ function renderDetail(key, grp, name) {
     });
   });
 
-  // Copy subject
   inner.querySelector('#lsoCopySubjectBtn').addEventListener('click', function() {
     if (!lastEmail) return;
     navigator.clipboard.writeText(lastEmail.subject).then(() => {
@@ -699,38 +569,31 @@ function renderDetail(key, grp, name) {
     });
   });
 
-  // Copy all periods
   inner.querySelector('#copyAllBtn').addEventListener('click', function() {
     const btn = this;
-    const text = [1,2,3,4,5,6].map(p => {
-      const ent = slots[p];
-      if (!ent || ent.length === 0) return `P${p} - \t\t`;
-      return ent.map(({d1,d2,d3}) => `P${p} - ${d1}\t${d2}\t${d3}`).join('\n');
+    const text = [1,2,3,4,5,6].map(p=>{
+      const ent=slots[p];
+      if(!ent||ent.length===0)return`P${p} - \t\t`;
+      return ent.map(({d1,d2,d3})=>`P${p} - ${d1}\t${d2}\t${d3}`).join('\n');
     }).join('\n');
-    navigator.clipboard.writeText(text).then(() => flash(btn)).catch(() => {
-      const ta = Object.assign(document.createElement('textarea'),{value:text,style:'position:fixed;opacity:0'});
-      document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); flash(btn);
+    navigator.clipboard.writeText(text).then(()=>flash(btn)).catch(()=>{
+      const ta=Object.assign(document.createElement('textarea'),{value:text,style:'position:fixed;opacity:0'});
+      document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);flash(btn);
     });
   });
 
-  // Click to copy cells
   inner.addEventListener('click', e => {
-    const cell = e.target.closest('.cell-data:not(.empty)');
-    if (!cell) return;
+    const cell = e.target.closest('.cell-data:not(.empty)'); if (!cell) return;
     const text = cell.dataset.copy; if (!text) return;
     navigator.clipboard.writeText(text).then(() => {
       cell.classList.add('flash-copy');
-      setTimeout(() => cell.classList.remove('flash-copy'), 1200);
-    }).catch(() => {});
+      setTimeout(()=>cell.classList.remove('flash-copy'),1200);
+    }).catch(()=>{});
   });
 }
 
-function flash(btn) {
-  const orig = btn.textContent; btn.textContent = '✓ Copied!'; btn.classList.add('copied');
-  setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
-}
+function flash(btn){const orig=btn.textContent;btn.textContent='✓ Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copied');},2000);}
 
-// ── Start ──────────────────────────────────────────────────────────────────
 loadTimetable();
 </script>
 </body>
