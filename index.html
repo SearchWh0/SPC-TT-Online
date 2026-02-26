@@ -198,7 +198,7 @@ const dayNum = getTodayDayNumber();
 const siteTitle = document.getElementById('siteTitle');
 const siteSub   = document.getElementById('siteSubtitle');
 if (!isWeekend&&dayNum) {
-  siteTitle.textContent = `Timetable — Day ${dayNum}`;
+  siteTitle.textContent = `Timetable (Day ${dayNum})`;
   siteSub.textContent = DAYS_LONG[dow]+' · '+now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
 } else {
   siteTitle.textContent = 'Timetable';
@@ -329,7 +329,7 @@ const backBtn = document.getElementById('backBtn');
 
 function goHome() {
   backBtn.classList.remove('visible');
-  siteTitle.textContent = dayNum&&!isWeekend?`Timetable — Day ${dayNum}`:'Timetable';
+  siteTitle.textContent = dayNum&&!isWeekend?`Timetable (Day ${dayNum})`:'Timetable';
   showScreen('tileView');
 }
 
