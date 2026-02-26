@@ -21,23 +21,14 @@
 }
 body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif; min-height:100vh; transition:background .25s,color .25s; }
 
-/* ── Header ── */
 .site-header { background:var(--surface); border-bottom:1px solid var(--border); padding:0 32px; display:flex; align-items:stretch; gap:0; position:sticky; top:0; z-index:200; box-shadow:var(--shadow); }
 .header-left { display:flex; align-items:center; gap:14px; padding:16px 0; }
 .site-title { font-size:1.8rem; font-weight:900; color:var(--text); letter-spacing:-0.04em; line-height:1; }
 .site-badge { background:#e05151; color:#fff; font-family:'DM Mono',monospace; font-size:0.62rem; padding:3px 8px; border-radius:4px; letter-spacing:0.08em; text-transform:uppercase; }
-
-/* Tab bar */
 .tab-bar { display:flex; align-items:stretch; margin-left:32px; gap:0; }
-.tab-btn {
-  background:none; border:none; border-bottom:3px solid transparent;
-  color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.88rem; font-weight:600;
-  padding:0 20px; cursor:pointer; transition:color .15s, border-color .15s;
-  display:flex; align-items:center; gap:7px; white-space:nowrap;
-}
+.tab-btn { background:none; border:none; border-bottom:3px solid transparent; color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.88rem; font-weight:600; padding:0 20px; cursor:pointer; transition:color .15s, border-color .15s; display:flex; align-items:center; gap:7px; white-space:nowrap; }
 .tab-btn:hover { color:var(--text); }
 .tab-btn.active { color:var(--text); border-bottom-color:var(--text); }
-
 .header-right { margin-left:auto; display:flex; align-items:center; gap:10px; padding:16px 0; }
 .site-day { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; }
 .theme-toggle { display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; }
@@ -47,18 +38,18 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 [data-theme="dark"] .toggle-track { background:#c8f542; }
 [data-theme="dark"] .toggle-track::after { transform:translateX(16px); background:#111010; }
 
-/* ── Tab pages ── */
 .tab-page { display:none; }
 .tab-page.active { display:block; animation:fadeIn .2s ease both; }
 @keyframes fadeIn { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
 
-/* ── Settings page ── */
+/* ── Settings ── */
 .settings-page { max-width:1000px; margin:0 auto; padding:32px 28px 80px; }
 .settings-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
 @media(max-width:680px){ .settings-grid { grid-template-columns:1fr; } }
 .settings-section { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:22px; }
 .settings-section.full { grid-column:1/-1; }
 .section-title { font-size:0.7rem; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:16px; }
+.section-desc { font-size:0.83rem; color:var(--muted); margin-bottom:16px; line-height:1.6; }
 .field-group { display:flex; flex-direction:column; gap:5px; margin-bottom:14px; }
 .field-group:last-child { margin-bottom:0; }
 .field-label { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; }
@@ -73,14 +64,12 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .s-btn.green { background:#22a85a; color:#fff; }
 .field-status { font-family:'DM Mono',monospace; font-size:0.68rem; min-height:16px; margin-top:8px; }
 
-/* Cycle info */
 .cycle-info { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-bottom:14px; }
 .cycle-day-num { font-size:1.6rem; font-weight:900; letter-spacing:-0.03em; line-height:1; }
 .cycle-week { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); margin-top:3px; }
 .open-sheet-btn { width:100%; background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.88rem; font-weight:700; padding:12px; border-radius:10px; cursor:pointer; transition:opacity .15s; }
 .open-sheet-btn:hover { opacity:0.82; }
 
-/* Colour name list */
 .colour-name-list { display:flex; flex-direction:column; gap:8px; }
 .colour-name-row { display:flex; align-items:center; gap:12px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:11px 14px; }
 .colour-swatch { width:32px; height:32px; border-radius:8px; flex-shrink:0; border:1px solid rgba(0,0,0,0.08); }
@@ -88,6 +77,21 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .colour-name-input { flex:1; background:transparent; border:none; border-bottom:1.5px solid var(--border); color:var(--text); font-family:'Outfit',sans-serif; font-size:0.92rem; font-weight:600; padding:3px 4px; outline:none; transition:border-color .2s; }
 .colour-name-input:focus { border-bottom-color:var(--text); }
 .no-colours-msg { font-size:0.84rem; color:var(--muted); font-style:italic; padding:6px 2px; }
+
+/* ── Email Override Table ── */
+.override-table { width:100%; border-collapse:collapse; margin-bottom:14px; }
+.override-table th { font-family:'DM Mono',monospace; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--muted); padding:0 12px 10px; text-align:left; border-bottom:1px solid var(--border); }
+.override-table td { padding:6px 8px; border-bottom:1px solid var(--border); }
+.override-table tr:last-child td { border-bottom:none; }
+.override-input { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:7px; color:var(--text); font-family:'DM Mono',monospace; font-size:0.82rem; padding:7px 10px; outline:none; transition:border-color .2s; }
+.override-input:focus { border-color:var(--text); }
+.override-input.code-input { text-transform:uppercase; }
+.override-del { background:none; border:none; color:var(--muted); font-size:1.1rem; cursor:pointer; padding:4px 8px; border-radius:6px; transition:color .15s, background .15s; }
+.override-del:hover { color:#e05151; background:rgba(224,81,81,0.1); }
+.add-override-btn { background:none; border:1.5px dashed var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.82rem; font-weight:500; padding:9px 18px; border-radius:8px; cursor:pointer; width:100%; margin-bottom:14px; transition:border-color .2s, color .2s; }
+.add-override-btn:hover { border-color:var(--text); color:var(--text); }
+.auto-preview { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); padding:4px 0; }
+.auto-preview .gen { color:#22a85a; }
 
 /* ── Timetable tab ── */
 .paste-wrap { max-width:860px; margin:28px auto; padding:0 24px; }
@@ -110,7 +114,6 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .class-btn .btn-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; border:1.5px solid rgba(0,0,0,0.1); }
 .class-btn:hover { background:var(--border); transform:translateY(-1px); }
 .class-btn.active { background:var(--text); color:var(--bg); border-color:var(--text); box-shadow:0 4px 16px rgba(0,0,0,0.2); }
-[data-theme="dark"] .class-btn.active { color:var(--bg); }
 .btn-label { outline:none; background:transparent; border:none; font:inherit; color:inherit; cursor:inherit; min-width:40px; max-width:160px; pointer-events:none; border-radius:3px; padding:1px 3px; margin:-1px -3px; }
 .btn-label.editing { pointer-events:auto; cursor:text; background:rgba(255,255,255,0.15); text-decoration:underline; text-decoration-style:dashed; text-underline-offset:3px; }
 .toolbar { max-width:1000px; margin:0 auto; padding:14px 24px 0; display:flex; align-items:center; justify-content:space-between; gap:12px; }
@@ -153,12 +156,10 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
     <div class="site-title">Timetable</div>
     <div class="site-badge">Admin</div>
   </div>
-
   <nav class="tab-bar">
     <button class="tab-btn active" data-tab="timetableTab">📋 Timetable</button>
     <button class="tab-btn" data-tab="settingsTab">⚙ Settings</button>
   </nav>
-
   <div class="header-right">
     <div class="site-day" id="todayLabel"></div>
     <div class="theme-toggle" id="themeToggle">
@@ -178,7 +179,6 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
     </div>
     <div class="paste-status" id="pasteStatus"></div>
   </div>
-
   <div class="app-wrap" id="appWrap">
     <div class="class-nav-wrap">
       <div class="class-nav" id="classNav"></div>
@@ -230,10 +230,10 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
         <div class="field-status">Opens the right sheet — Ctrl+A → Ctrl+C → switch back and paste</div>
       </div>
 
-      <!-- Colour names — full width -->
+      <!-- Colour names -->
       <div class="settings-section full">
         <div class="section-title">Colour → Name Mapping</div>
-        <p style="font-size:0.83rem;color:var(--muted);margin-bottom:16px;line-height:1.6">Set a permanent name for each colour group. Names are saved in your browser and pushed to the server whenever you upload a timetable. Paste a timetable on the Timetable tab first to see the colours appear here.</p>
+        <p class="section-desc">Set a permanent name for each colour group. Names are saved in your browser and pushed to the server whenever you upload a timetable. Paste a timetable on the Timetable tab first to see the colours appear here.</p>
         <div class="colour-name-list" id="colourNameList">
           <div class="no-colours-msg">No colours loaded yet — paste a timetable first.</div>
         </div>
@@ -242,6 +242,36 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
           <button class="s-btn secondary" id="clearNamesBtn">Clear all names</button>
         </div>
         <div class="field-status" id="namesStatus"></div>
+      </div>
+
+      <!-- ── Teacher Email Overrides ── -->
+      <div class="settings-section full">
+        <div class="section-title">Teacher Email Overrides</div>
+        <p class="section-desc">
+          Most teachers are auto-generated: last letter moves to front (e.g. <strong>WARRD → dwarr@…</strong>, <strong>KOKF → fkok@…</strong>).
+          Add overrides below for teachers whose real email doesn't match that pattern — like <strong>DEGOJ → jdegoldi</strong>.
+          Only enter the part <em>before</em> the @ sign. These are saved in your browser and shared with the viewer page automatically.
+        </p>
+
+        <table class="override-table" id="overrideTable">
+          <thead>
+            <tr>
+              <th style="width:140px">Teacher Code</th>
+              <th style="width:24px"></th>
+              <th>Email prefix (before @)</th>
+              <th style="width:44px"></th>
+            </tr>
+          </thead>
+          <tbody id="overrideTbody"></tbody>
+        </table>
+
+        <button class="add-override-btn" id="addOverrideBtn">+ Add override</button>
+
+        <div class="btn-row">
+          <button class="s-btn green" id="saveOverridesBtn">Save overrides</button>
+          <button class="s-btn secondary" id="clearOverridesBtn">Clear all</button>
+        </div>
+        <div class="field-status" id="overrideStatus"></div>
       </div>
 
       <!-- Actions -->
@@ -270,16 +300,15 @@ function getTodayDayNumber() {
   return count > 0 ? ((count-1)%10)+1 : null;
 }
 
-// ── Date / theme ───────────────────────────────────────────────────────────
 const now = new Date();
 document.getElementById('todayLabel').textContent =
   DAYS_LONG[now.getDay()] + ' · ' + now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-
 const dayNum = getTodayDayNumber();
 const isWeekend = now.getDay()===0||now.getDay()===6;
-document.getElementById('cycleDayLabel').textContent = (!isWeekend&&dayNum) ? `Day ${dayNum}` : 'Weekend';
-document.getElementById('cycleWeekLabel').textContent = (!isWeekend&&dayNum) ? (dayNum<=5?'Week 1':'Week 2') : 'No timetable today';
+document.getElementById('cycleDayLabel').textContent = (!isWeekend&&dayNum)?`Day ${dayNum}`:'Weekend';
+document.getElementById('cycleWeekLabel').textContent = (!isWeekend&&dayNum)?(dayNum<=5?'Week 1':'Week 2'):'No timetable today';
 
+// ── Theme ──────────────────────────────────────────────────────────────────
 const html = document.documentElement;
 const savedTheme = localStorage.getItem('tt-theme') || 'light';
 html.setAttribute('data-theme', savedTheme);
@@ -291,15 +320,14 @@ document.getElementById('themeToggle').addEventListener('click', () => {
   localStorage.setItem('tt-theme', next);
 });
 
-// ── Tab switching ──────────────────────────────────────────────────────────
+// ── Tabs ───────────────────────────────────────────────────────────────────
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(btn.dataset.tab).classList.add('active');
-    // Refresh colour list when switching to settings
-    if (btn.dataset.tab === 'settingsTab') refreshColourNameList();
+    if (btn.dataset.tab === 'settingsTab') { refreshColourNameList(); renderOverrideTable(); }
   });
 });
 
@@ -308,7 +336,6 @@ const serverUrlEl = document.getElementById('serverUrl');
 const adminPwEl   = document.getElementById('adminPw');
 serverUrlEl.value = localStorage.getItem('tt-server') || '';
 adminPwEl.value   = localStorage.getItem('tt-pw') || '';
-
 function getServer() { return (serverUrlEl.value.trim()||localStorage.getItem('tt-server')||'').replace(/\/$/,''); }
 function getPw()     { return adminPwEl.value||localStorage.getItem('tt-pw')||''; }
 function setStatus(id, msg, type) {
@@ -335,11 +362,10 @@ document.getElementById('testServerBtn').addEventListener('click', async () => {
   } catch(e) { setStatus('serverStatus','✕ Could not reach server','red'); }
 });
 
-// ── SharePoint quick-open ──────────────────────────────────────────────────
+// ── SharePoint ─────────────────────────────────────────────────────────────
 const spUrlEl = document.getElementById('sharepointUrl');
 spUrlEl.value = localStorage.getItem('tt-sharepoint') || '';
 spUrlEl.addEventListener('change', () => localStorage.setItem('tt-sharepoint', spUrlEl.value.trim()));
-
 document.getElementById('openSheetBtn').addEventListener('click', () => {
   const base = spUrlEl.value.trim()||localStorage.getItem('tt-sharepoint')||'';
   if (!base) { alert('Enter your SharePoint file URL above first.'); return; }
@@ -369,7 +395,6 @@ function refreshColourNameList() {
     input.addEventListener('input', () => {
       const val=input.value.trim();
       if(val) colorNames[key]=val; else delete colorNames[key];
-      // live-update nav + panel
       const navBtn=document.querySelector(`.class-btn[data-ckey="${CSS.escape(key)}"]`);
       if(navBtn){const lbl=navBtn.querySelector('.btn-label');if(lbl)lbl.textContent=val||`Name ${i+1}`;const pt=document.getElementById('ptitle-'+navBtn.dataset.target);if(pt)pt.textContent=val||`Name ${i+1}`;}
     });
@@ -395,6 +420,112 @@ document.getElementById('clearNamesBtn').addEventListener('click', () => {
   document.querySelectorAll('.colour-name-input').forEach(inp=>inp.value='');
   setStatus('namesStatus','Names cleared','');
 });
+
+// ── Teacher Email Overrides ────────────────────────────────────────────────
+// Stored as { "DEGOJ": "jdegoldi", "WARRD": "dwarr" } — user only needs to
+// enter keys that differ from the auto-generated formula.
+// Shared via localStorage key 'tt-email-overrides' — the viewer reads the same key.
+
+let emailOverrides = JSON.parse(localStorage.getItem('tt-email-overrides') || '{}');
+
+function codeToEmailAuto(code) {
+  // Last letter to front: WARRD → dwarr
+  const lower = code.toLowerCase();
+  return lower[lower.length-1] + lower.slice(0, lower.length-1);
+}
+
+function renderOverrideTable() {
+  const tbody = document.getElementById('overrideTbody');
+  tbody.innerHTML = '';
+  const entries = Object.entries(emailOverrides);
+  if (entries.length === 0) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td colspan="4" style="padding:12px 8px;font-size:0.82rem;color:var(--muted);font-style:italic;">No overrides yet — add one below.</td>`;
+    tbody.appendChild(tr);
+    return;
+  }
+  entries.forEach(([code, prefix]) => {
+    addOverrideRow(tbody, code, prefix);
+  });
+}
+
+function addOverrideRow(tbody, code='', prefix='') {
+  const tr = document.createElement('tr');
+  const autoPreview = code ? codeToEmailAuto(code) : '—';
+
+  tr.innerHTML = `
+    <td>
+      <input class="override-input code-input" type="text" value="${escapeHTML(code)}" placeholder="e.g. DEGOJ" maxlength="20" />
+    </td>
+    <td style="text-align:center;color:var(--muted);font-size:0.9rem;">→</td>
+    <td>
+      <input class="override-input prefix-input" type="text" value="${escapeHTML(prefix)}" placeholder="e.g. jdegoldi" />
+      <div class="auto-preview">auto would be: <span class="gen">${escapeHTML(autoPreview)}</span></div>
+    </td>
+    <td>
+      <button class="override-del" title="Remove">✕</button>
+    </td>
+  `;
+
+  const codeIn   = tr.querySelector('.code-input');
+  const prefixIn = tr.querySelector('.prefix-input');
+  const preview  = tr.querySelector('.auto-preview .gen');
+  const delBtn   = tr.querySelector('.override-del');
+
+  codeIn.addEventListener('input', () => {
+    const c = codeIn.value.trim().toUpperCase();
+    codeIn.value = c;
+    preview.textContent = c ? codeToEmailAuto(c) : '—';
+  });
+
+  delBtn.addEventListener('click', () => {
+    tr.remove();
+    // Remove empty placeholder row if present
+    const empRow = tbody.querySelector('td[colspan]');
+    if (empRow) empRow.closest('tr').remove();
+  });
+
+  // Remove the "no overrides" placeholder row if it's still there
+  const placeholder = tbody.querySelector('td[colspan]');
+  if (placeholder) placeholder.closest('tr').remove();
+
+  tbody.appendChild(tr);
+}
+
+document.getElementById('addOverrideBtn').addEventListener('click', () => {
+  const tbody = document.getElementById('overrideTbody');
+  addOverrideRow(tbody);
+  // Focus the new code input
+  const rows = tbody.querySelectorAll('tr');
+  const lastRow = rows[rows.length - 1];
+  if (lastRow) lastRow.querySelector('.code-input').focus();
+});
+
+document.getElementById('saveOverridesBtn').addEventListener('click', () => {
+  const tbody = document.getElementById('overrideTbody');
+  const newOverrides = {};
+  tbody.querySelectorAll('tr').forEach(tr => {
+    const code   = (tr.querySelector('.code-input')?.value || '').trim().toUpperCase();
+    const prefix = (tr.querySelector('.prefix-input')?.value || '').trim().toLowerCase();
+    if (code && prefix) newOverrides[code] = prefix;
+  });
+  emailOverrides = newOverrides;
+  localStorage.setItem('tt-email-overrides', JSON.stringify(emailOverrides));
+  setStatus('overrideStatus', `✓ Saved ${Object.keys(emailOverrides).length} override(s)`, 'green');
+  // Re-render to clean up any empty rows
+  renderOverrideTable();
+});
+
+document.getElementById('clearOverridesBtn').addEventListener('click', () => {
+  if (!confirm('Clear all email overrides?')) return;
+  emailOverrides = {};
+  localStorage.removeItem('tt-email-overrides');
+  renderOverrideTable();
+  setStatus('overrideStatus', 'Overrides cleared', '');
+});
+
+// Render on load
+renderOverrideTable();
 
 // ── Actions ────────────────────────────────────────────────────────────────
 document.getElementById('exportKeysBtn').addEventListener('click', () => {
@@ -528,26 +659,16 @@ function renderApp(groupMap) {
   classNav.innerHTML=''; contentArea.innerHTML='';
   const sorted=[...groupMap.entries()].sort((a,b)=>getLuminance(a[1].bg)-getLuminance(b[1].bg));
   let firstId=null;
-
   sorted.forEach(([key,{bg,fg,slots}],gi)=>{
     const id='grp'+gi; if(gi===0)firstId=id;
     const defaultName=`Name ${gi+1}`;
     const savedName=colorNames[key]||defaultName;
-
     const btn=document.createElement('button');
     btn.className='class-btn'; btn.dataset.target=id; btn.dataset.ckey=key;
     const dot=document.createElement('span'); dot.className='btn-dot'; dot.style.background=bg; if(fg)dot.style.borderColor=fg;
     const label=document.createElement('span'); label.className='btn-label'; label.contentEditable='false'; label.spellcheck=false; label.textContent=savedName; label.title='Double-click to rename';
-
     function startEditing(e){e.stopPropagation();label.contentEditable='true';label.classList.add('editing');label.focus();const range=document.createRange();range.selectNodeContents(label);range.collapse(false);const sel=window.getSelection();sel.removeAllRanges();sel.addRange(range);}
-    function stopEditing(){
-      label.contentEditable='false';label.classList.remove('editing');
-      const name=label.textContent.trim()||defaultName; label.textContent=name;
-      if(name!==defaultName) colorNames[key]=name; else delete colorNames[key];
-      localStorage.setItem('tt-colornames',JSON.stringify(colorNames));
-      const pt=document.getElementById('ptitle-'+id); if(pt)pt.textContent=name;
-      pushNames();
-    }
+    function stopEditing(){label.contentEditable='false';label.classList.remove('editing');const name=label.textContent.trim()||defaultName;label.textContent=name;if(name!==defaultName)colorNames[key]=name;else delete colorNames[key];localStorage.setItem('tt-colornames',JSON.stringify(colorNames));const pt=document.getElementById('ptitle-'+id);if(pt)pt.textContent=name;pushNames();}
     label.addEventListener('input',()=>{const pt=document.getElementById('ptitle-'+id);if(pt)pt.textContent=label.textContent.trim()||defaultName;});
     label.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();label.blur();}if(e.key==='Escape'){label.textContent=colorNames[key]||defaultName;label.blur();}e.stopPropagation();});
     label.addEventListener('blur',stopEditing);
@@ -556,31 +677,13 @@ function renderApp(groupMap) {
     btn.addEventListener('click',()=>activateGroup(id));
     btn.addEventListener('dblclick',startEditing);
     classNav.appendChild(btn);
-
     const panel=document.createElement('div'); panel.className='panel'; panel.id=id;
     const periodRows=[1,2,3,4,5,6].map(p=>{
       const entries=slots[p];
-      if(!entries||entries.length===0) return `<div class="period-row empty-row"><div class="accent-bar" style="background:${bg}"></div><div class="cell-period">P${p}</div><div class="cell-dash">—</div><div class="cell-data empty" style="grid-column:4/-1"></div></div>`;
-      return entries.map(({d1,d2,d3})=>`
-        <div class="period-row">
-          <div class="accent-bar" style="background:${bg}"></div>
-          <div class="cell-period has-data">P${p}</div>
-          <div class="cell-dash">—</div>
-          <div class="cell-data${d1?'':' empty'}" data-copy="${escapeHTML(d1||'')}">${escapeHTML(d1||'')}</div>
-          <div class="cell-data${d2?'':' empty'}" data-copy="${escapeHTML(d2||'')}">${escapeHTML(d2||'')}</div>
-          <div class="cell-data${d3?'':' empty'}" data-copy="${escapeHTML(d3||'')}">${escapeHTML(d3||'')}</div>
-        </div>`).join('');
+      if(!entries||entries.length===0)return`<div class="period-row empty-row"><div class="accent-bar" style="background:${bg}"></div><div class="cell-period">P${p}</div><div class="cell-dash">—</div><div class="cell-data empty" style="grid-column:4/-1"></div></div>`;
+      return entries.map(({d1,d2,d3})=>`<div class="period-row"><div class="accent-bar" style="background:${bg}"></div><div class="cell-period has-data">P${p}</div><div class="cell-dash">—</div><div class="cell-data${d1?'':' empty'}" data-copy="${escapeHTML(d1||'')}">${escapeHTML(d1||'')}</div><div class="cell-data${d2?'':' empty'}" data-copy="${escapeHTML(d2||'')}">${escapeHTML(d2||'')}</div><div class="cell-data${d3?'':' empty'}" data-copy="${escapeHTML(d3||'')}">${escapeHTML(d3||'')}</div></div>`).join('');
     }).join('');
-
-    panel.innerHTML=`
-      <div class="panel-header">
-        <div class="panel-colour-bar" style="background:${bg}"></div>
-        <div><div class="panel-title" id="ptitle-${id}">${escapeHTML(savedName)}</div>
-        <div class="panel-subtitle">${escapeHTML(bg)}${fg?' · '+escapeHTML(fg):''}</div></div>
-        <div class="panel-actions"><button class="copy-btn">Copy P1–P6</button></div>
-      </div>
-      <div class="period-grid">${periodRows}</div>`;
-
+    panel.innerHTML=`<div class="panel-header"><div class="panel-colour-bar" style="background:${bg}"></div><div><div class="panel-title" id="ptitle-${id}">${escapeHTML(savedName)}</div><div class="panel-subtitle">${escapeHTML(bg)}${fg?' · '+escapeHTML(fg):''}</div></div><div class="panel-actions"><button class="copy-btn">Copy P1–P6</button></div></div><div class="period-grid">${periodRows}</div>`;
     panel.querySelector('.copy-btn').addEventListener('click',function(){
       const b=this; const grp=currentGroupMap.get(key); if(!grp)return;
       const text=[1,2,3,4,5,6].map(p=>{const ent=grp.slots[p];if(!ent||ent.length===0)return`P${p} - \t\t`;return ent.map(({d1,d2,d3})=>`P${p} - ${d1}\t${d2}\t${d3}`).join('\n');}).join('\n');
@@ -588,13 +691,11 @@ function renderApp(groupMap) {
     });
     contentArea.appendChild(panel);
   });
-
   contentArea.addEventListener('click',e=>{
     const cell=e.target.closest('.cell-data:not(.empty)');if(!cell)return;
     const text=cell.dataset.copy;if(!text)return;
     navigator.clipboard.writeText(text).then(()=>{cell.classList.add('flash-copy');setTimeout(()=>cell.classList.remove('flash-copy'),1200);}).catch(()=>{});
   });
-
   pasteWrap.style.display='none';
   appWrap.classList.add('visible');
   if(firstId)activateGroup(firstId);
