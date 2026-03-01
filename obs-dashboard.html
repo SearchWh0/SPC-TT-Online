@@ -37,7 +37,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .status-dot.err{background:var(--red);}
 
 /* Main */
-.main{padding:36px 40px 80px;max-width:1200px;}
+.main{padding:36px 40px 80px;max-width:1100px;}
 .page{display:none;animation:fadeIn .2s ease both;}
 .page.active{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
@@ -59,10 +59,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .btn-primary{background:var(--accent);color:#fff;}
 .btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border2);}
 .btn-green{background:var(--green);color:#0c0c0f;}
-.btn-red{background:var(--red);color:#0c0c0f;}
 .btn-sm{padding:7px 14px;font-size:0.78rem;}
 .btn-ghost{background:none;border:1px solid var(--border2);color:var(--muted2);}
-.btn-ghost:hover{color:var(--text);border-color:var(--muted);opacity:1;}
+.btn-ghost:hover{color:var(--text);border-color:var(--muted2);opacity:1;}
 
 /* Stat cards */
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px;margin-bottom:28px;}
@@ -77,7 +76,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 
 /* Chart card */
 .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px;}
-.chart-title{font-size:0.75rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.chart-title{font-size:0.75rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;}
 
 /* Bar chart */
 .bar-chart{display:flex;flex-direction:column;gap:8px;}
@@ -103,47 +102,22 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .online-dot.active{background:var(--green);box-shadow:0 0 8px var(--green);}
 .online-time{font-family:var(--mono);font-size:0.65rem;color:var(--muted);margin-left:4px;}
 
-/* ── DATE FILTER BAR ── */
-.date-filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:24px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 18px;}
-.date-filter-bar label{font-family:var(--mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);white-space:nowrap;}
-.date-input{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:0.78rem;padding:7px 12px;outline:none;transition:border-color .2s;}
-.date-input:focus{border-color:var(--accent);}
-.date-sep{color:var(--muted);font-family:var(--mono);font-size:0.75rem;}
-.preset-chips{display:flex;gap:6px;flex-wrap:wrap;}
-.preset-chip{background:var(--surface2);border:1.5px solid var(--border2);border-radius:7px;padding:5px 12px;font-size:0.75rem;font-weight:600;cursor:pointer;transition:all .15s;font-family:var(--mono);}
-.preset-chip:hover{border-color:var(--accent);color:var(--accent);}
-.preset-chip.active{background:var(--accent);border-color:var(--accent);color:#fff;}
-.filter-divider{width:1px;height:24px;background:var(--border2);margin:0 4px;}
-
 /* User table */
 .user-table{width:100%;border-collapse:collapse;}
-.user-table th{font-family:var(--mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);padding:0 16px 12px;text-align:left;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;white-space:nowrap;}
-.user-table th:hover{color:var(--text);}
-.user-table th .sort-arrow{margin-left:4px;opacity:0.4;}
-.user-table th.sorted .sort-arrow{opacity:1;color:var(--accent);}
-.user-table td{padding:13px 16px;border-bottom:1px solid var(--border);font-size:0.85rem;vertical-align:middle;}
+.user-table th{font-family:var(--mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);padding:0 16px 12px;text-align:left;border-bottom:1px solid var(--border);}
+.user-table td{padding:13px 16px;border-bottom:1px solid var(--border);font-size:0.85rem;}
 .user-table tr:last-child td{border-bottom:none;}
 .user-table tbody tr{cursor:pointer;transition:background .12s;}
 .user-table tbody tr:hover td{background:var(--surface2);}
 .user-badge{display:inline-flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:3px 10px;font-family:var(--mono);font-size:0.75rem;}
 .user-avatar{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;}
 
-/* Kill switch */
-.kill-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;font-size:0.72rem;font-weight:700;font-family:var(--mono);border:none;cursor:pointer;transition:all .15s;white-space:nowrap;}
-.kill-btn.disabled-state{background:rgba(248,113,113,0.15);border:1px solid var(--red);color:var(--red);}
-.kill-btn.disabled-state:hover{background:rgba(248,113,113,0.28);}
-.kill-btn.enabled-state{background:rgba(52,211,153,0.12);border:1px solid var(--green);color:var(--green);}
-.kill-btn.enabled-state:hover{background:rgba(52,211,153,0.25);}
-.kill-switch-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:5px;font-size:0.62rem;font-family:var(--mono);font-weight:700;}
-.kill-switch-badge.killed{background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.4);color:var(--red);}
-
-/* Status pill */
-.status-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:0.7rem;font-family:var(--mono);font-weight:600;}
-.status-pill.online{background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.35);color:var(--green);}
-.status-pill.offline{background:var(--surface2);border:1px solid var(--border2);color:var(--muted2);}
-.status-pill.never{background:var(--surface2);border:1px solid var(--border);color:var(--muted);}
-.pill-dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
-.pill-dot.online{box-shadow:0 0 5px var(--green);}
+/* User filter tabs */
+.view-toggle{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap;}
+.view-chip{background:var(--surface2);border:1.5px solid var(--border2);border-radius:8px;padding:6px 14px;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;}
+.view-chip:hover{border-color:var(--accent);color:var(--accent);}
+.view-chip.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.view-chip .dot{width:7px;height:7px;border-radius:50%;}
 
 /* Feed */
 .feed{display:flex;flex-direction:column;}
@@ -158,7 +132,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .back-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--border2);color:var(--muted2);font-family:var(--font);font-size:0.82rem;font-weight:600;padding:7px 14px;border-radius:8px;cursor:pointer;transition:all .15s;margin-bottom:24px;}
 .back-btn:hover{color:var(--text);border-color:var(--muted);}
 
-/* Section card */
+/* Section card (phrases) */
 .section-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px;}
 .section-card-title{font-size:0.72rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;}
 .phrase-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
@@ -180,32 +154,33 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .config-label{display:block;font-family:var(--mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:6px;}
 .row{display:flex;gap:10px;}
 
-/* Users Management Page */
-.users-page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
-.search-input{background:var(--surface2);border:1px solid var(--border2);border-radius:9px;color:var(--text);font-family:var(--mono);font-size:0.82rem;padding:9px 14px;outline:none;transition:border-color .2s;min-width:220px;}
-.search-input:focus{border-color:var(--accent);}
-.user-detail-header{display:flex;align-items:center;gap:14px;margin-bottom:24px;}
-.user-detail-avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;}
-.user-detail-name{font-size:1.6rem;font-weight:800;letter-spacing:-0.03em;}
-.user-detail-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px;}
 
-/* Modal */
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
-.modal{background:var(--surface);border:1px solid var(--border2);border-radius:18px;padding:28px;max-width:420px;width:90%;animation:fadeIn .2s ease;}
-.modal h3{font-size:1.1rem;font-weight:800;margin-bottom:8px;}
-.modal p{color:var(--muted2);font-size:0.85rem;margin-bottom:22px;line-height:1.5;}
-.modal-actions{display:flex;gap:10px;justify-content:flex-end;}
-.modal-warn{background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.4);}
 
+/* Version badge */
+.version-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-family:var(--mono);font-size:0.62rem;font-weight:700;border:1px solid;}
+.version-badge.current{background:rgba(52,211,153,0.1);border-color:rgba(52,211,153,0.35);color:var(--green);}
+.version-badge.outdated{background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.35);color:var(--yellow);}
+.version-badge.unknown{background:var(--surface2);border-color:var(--border);color:var(--muted);}
+.exit-pending-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--yellow);box-shadow:0 0 6px var(--yellow);margin-left:4px;flex-shrink:0;}
+/* Export / weekly summary */
+.toolbar-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:24px;}
+.btn-outline{background:none;border:1.5px solid var(--border2);color:var(--muted2);font-family:var(--font);font-size:0.8rem;font-weight:700;padding:8px 16px;border-radius:9px;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent);}
+.btn-outline.blue:hover{border-color:var(--blue);color:var(--blue);}
+.btn-outline.green:hover{border-color:var(--green);color:var(--green);}
+
+/* Weekly summary modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.modal-box{background:var(--surface);border:1px solid var(--border2);border-radius:18px;padding:28px;max-width:600px;width:92%;max-height:85vh;display:flex;flex-direction:column;gap:16px;animation:fadeIn .2s ease;}
+.modal-box h3{font-size:1.1rem;font-weight:800;letter-spacing:-0.02em;}
+.modal-textarea{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:var(--mono);font-size:0.78rem;line-height:1.8;padding:14px 16px;flex:1;resize:none;outline:none;min-height:280px;}
+.modal-textarea:focus{border-color:var(--accent);}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;}
 /* Toast */
 #toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:12px 22px;font-size:0.85rem;font-weight:600;opacity:0;transition:opacity .25s,transform .25s;z-index:1000;pointer-events:none;white-space:nowrap;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 #toast.ok{border-color:var(--green);color:var(--green);}
 #toast.err{border-color:var(--red);color:var(--red);}
-
-/* Empty states */
-.empty-state{padding:40px;text-align:center;color:var(--muted);font-size:0.85rem;}
-.empty-state .icon{font-size:2rem;margin-bottom:10px;}
 </style>
 </head>
 <body>
@@ -218,7 +193,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
     </div>
     <nav class="nav">
       <div class="nav-item active" data-page="statsPage"><span class="icon">📊</span> Stats</div>
-      <div class="nav-item" data-page="usersPage"><span class="icon">👥</span> Users</div>
       <div class="nav-item" data-page="phrasesPage"><span class="icon">📝</span> Phrases</div>
       <div class="nav-item" data-page="configPage"><span class="icon">⚙️</span> Config</div>
     </nav>
@@ -234,37 +208,24 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 
     <!-- ══ STATS PAGE ══ -->
     <div class="page active" id="statsPage">
+      <!-- Summary cards -->
       <div class="page-header">
         <div class="page-header-left">
           <div class="page-title" id="statsTitle">Usage Stats</div>
           <div class="page-sub" id="statsSub">All users combined</div>
         </div>
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-          <button class="back-btn" id="backToAll" style="display:none;margin-bottom:0">← All users</button>
-        </div>
+        <button class="back-btn" id="backToAll" style="display:none">← All users</button>
       </div>
 
-      <!-- DATE FILTER BAR -->
-      <div class="date-filter-bar" id="dateFilterBar">
-        <label>Date range:</label>
-        <div class="preset-chips" id="presetChips">
-          <div class="preset-chip active" data-preset="all">All time</div>
-          <div class="preset-chip" data-preset="today">Today</div>
-          <div class="preset-chip" data-preset="7d">7 days</div>
-          <div class="preset-chip" data-preset="30d">30 days</div>
-          <div class="preset-chip" data-preset="custom">Custom</div>
-        </div>
-        <div class="filter-divider"></div>
-        <div id="customDateRow" style="display:none;display:flex;gap:8px;align-items:center;">
-          <input class="date-input" type="date" id="dateFrom" />
-          <span class="date-sep">→</span>
-          <input class="date-input" type="date" id="dateTo" />
-          <button class="btn btn-secondary btn-sm" id="applyCustomDate">Apply</button>
-        </div>
+      <!-- Export / summary toolbar -->
+      <div class="toolbar-row" id="statsToolbar">
+        <button class="btn-outline green" id="exportCsvBtn">⬇ Export CSV</button>
+        <button class="btn-outline blue" id="weeklySummaryBtn">📋 Weekly summary</button>
+        <button class="btn-outline" id="forceUpdateBtn" style="margin-left:auto">⏹ Close all for update</button>
       </div>
 
       <div class="stat-grid" id="statGrid">
-        <div class="stat-card"><div class="stat-label">Total Uses</div><div class="stat-value" id="statTotal">—</div><div class="stat-sub">filtered period</div></div>
+        <div class="stat-card"><div class="stat-label">Total Uses</div><div class="stat-value" id="statTotal">—</div><div class="stat-sub">all time</div></div>
         <div class="stat-card green"><div class="stat-label">Active Users</div><div class="stat-value" id="statUsers">—</div><div class="stat-sub">with logged usage</div></div>
         <div class="stat-card blue"><div class="stat-label">Today</div><div class="stat-value" id="statToday">—</div><div class="stat-sub" id="statTodayDate"></div></div>
         <div class="stat-card yellow"><div class="stat-label">Top Phrase</div><div class="stat-value" style="font-size:1rem;margin-top:8px" id="statTop">—</div><div class="stat-sub" id="statTopCount"></div></div>
@@ -276,22 +237,12 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
         <div class="online-grid" id="onlineGrid"></div>
       </div>
 
-      <!-- User table -->
+      <!-- User filter tabs — shown in "all" view -->
       <div id="userFilterWrap">
         <div class="chart-card">
-          <div class="chart-title">
-            <span>Users — click to see individual stats</span>
-            <span id="filterRangeLabel" style="color:var(--muted);font-size:0.65rem"></span>
-          </div>
+          <div class="chart-title">Click a user to see their individual stats</div>
           <table class="user-table" id="userTable">
-            <thead><tr>
-              <th data-sort="name">User <span class="sort-arrow">↕</span></th>
-              <th data-sort="total" class="sorted">Total <span class="sort-arrow">↓</span></th>
-              <th data-sort="top">Top phrase <span class="sort-arrow">↕</span></th>
-              <th data-sort="util">Utility <span class="sort-arrow">↕</span></th>
-              <th data-sort="last">Last active <span class="sort-arrow">↕</span></th>
-              <th>Status</th>
-            </tr></thead>
+            <thead><tr><th>User</th><th>Total</th><th>Top phrase</th><th>Utility</th><th>Version</th><th>First use</th><th>Last active</th></tr></thead>
             <tbody id="userTableBody"></tbody>
           </table>
         </div>
@@ -317,69 +268,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 
       <!-- Activity feed -->
       <div class="chart-card">
-        <div class="chart-title">Recent activity <span id="feedFilterNote" style="color:var(--muted);font-size:0.65rem"></span></div>
+        <div class="chart-title">Recent activity</div>
         <div class="feed" id="activityFeed"></div>
-      </div>
-    </div>
-
-    <!-- ══ USERS PAGE ══ -->
-    <div class="page" id="usersPage">
-      <div class="page-header">
-        <div class="page-header-left">
-          <div class="page-title" id="usersPageTitle">Users</div>
-          <div class="page-sub" id="usersPageSub">All users and their access status</div>
-        </div>
-        <button class="back-btn" id="usersBackBtn" style="display:none;margin-bottom:0">← All users</button>
-      </div>
-
-      <!-- User list view -->
-      <div id="usersListView">
-        <div class="users-page-header">
-          <input class="search-input" id="userSearch" type="text" placeholder="Search users…" />
-          <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <div class="preset-chips">
-              <div class="preset-chip active" data-ufilter="all">All</div>
-              <div class="preset-chip" data-ufilter="online">Online</div>
-              <div class="preset-chip" data-ufilter="killed">Disabled</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="chart-card" style="padding:0;overflow:hidden;">
-          <table class="user-table" id="allUsersTable">
-            <thead><tr>
-              <th data-usort="name">User <span class="sort-arrow">↕</span></th>
-              <th>Status</th>
-              <th data-usort="last">Last login <span class="sort-arrow">↕</span></th>
-              <th data-usort="total">Total uses <span class="sort-arrow">↕</span></th>
-              <th>Access</th>
-              <th></th>
-            </tr></thead>
-            <tbody id="allUsersBody"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- User detail view -->
-      <div id="userDetailView" style="display:none">
-        <div class="user-detail-header" id="userDetailHeader"></div>
-        <div class="stat-grid" id="userDetailStatGrid"></div>
-
-        <!-- Activity over time -->
-        <div class="chart-card">
-          <div class="chart-title">Activity — last 30 days</div>
-          <div class="day-chart" id="userDetailDayChart"></div>
-        </div>
-        <!-- Phrase breakdown -->
-        <div class="chart-card">
-          <div class="chart-title">Top phrases</div>
-          <div class="bar-chart" id="userDetailPhraseChart"></div>
-        </div>
-        <!-- Recent activity -->
-        <div class="chart-card">
-          <div class="chart-title">Recent activity</div>
-          <div class="feed" id="userDetailFeed"></div>
-        </div>
       </div>
     </div>
 
@@ -396,7 +286,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
         <div class="user-select-row" id="userChips"><span style="font-size:0.8rem;color:var(--muted)">Select user:</span></div>
         <div class="phrase-list" id="overrideList"></div>
         <button class="add-phrase-btn" id="addOverridePhrase">+ Add personal phrase / override</button>
-        <p style="font-size:0.75rem;color:var(--muted);margin-top:8px">Overrides replace a base phrase with the same key. New keys are added on top of the base.</p>
+        <p style="font-size:0.75rem;color:var(--muted);margin-top:8px">Overrides replace a base phrase that has the same key. New keys are added on top of the base.</p>
       </div>
     </div>
 
@@ -432,14 +322,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
   </div>
 </div>
 
-<!-- Confirm Modal -->
-<div class="modal-bg" id="confirmModal" style="display:none">
-  <div class="modal modal-warn" id="confirmModalBox">
-    <h3 id="confirmTitle">Confirm action</h3>
-    <p id="confirmMsg">Are you sure?</p>
+<!-- Weekly Summary Modal -->
+<div class="modal-bg" id="weeklyModal" style="display:none">
+  <div class="modal-box">
+    <h3>📋 Weekly Summary</h3>
+    <textarea class="modal-textarea" id="weeklySummaryText" readonly></textarea>
     <div class="modal-actions">
-      <button class="btn btn-secondary btn-sm" id="confirmCancel">Cancel</button>
-      <button class="btn btn-sm" id="confirmOk" style="background:var(--red);color:#fff">Confirm</button>
+      <button class="btn btn-secondary btn-sm" id="weeklyCopyBtn">Copy</button>
+      <button class="btn btn-secondary btn-sm" id="weeklyCloseBtn">Close</button>
     </div>
   </div>
 </div>
@@ -448,72 +338,45 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 
 <script>
 // ── Constants ──────────────────────────────────────────────────────────────
-const RENDER_URL   = 'https://timetable-server-r6nb.onrender.com';
-const UTILITY_KEYS = new Set(['Ctrl+Alt+E','Ctrl+Alt+T','Ctrl+Alt+P','Ctrl+Alt+F','Ctrl+Alt+W','Ctrl+Alt+S','Ctrl+Alt+M','__heartbeat__']);
-const USER_COLORS  = ['#af5cfa','#60a5fa','#34d399','#fbbf24','#f87171','#a78bfa','#fb923c','#38bdf8'];
+const RENDER_URL    = 'https://timetable-server-r6nb.onrender.com';
+const UTILITY_KEYS  = new Set(['Ctrl+Alt+E','Ctrl+Alt+T','Ctrl+Alt+P','Ctrl+Alt+F','Ctrl+Alt+W','Ctrl+Alt+S','Ctrl+Alt+M','__heartbeat__']);
+const CURRENT_VERSION = 'v3.0'; // Update this whenever you release a new AHK version
+const USER_COLORS   = ['#af5cfa','#60a5fa','#34d399','#fbbf24','#f87171','#a78bfa','#fb923c','#38bdf8'];
 
 // ── State ──────────────────────────────────────────────────────────────────
 let serverUrl = localStorage.getItem('obs-server') || '';
 let adminPw   = localStorage.getItem('obs-pw') || '';
 let statsData = null;
+let firstSeenData = {};
 let heartbeatData = {};
-let killedUsers  = JSON.parse(localStorage.getItem('obs-killed') || '{}');
-let selectedUser = null;
-let allUsers     = [];
+let selectedUser  = null;   // null = all users view
+let allUsers      = [];
 let selectedOverrideUser = null;
-let activePreset = 'all';
-let customFrom   = null;
-let customTo     = null;
-let userSortCol  = 'total';
-let userSortDir  = -1;
-let allUsersSortCol = 'last';
-let allUsersSortDir = -1;
-let userFilter   = 'all';
-let userSearchQ  = '';
 
 // ── API ────────────────────────────────────────────────────────────────────
 async function api(method, path, body) {
-  const headers = {'Content-Type':'application/json','X-Admin-Password':adminPw};
-  const res = await fetch(serverUrl + path, {method, headers, body: body ? JSON.stringify(body) : undefined});
+  const headers = { 'Content-Type': 'application/json', 'X-Admin-Password': adminPw };
+  const res = await fetch(serverUrl + path, { method, headers, body: body ? JSON.stringify(body) : undefined });
   return res;
 }
 
 function toast(msg, type='ok') {
   const el = document.getElementById('toast');
-  el.textContent = (type==='ok'?'✓ ':'✕ ') + msg;
+  el.textContent = (type==='ok' ? '✓ ' : '✕ ') + msg;
   el.className = 'show ' + type;
   clearTimeout(el._t);
   el._t = setTimeout(() => el.className = '', 3000);
 }
 
-// ── Confirm Modal ──────────────────────────────────────────────────────────
-function confirm(title, msg, btnLabel, btnColor) {
-  return new Promise(resolve => {
-    document.getElementById('confirmTitle').textContent = title;
-    document.getElementById('confirmMsg').textContent   = msg;
-    const ok = document.getElementById('confirmOk');
-    ok.textContent = btnLabel || 'Confirm';
-    ok.style.background = btnColor || 'var(--red)';
-    document.getElementById('confirmModal').style.display = 'flex';
-    const cleanup = (val) => {
-      document.getElementById('confirmModal').style.display = 'none';
-      ok.onclick = null;
-      document.getElementById('confirmCancel').onclick = null;
-      resolve(val);
-    };
-    ok.onclick = () => cleanup(true);
-    document.getElementById('confirmCancel').onclick = () => cleanup(false);
-  });
-}
-
 // ── Login ──────────────────────────────────────────────────────────────────
 async function tryConnect(url, pw) {
   try {
-    const res = await fetch(url + '/stats', {headers: {'X-Admin-Password': pw}});
+    const res = await fetch(url + '/stats', { headers: { 'X-Admin-Password': pw } });
     return res.ok;
   } catch(e) { return false; }
 }
 
+// Autofill URL on load
 document.getElementById('loginUrl').value = localStorage.getItem('obs-server') || RENDER_URL;
 
 document.getElementById('loginBtn').addEventListener('click', async () => {
@@ -548,11 +411,11 @@ async function bootApp() {
   document.getElementById('cfgUrl').value = serverUrl;
   document.getElementById('cfgPw').value  = adminPw;
   setStatus(true);
-  await Promise.all([loadStats(), loadHeartbeats(), loadPhrases(), loadUsers()]);
+  await Promise.all([loadStats(), loadHeartbeats(), loadPhrases(), loadUsers(), loadFirstSeen()]);
 }
 
 function setStatus(ok) {
-  document.getElementById('statusDot').className   = 'status-dot ' + (ok?'ok':'err');
+  document.getElementById('statusDot').className  = 'status-dot ' + (ok ? 'ok' : 'err');
   document.getElementById('statusText').textContent = ok ? 'Connected' : 'Offline';
 }
 
@@ -566,56 +429,6 @@ document.querySelectorAll('.nav-item').forEach(item => {
   });
 });
 
-// ── Date Filter ────────────────────────────────────────────────────────────
-document.querySelectorAll('[data-preset]').forEach(chip => {
-  chip.addEventListener('click', () => {
-    document.querySelectorAll('[data-preset]').forEach(c => c.classList.remove('active'));
-    chip.classList.add('active');
-    activePreset = chip.dataset.preset;
-    const customRow = document.getElementById('customDateRow');
-    customRow.style.display = (activePreset === 'custom') ? 'flex' : 'none';
-    if (activePreset !== 'custom') renderStats();
-  });
-});
-
-document.getElementById('applyCustomDate').addEventListener('click', () => {
-  customFrom = document.getElementById('dateFrom').value || null;
-  customTo   = document.getElementById('dateTo').value   || null;
-  renderStats();
-});
-
-function getDateRange() {
-  const today = new Date().toISOString().slice(0,10);
-  switch (activePreset) {
-    case 'today': return { from: today, to: today };
-    case '7d': {
-      const d = new Date(); d.setDate(d.getDate()-6);
-      return { from: d.toISOString().slice(0,10), to: today };
-    }
-    case '30d': {
-      const d = new Date(); d.setDate(d.getDate()-29);
-      return { from: d.toISOString().slice(0,10), to: today };
-    }
-    case 'custom': return { from: customFrom, to: customTo };
-    default: return { from: null, to: null };
-  }
-}
-
-function inRange(ts, range) {
-  if (!range.from && !range.to) return true;
-  const d = ts.slice(0,10);
-  if (range.from && d < range.from) return false;
-  if (range.to   && d > range.to)   return false;
-  return true;
-}
-
-function getRangeLabel() {
-  const range = getDateRange();
-  if (!range.from && !range.to) return 'All time';
-  if (range.from === range.to) return range.from;
-  return `${range.from||'start'} → ${range.to||'now'}`;
-}
-
 // ── Stats ──────────────────────────────────────────────────────────────────
 async function loadStats() {
   try {
@@ -627,10 +440,20 @@ async function loadStats() {
   } catch(e) { setStatus(false); }
 }
 
+async function loadFirstSeen() {
+  try {
+    const res = await api('GET', '/stats/firstseen');
+    if (res.ok) firstSeenData = await res.json();
+  } catch(e) {}
+}
+
 async function loadHeartbeats() {
   try {
     const res = await api('GET', '/heartbeat');
-    if (res.ok) { heartbeatData = await res.json(); renderOnline(); renderAllUsersTable(); }
+    if (res.ok) {
+      heartbeatData = await res.json();
+      renderOnline();
+    }
   } catch(e) {}
 }
 
@@ -640,27 +463,6 @@ function renderStats() {
   else renderAllStats();
 }
 
-function filterEvents(events) {
-  const range = getDateRange();
-  return events.filter(e => inRange(e.ts, range));
-}
-
-function filterByKey(byKey, events) {
-  // Build filtered counts from filtered events
-  const counts = {};
-  events.filter(e => e.key !== '__heartbeat__').forEach(e => {
-    if (!counts[e.key]) counts[e.key] = { label: byKey[e.key]?.label || e.key, total: 0 };
-    counts[e.key].total++;
-  });
-  return counts;
-}
-
-function buildByDay(events) {
-  const byDay = {};
-  events.forEach(e => { const d = e.ts.slice(0,10); byDay[d] = (byDay[d]||0)+1; });
-  return byDay;
-}
-
 function renderAllStats() {
   const d = statsData;
   document.getElementById('statsTitle').textContent = 'Usage Stats';
@@ -668,115 +470,59 @@ function renderAllStats() {
   document.getElementById('backToAll').style.display = 'none';
   document.getElementById('userFilterWrap').style.display = '';
 
-  const range = getDateRange();
-  const filteredEvents = filterEvents(d.recentEvents);
-  const filteredByKey  = filterByKey(d.byKey, filteredEvents);
-  const totalFiltered  = filteredEvents.filter(e => e.key !== '__heartbeat__').length;
+  // Filter out heartbeat events for display counts
+  const realEvents = d.recentEvents.filter(e => e.key !== '__heartbeat__');
+  const totalReal  = d.totalEvents - (d.byKey['__heartbeat__']?.total || 0);
 
-  document.getElementById('statTotal').textContent = totalFiltered.toLocaleString();
-  // Users who appear in filtered events
-  const activeUserSet = new Set(filteredEvents.map(e => e.user));
-  document.getElementById('statUsers').textContent = activeUserSet.size;
+  document.getElementById('statTotal').textContent = totalReal.toLocaleString();
+  document.getElementById('statUsers').textContent = Object.keys(d.byUser).length;
 
   const today = new Date().toISOString().slice(0,10);
-  document.getElementById('statToday').textContent    = filteredEvents.filter(e => e.ts.slice(0,10)===today && e.key!=='__heartbeat__').length.toLocaleString();
+  document.getElementById('statToday').textContent    = (d.byDay[today] || 0).toLocaleString();
   document.getElementById('statTodayDate').textContent = today;
 
-  const phraseSorted = Object.entries(filteredByKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b)=>b[1].total-a[1].total);
+  // Top phrase (exclude utility keys)
+  const phraseSorted = Object.entries(d.byKey)
+    .filter(([k]) => !UTILITY_KEYS.has(k))
+    .sort((a,b) => b[1].total - a[1].total);
   if (phraseSorted.length) {
     document.getElementById('statTop').textContent      = phraseSorted[0][1].label;
     document.getElementById('statTopCount').textContent = phraseSorted[0][1].total.toLocaleString() + ' uses';
-  } else {
-    document.getElementById('statTop').textContent      = '—';
-    document.getElementById('statTopCount').textContent = '';
   }
 
-  // Update range label
-  document.getElementById('filterRangeLabel').textContent = getRangeLabel();
-
   // User table
-  renderUserTableSorted(d, filteredEvents, filteredByKey);
-
-  const fakeD = { byKey: filteredByKey, byDay: buildByDay(filteredEvents), recentEvents: filteredEvents };
-  renderBarChart(fakeD, null);
-  renderDayChart(fakeD, null);
-  renderFeed(filteredEvents, null);
-}
-
-function renderUserTableSorted(d, filteredEvents, filteredByKey) {
   const tbody = document.getElementById('userTableBody');
   tbody.innerHTML = '';
-
-  // Build per-user data from filtered events
-  const userMap = {};
-  filteredEvents.filter(e => e.key !== '__heartbeat__').forEach(e => {
-    if (!userMap[e.user]) userMap[e.user] = { total:0, byKey:{}, lastEvent:null };
-    userMap[e.user].total++;
-    userMap[e.user].byKey[e.key] = (userMap[e.user].byKey[e.key]||0)+1;
-    if (!userMap[e.user].lastEvent || e.ts > userMap[e.user].lastEvent) userMap[e.user].lastEvent = e.ts;
-  });
-
-  // Also include users from statsData who may not appear in filtered range
-  Object.keys(d.byUser).forEach(u => { if (!userMap[u]) userMap[u] = { total:0, byKey:{}, lastEvent: null }; });
-
-  let rows = Object.entries(userMap).map(([user, data], i) => {
-    const color = USER_COLORS[Object.keys(d.byUser).indexOf(user) % USER_COLORS.length] || USER_COLORS[i % USER_COLORS.length];
+  const usersSorted = Object.entries(d.byUser).sort((a,b) => b[1].total - a[1].total);
+  usersSorted.forEach(([user, data], i) => {
+    const color = USER_COLORS[i % USER_COLORS.length];
+    const initials = user.slice(0,2).toUpperCase();
     const topEntry = Object.entries(data.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b)=>b[1]-a[1])[0];
     const topLabel = topEntry ? (d.byKey[topEntry[0]]?.label || topEntry[0]) : '—';
     const utilTotal = Object.entries(data.byKey).filter(([k]) => UTILITY_KEYS.has(k) && k !== '__heartbeat__').reduce((s,[,v]) => s+v, 0);
-    // Last active: use filtered event ts OR fall back to all-time last
-    const lastEventAll = d.recentEvents.find(e => e.user === user && e.key !== '__heartbeat__');
-    const lastTs = data.lastEvent || (lastEventAll ? lastEventAll.ts : null);
-    return { user, color, data, topLabel, utilTotal, lastTs, total: data.total };
-  });
-
-  // Sort
-  rows.sort((a,b) => {
-    let va, vb;
-    if (userSortCol==='name') { va=a.user; vb=b.user; return userSortDir*(va<vb?-1:va>vb?1:0); }
-    if (userSortCol==='total') { return userSortDir*(a.total-b.total); }
-    if (userSortCol==='util') { return userSortDir*(a.utilTotal-b.utilTotal); }
-    if (userSortCol==='last') { return userSortDir*((a.lastTs||'') < (b.lastTs||'') ? -1 : 1); }
-    return 0;
-  });
-
-  rows.forEach(({ user, color, topLabel, utilTotal, lastTs, total }) => {
-    const initials = user.slice(0,2).toUpperCase();
+    const lastEvent = d.recentEvents.find(e => e.user === user);
+    const lastActive = lastEvent ? new Date(lastEvent.ts).toLocaleDateString('en-AU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '—';
     const online = heartbeatData[user]?.online;
-    const killed = killedUsers[user];
-    const lastActive = lastTs ? new Date(lastTs).toLocaleDateString('en-AU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : 'Never';
-    const statusPill = online
-      ? `<span class="status-pill online"><span class="pill-dot online"></span>Online</span>`
-      : (lastTs ? `<span class="status-pill offline"><span class="pill-dot"></span>${timeAgo(new Date(lastTs))}</span>` : `<span class="status-pill never"><span class="pill-dot"></span>Never</span>`);
+    const firstSeenTs = firstSeenData[user];
+    const firstSeen = firstSeenTs ? new Date(firstSeenTs).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) : '—';
+    const userVersion = heartbeatData[user]?.version || null;
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><div class="user-badge"><div class="user-avatar" style="background:${color}22;color:${color}">${escH(initials)}</div>${escH(user)}${killed ? ' <span class="kill-switch-badge killed">⛔ Disabled</span>' : ''}</div></td>
-      <td style="font-family:var(--mono)">${total.toLocaleString()}</td>
-      <td style="color:var(--muted2);font-size:0.78rem">${escH(topLabel)}</td>
+      <td><div class="user-badge"><div class="user-avatar" style="background:${color}22;color:${color}">${escH(initials)}</div>${escH(user)}${online ? ' <span style="color:var(--green);font-size:0.65rem">● online</span>' : ''}</div></td>
+      <td style="font-family:var(--mono)">${(data.total - (data.byKey['__heartbeat__']||0)).toLocaleString()}</td>
+      <td style="color:var(--muted2)">${escH(topLabel)}</td>
       <td style="font-family:var(--mono);color:var(--muted2)">${utilTotal}</td>
-      <td style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">${lastActive}</td>
-      <td>${statusPill}</td>`;
+      <td>${userVersion ? `<span class="version-badge ${userVersion === CURRENT_VERSION ? 'current' : 'outdated'}">${escH(userVersion)}</span>` : '<span class="version-badge unknown">—</span>'}</td>
+      <td style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">${firstSeen}</td>
+      <td style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">${lastActive}</td>`;
     tr.addEventListener('click', () => drillIntoUser(user));
     tbody.appendChild(tr);
   });
 
-  // Sort headers
-  document.querySelectorAll('#userTable th[data-sort]').forEach(th => {
-    th.classList.toggle('sorted', th.dataset.sort === userSortCol);
-    const arrow = th.querySelector('.sort-arrow');
-    if (arrow && th.dataset.sort === userSortCol) arrow.textContent = userSortDir === 1 ? '↑' : '↓';
-    else if (arrow) arrow.textContent = '↕';
-  });
+  renderBarChart(d, null);
+  renderDayChart(d, null);
+  renderFeed(d.recentEvents, null);
 }
-
-// Table sort
-document.querySelectorAll('#userTable th[data-sort]').forEach(th => {
-  th.addEventListener('click', () => {
-    if (userSortCol === th.dataset.sort) userSortDir *= -1;
-    else { userSortCol = th.dataset.sort; userSortDir = -1; }
-    renderStats();
-  });
-});
 
 function renderUserDetail(user) {
   const d = statsData;
@@ -785,50 +531,71 @@ function renderUserDetail(user) {
   document.getElementById('backToAll').style.display = '';
   document.getElementById('userFilterWrap').style.display = 'none';
 
-  const range = getDateRange();
-  const userEvents = filterEvents(d.recentEvents.filter(e => e.user === user));
+  const userData = d.byUser[user] || { total: 0, byKey: {} };
+  const userEvents = d.recentEvents.filter(e => e.user === user);
   const today = new Date().toISOString().slice(0,10);
-  const todayCount = userEvents.filter(e => e.ts.slice(0,10) === today && e.key !== '__heartbeat__').length;
-  const filteredByKey = filterByKey(d.byKey, userEvents);
-  const phraseSorted = Object.entries(filteredByKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b)=>b[1].total-a[1].total);
-  const totalReal = userEvents.filter(e => e.key !== '__heartbeat__').length;
+  const todayCount = userEvents.filter(e => e.ts.slice(0,10) === today).length;
+  const phraseSorted = Object.entries(userData.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b)=>b[1]-a[1]);
+  const totalReal = (userData.total || 0) - (userData.byKey['__heartbeat__'] || 0);
 
   document.getElementById('statTotal').textContent = totalReal.toLocaleString();
   document.getElementById('statUsers').textContent = '—';
   document.getElementById('statToday').textContent = todayCount;
   document.getElementById('statTodayDate').textContent = today;
   if (phraseSorted.length) {
-    document.getElementById('statTop').textContent      = phraseSorted[0][1].label;
-    document.getElementById('statTopCount').textContent = phraseSorted[0][1].total.toLocaleString() + ' uses';
+    document.getElementById('statTop').textContent      = d.byKey[phraseSorted[0][0]]?.label || phraseSorted[0][0];
+    document.getElementById('statTopCount').textContent = phraseSorted[0][1].toLocaleString() + ' uses';
   }
 
-  const fakeD = { byKey: filteredByKey, byDay: buildByDay(userEvents), recentEvents: userEvents };
+  // Build a fake per-user byKey for the bar charts
+  const userByKey = {};
+  Object.entries(userData.byKey).forEach(([k, count]) => {
+    userByKey[k] = { label: d.byKey[k]?.label || k, total: count, byUser: {} };
+  });
+  const fakeD = { byKey: userByKey, byDay: buildUserByDay(userEvents), recentEvents: userEvents };
   renderBarChart(fakeD, user);
   renderDayChart(fakeD, user);
   renderFeed(userEvents, user);
 }
 
-function drillIntoUser(user) { selectedUser = user; renderStats(); }
-document.getElementById('backToAll').addEventListener('click', () => { selectedUser = null; renderStats(); });
+function buildUserByDay(events) {
+  const byDay = {};
+  events.forEach(e => { const d = e.ts.slice(0,10); byDay[d] = (byDay[d]||0)+1; });
+  return byDay;
+}
+
+function drillIntoUser(user) {
+  selectedUser = user;
+  renderStats();
+}
+
+document.getElementById('backToAll').addEventListener('click', () => {
+  selectedUser = null;
+  renderStats();
+});
 
 function renderBarChart(d, user) {
   const phraseChart = document.getElementById('phraseBarChart');
   const utilChart   = document.getElementById('utilBarChart');
   phraseChart.innerHTML = ''; utilChart.innerHTML = '';
+
   const phrases = Object.entries(d.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b)=>b[1].total-a[1].total);
   const utils   = Object.entries(d.byKey).filter(([k]) => UTILITY_KEYS.has(k) && k !== '__heartbeat__').sort((a,b)=>b[1].total-a[1].total);
+
   document.getElementById('barChartTitle').textContent  = user ? `${user} — Phrase usage` : 'Phrase usage — all users';
   document.getElementById('utilChartTitle').textContent = user ? `${user} — Utility hotkeys` : 'Utility hotkeys — all users';
+
   const maxP = phrases[0]?.[1].total || 1;
   phrases.slice(0,15).forEach(([key, {label, total}]) => {
     phraseChart.innerHTML += `<div class="bar-row"><div class="bar-label">${escH(label)}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(total/maxP*100)}%"></div></div><div class="bar-count">${total}</div></div>`;
   });
-  if (!phrases.length) phraseChart.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">No phrase data for this range</div>';
+  if (!phrases.length) phraseChart.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">No phrase data yet</div>';
+
   const maxU = utils[0]?.[1].total || 1;
   utils.forEach(([key, {label, total}]) => {
     utilChart.innerHTML += `<div class="bar-row"><div class="bar-label" style="color:var(--blue)">${escH(label)}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(total/maxU*100)}%;background:var(--blue)"></div></div><div class="bar-count">${total}</div></div>`;
   });
-  if (!utils.length) utilChart.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">No utility data for this range</div>';
+  if (!utils.length) utilChart.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">No utility data yet</div>';
 }
 
 function renderDayChart(d, user) {
@@ -843,7 +610,7 @@ function renderDayChart(d, user) {
   const maxDay = Math.max(...days.map(day => d.byDay[day]||0), 1);
   days.forEach(day => {
     const count = d.byDay[day]||0;
-    const pct   = Math.round((count/maxDay)*100);
+    const pct = Math.round((count/maxDay)*100);
     el.innerHTML += `<div class="day-bar-wrap"><div class="day-bar" style="height:${Math.max(pct,2)}%" data-tip="${day}: ${count}"></div><div class="day-label">${day.slice(8)==='01'||day===days[0]||day===days[29]?day.slice(5):''}</div></div>`;
   });
 }
@@ -851,9 +618,8 @@ function renderDayChart(d, user) {
 function renderFeed(events, user) {
   const el = document.getElementById('activityFeed');
   el.innerHTML = '';
-  document.getElementById('feedFilterNote').textContent = getRangeLabel() !== 'All time' ? getRangeLabel() : '';
-  const filtered = events.filter(e => e.key !== '__heartbeat__').slice(0,50);
-  if (!filtered.length) { el.innerHTML = '<div style="color:var(--muted);font-size:0.82rem;padding:8px 0">No activity for this range</div>'; return; }
+  const filtered = events.filter(e => e.key !== '__heartbeat__').slice(0, 50);
+  if (!filtered.length) { el.innerHTML = '<div style="color:var(--muted);font-size:0.82rem;padding:8px 0">No activity yet</div>'; return; }
   filtered.forEach(ev => {
     const t = new Date(ev.ts);
     const timeStr = t.toLocaleDateString('en-AU',{day:'numeric',month:'short'}) + ' ' + t.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'});
@@ -865,256 +631,26 @@ function renderFeed(events, user) {
 function renderOnline() {
   const el = document.getElementById('onlineGrid');
   const entries = Object.entries(heartbeatData).sort((a,b) => (b[1].online?1:0)-(a[1].online?1:0));
-  if (!entries.length) { el.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">No heartbeat data yet</div>'; return; }
+  if (!entries.length) { el.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">No heartbeat data yet — AHK script will populate this</div>'; return; }
   el.innerHTML = '';
-  entries.forEach(([user, {online, lastSeen}]) => {
+  entries.forEach(([user, data]) => {
+    const { online, lastSeen, version, exitPending } = data;
     const ago = lastSeen ? timeAgo(new Date(lastSeen)) : 'never';
-    el.innerHTML += `<div class="online-chip${online?' active':''}"><div class="online-dot${online?' active':''}"></div><strong>${escH(user)}</strong><span class="online-time">${online ? 'online' : ago}</span></div>`;
+    const vBadge = version
+      ? `<span class="version-badge ${version === CURRENT_VERSION ? 'current' : 'outdated'}">${escH(version)}</span>`
+      : `<span class="version-badge unknown">unknown</span>`;
+    const exitDot = exitPending ? `<span class="exit-pending-dot" title="Exit pending"></span>` : '';
+    el.innerHTML += `<div class="online-chip${online?' active':''}"><div class="online-dot${online?' active':''}"></div><strong>${escH(user)}</strong>${vBadge}${exitDot}<span class="online-time">${online ? 'online' : ago}</span></div>`;
   });
 }
 
 function timeAgo(date) {
-  const s = Math.floor((Date.now()-date)/1000);
+  const s = Math.floor((Date.now() - date)/1000);
   if (s < 60) return `${s}s ago`;
   if (s < 3600) return `${Math.floor(s/60)}m ago`;
   if (s < 86400) return `${Math.floor(s/3600)}h ago`;
   return `${Math.floor(s/86400)}d ago`;
 }
-
-// ── Users Page ─────────────────────────────────────────────────────────────
-function renderAllUsersTable() {
-  if (!statsData) return;
-  const d = statsData;
-  const tbody = document.getElementById('allUsersBody');
-  tbody.innerHTML = '';
-
-  // All known users (union of stats users + heartbeat users)
-  const allKnown = new Set([...Object.keys(d.byUser), ...Object.keys(heartbeatData)]);
-
-  let rows = [...allKnown].map(user => {
-    const userData = d.byUser[user] || { total:0, byKey:{} };
-    const hb       = heartbeatData[user] || {};
-    const online   = hb.online || false;
-    const lastSeen = hb.lastSeen;
-    const lastEvent = d.recentEvents.find(e => e.user===user && e.key!=='__heartbeat__');
-    const lastActive = lastSeen || (lastEvent ? lastEvent.ts : null);
-    const total    = (userData.total||0) - (userData.byKey['__heartbeat__']||0);
-    const killed   = killedUsers[user] || false;
-    return { user, online, lastActive, total, killed };
-  });
-
-  // Filter
-  if (userFilter === 'online') rows = rows.filter(r => r.online);
-  if (userFilter === 'killed') rows = rows.filter(r => r.killed);
-  if (userSearchQ) rows = rows.filter(r => r.user.toLowerCase().includes(userSearchQ.toLowerCase()));
-
-  // Sort
-  rows.sort((a,b) => {
-    if (allUsersSortCol==='name') return allUsersSortDir*(a.user<b.user?-1:a.user>b.user?1:0);
-    if (allUsersSortCol==='total') return allUsersSortDir*(a.total-b.total);
-    if (allUsersSortCol==='last') return allUsersSortDir*((a.lastActive||'') < (b.lastActive||'') ? -1 : 1);
-    return 0;
-  });
-
-  if (!rows.length) {
-    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="icon">👤</div>No users found</div></td></tr>`;
-    return;
-  }
-
-  rows.forEach(({ user, online, lastActive, total, killed }) => {
-    const i = [...allKnown].indexOf(user);
-    const color = USER_COLORS[i % USER_COLORS.length];
-    const initials = user.slice(0,2).toUpperCase();
-    const lastStr = lastActive ? new Date(lastActive).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : 'Never';
-    const statusPill = online
-      ? `<span class="status-pill online"><span class="pill-dot online"></span>Online now</span>`
-      : (lastActive
-          ? `<span class="status-pill offline"><span class="pill-dot"></span>Last seen ${timeAgo(new Date(lastActive))}</span>`
-          : `<span class="status-pill never"><span class="pill-dot"></span>Never seen</span>`);
-    const killBtnClass = killed ? 'enabled-state' : 'disabled-state';
-    const killBtnLabel = killed ? '✓ Enable' : '⛔ Disable';
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><div class="user-badge"><div class="user-avatar" style="background:${color}22;color:${color}">${escH(initials)}</div>${escH(user)}</div></td>
-      <td>${statusPill}</td>
-      <td style="font-family:var(--mono);font-size:0.75rem;color:var(--muted2)">${lastStr}</td>
-      <td style="font-family:var(--mono)">${total.toLocaleString()}</td>
-      <td>${killed ? '<span class="kill-switch-badge killed">⛔ Disabled</span>' : '<span style="font-family:var(--mono);font-size:0.72rem;color:var(--green)">✓ Active</span>'}</td>
-      <td style="display:flex;gap:6px;align-items:center;">
-        <button class="btn btn-ghost btn-sm view-user-btn" data-user="${escH(user)}">View</button>
-        <button class="kill-btn ${killBtnClass} kill-toggle-btn" data-user="${escH(user)}" data-killed="${killed}">${killBtnLabel}</button>
-      </td>`;
-    tbody.appendChild(tr);
-  });
-
-  // Kill toggle handlers
-  document.querySelectorAll('.kill-toggle-btn').forEach(btn => {
-    btn.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      const user   = btn.dataset.user;
-      const killed = btn.dataset.killed === 'true';
-      if (!killed) {
-        const yes = await confirm(`Disable ${user}?`, `This will mark ${user} as disabled. Their AHK script should check this endpoint and stop responding. They can be re-enabled at any time.`, 'Disable', 'var(--red)');
-        if (!yes) return;
-      }
-      const newKilled = !killed;
-      killedUsers[user] = newKilled;
-      localStorage.setItem('obs-killed', JSON.stringify(killedUsers));
-      // Try to sync to server
-      try { await api('POST', '/user/kill', { user, killed: newKilled }); } catch(e) {}
-      toast(newKilled ? `${user} disabled` : `${user} re-enabled`, newKilled ? 'err' : 'ok');
-      renderAllUsersTable();
-      renderStats();
-    });
-  });
-
-  // View user detail
-  document.querySelectorAll('.view-user-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      showUserDetail(btn.dataset.user);
-    });
-  });
-}
-
-function showUserDetail(user) {
-  if (!statsData) return;
-  document.getElementById('usersListView').style.display = 'none';
-  document.getElementById('userDetailView').style.display = '';
-  document.getElementById('usersBackBtn').style.display = '';
-  document.getElementById('usersPageTitle').textContent = user;
-  document.getElementById('usersPageSub').textContent = 'Individual breakdown';
-
-  const d = statsData;
-  const userData = d.byUser[user] || { total:0, byKey:{} };
-  const hb       = heartbeatData[user] || {};
-  const events   = d.recentEvents.filter(e => e.user === user && e.key !== '__heartbeat__');
-  const color    = USER_COLORS[Object.keys(d.byUser).indexOf(user) % USER_COLORS.length] || USER_COLORS[0];
-  const initials = user.slice(0,2).toUpperCase();
-  const online   = hb.online;
-  const lastSeen = hb.lastSeen;
-  const killed   = killedUsers[user];
-  const today    = new Date().toISOString().slice(0,10);
-  const todayC   = events.filter(e => e.ts.slice(0,10) === today).length;
-  const total    = (userData.total||0) - (userData.byKey['__heartbeat__']||0);
-  const lastActive = lastSeen || (events[0] ? events[0].ts : null);
-
-  // Header
-  const statusPill = online
-    ? `<span class="status-pill online" style="font-size:0.78rem"><span class="pill-dot online"></span>Online now</span>`
-    : (lastActive
-        ? `<span class="status-pill offline" style="font-size:0.78rem"><span class="pill-dot"></span>Last seen ${timeAgo(new Date(lastActive))}</span>`
-        : `<span class="status-pill never" style="font-size:0.78rem"><span class="pill-dot"></span>Never seen</span>`);
-  const killBtnClass = killed ? 'enabled-state' : 'disabled-state';
-  const killBtnLabel = killed ? '✓ Enable access' : '⛔ Disable access';
-  document.getElementById('userDetailHeader').innerHTML = `
-    <div class="user-detail-avatar" style="background:${color}22;color:${color}">${escH(initials)}</div>
-    <div>
-      <div class="user-detail-name">${escH(user)}</div>
-      <div class="user-detail-meta">
-        ${statusPill}
-        ${killed ? '<span class="kill-switch-badge killed">⛔ Disabled</span>' : ''}
-        <button class="kill-btn ${killBtnClass}" id="detailKillBtn" data-user="${escH(user)}" data-killed="${killed||false}">${killBtnLabel}</button>
-      </div>
-    </div>`;
-
-  // Kill btn in detail view
-  document.getElementById('detailKillBtn').addEventListener('click', async () => {
-    const btn = document.getElementById('detailKillBtn');
-    const isKilled = btn.dataset.killed === 'true';
-    if (!isKilled) {
-      const yes = await confirm(`Disable ${user}?`, `Mark ${user} as disabled. Re-enable anytime.`, 'Disable', 'var(--red)');
-      if (!yes) return;
-    }
-    killedUsers[user] = !isKilled;
-    localStorage.setItem('obs-killed', JSON.stringify(killedUsers));
-    try { await api('POST', '/user/kill', { user, killed: !isKilled }); } catch(e) {}
-    toast(!isKilled ? `${user} disabled` : `${user} re-enabled`, !isKilled ? 'err' : 'ok');
-    showUserDetail(user); // re-render
-    renderAllUsersTable();
-  });
-
-  // Stat cards
-  document.getElementById('userDetailStatGrid').innerHTML = `
-    <div class="stat-card"><div class="stat-label">Total Uses</div><div class="stat-value">${total.toLocaleString()}</div></div>
-    <div class="stat-card blue"><div class="stat-label">Today</div><div class="stat-value">${todayC}</div></div>
-    <div class="stat-card green"><div class="stat-label">Last Login</div><div class="stat-value" style="font-size:1rem;margin-top:8px">${lastActive ? new Date(lastActive).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) : 'Never'}</div></div>
-    <div class="stat-card yellow"><div class="stat-label">Last Login Time</div><div class="stat-value" style="font-size:1rem;margin-top:8px">${lastActive ? new Date(lastActive).toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'}) : '—'}</div></div>`;
-
-  // Day chart
-  const dayEl = document.getElementById('userDetailDayChart');
-  dayEl.innerHTML = '';
-  const days = [];
-  for (let i=29;i>=0;i--) { const dt=new Date(); dt.setDate(dt.getDate()-i); days.push(dt.toISOString().slice(0,10)); }
-  const byDay = buildByDay(events);
-  const maxDay = Math.max(...days.map(day => byDay[day]||0), 1);
-  days.forEach(day => {
-    const count = byDay[day]||0;
-    const pct = Math.round((count/maxDay)*100);
-    dayEl.innerHTML += `<div class="day-bar-wrap"><div class="day-bar" style="height:${Math.max(pct,2)}%" data-tip="${day}: ${count}"></div><div class="day-label">${day.slice(8)==='01'||day===days[0]||day===days[29]?day.slice(5):''}</div></div>`;
-  });
-
-  // Phrase chart
-  const phraseEl = document.getElementById('userDetailPhraseChart');
-  phraseEl.innerHTML = '';
-  const phraseMap = {};
-  events.filter(e=>!UTILITY_KEYS.has(e.key)).forEach(e => { phraseMap[e.key] = (phraseMap[e.key]||0)+1; });
-  const phraseArr = Object.entries(phraseMap).sort((a,b)=>b[1]-a[1]);
-  const maxP = phraseArr[0]?.[1] || 1;
-  phraseArr.slice(0,12).forEach(([key, count]) => {
-    const label = d.byKey[key]?.label || key;
-    phraseEl.innerHTML += `<div class="bar-row"><div class="bar-label">${escH(label)}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(count/maxP*100)}%"></div></div><div class="bar-count">${count}</div></div>`;
-  });
-  if (!phraseArr.length) phraseEl.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">No phrase data</div>';
-
-  // Feed
-  const feedEl = document.getElementById('userDetailFeed');
-  feedEl.innerHTML = '';
-  const recent = events.slice(0,30);
-  if (!recent.length) { feedEl.innerHTML = '<div style="color:var(--muted);font-size:0.82rem;padding:8px 0">No activity yet</div>'; return; }
-  recent.forEach(ev => {
-    const t = new Date(ev.ts);
-    const timeStr = t.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) + ' ' + t.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'});
-    const isUtil = UTILITY_KEYS.has(ev.key);
-    feedEl.innerHTML += `<div class="feed-item" style="grid-template-columns:140px 1fr"><div class="feed-time">${timeStr}</div><div><span class="feed-key${isUtil?' utility':''}">${escH(ev.key)}</span> <span style="color:var(--muted2)">${escH(ev.label)}</span></div></div>`;
-  });
-}
-
-document.getElementById('usersBackBtn').addEventListener('click', () => {
-  document.getElementById('usersListView').style.display = '';
-  document.getElementById('userDetailView').style.display = 'none';
-  document.getElementById('usersBackBtn').style.display = 'none';
-  document.getElementById('usersPageTitle').textContent = 'Users';
-  document.getElementById('usersPageSub').textContent = 'All users and their access status';
-});
-
-// Users filter chips
-document.querySelectorAll('[data-ufilter]').forEach(chip => {
-  chip.addEventListener('click', () => {
-    document.querySelectorAll('[data-ufilter]').forEach(c => c.classList.remove('active'));
-    chip.classList.add('active');
-    userFilter = chip.dataset.ufilter;
-    renderAllUsersTable();
-  });
-});
-
-document.getElementById('userSearch').addEventListener('input', e => {
-  userSearchQ = e.target.value;
-  renderAllUsersTable();
-});
-
-document.querySelectorAll('#allUsersTable th[data-usort]').forEach(th => {
-  th.addEventListener('click', () => {
-    if (allUsersSortCol===th.dataset.usort) allUsersSortDir*=-1;
-    else { allUsersSortCol=th.dataset.usort; allUsersSortDir=-1; }
-    document.querySelectorAll('#allUsersTable th[data-usort]').forEach(t => {
-      t.classList.toggle('sorted', t.dataset.usort===allUsersSortCol);
-      const a = t.querySelector('.sort-arrow');
-      if (a) a.textContent = t.dataset.usort===allUsersSortCol ? (allUsersSortDir===1?'↑':'↓') : '↕';
-    });
-    renderAllUsersTable();
-  });
-});
 
 // ── Phrases ────────────────────────────────────────────────────────────────
 async function loadPhrases() {
@@ -1153,7 +689,7 @@ function addPhraseRow(container, key='', label='', text='') {
 
 function collectPhrases(listEl) {
   return [...listEl.querySelectorAll('.phrase-row')].map(row => {
-    const key   = row.querySelector('.phrase-key-badge').dataset.key;
+    const key = row.querySelector('.phrase-key-badge').dataset.key;
     const label = row.querySelectorAll('.phrase-input')[0].value.trim();
     const text  = row.querySelectorAll('.phrase-input')[1].value.replace(/\\n/g,'\n');
     return (key && label) ? { key, label, text } : null;
@@ -1196,9 +732,9 @@ function renderUserChips() {
 async function selectOverrideUser(user) {
   selectedOverrideUser = user; renderUserChips();
   try {
-    const res  = await api('GET', `/phrases?user=${encodeURIComponent(user)}`);
+    const res = await api('GET', `/phrases?user=${encodeURIComponent(user)}`);
     const data = await res.json();
-    const ol   = document.getElementById('overrideList'); ol.innerHTML = '';
+    const ol = document.getElementById('overrideList'); ol.innerHTML = '';
     (data.overrides||[]).forEach(p => addPhraseRow(ol, p.key, p.label, p.text));
   } catch(e) {}
 }
@@ -1236,14 +772,198 @@ document.getElementById('cfgSaveBtn').addEventListener('click', async () => {
 document.getElementById('cfgTestBtn').addEventListener('click', async () => {
   const url = document.getElementById('cfgUrl').value.trim().replace(/\/$/,'');
   const pw  = document.getElementById('cfgPw').value.trim();
-  const ok  = await tryConnect(url,pw);
-  toast(ok ? 'Server reachable!' : 'Cannot reach server', ok?'ok':'err');
+  toast(await tryConnect(url,pw) ? 'Server reachable!' : 'Cannot reach server', await tryConnect(url,pw)?'ok':'err');
 });
 
-function escH(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escH(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+
+// ── Force Update ────────────────────────────────────────────────────────────
+document.getElementById('forceUpdateBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('forceUpdateBtn');
+
+  // Count online users to give helpful feedback
+  const onlineUsers = Object.entries(heartbeatData).filter(([,v]) => v.online).map(([u]) => u);
+  const total = Object.keys(heartbeatData).length;
+
+  if (total === 0) {
+    toast('No users have connected yet', 'err');
+    return;
+  }
+
+  const msg = onlineUsers.length
+    ? `Close all scripts for update?\n\nCurrently online: ${onlineUsers.join(', ')}\n\nThey'll see a message and exit within 10 min. Offline users will exit on next launch.\n\nThey will need to reopen the program themselves.`
+    : `Close all scripts for update?\n\n${total} user(s) flagged — they'll exit on next launch.\n\nThey will need to reopen the program themselves.`;
+
+  if (!window.confirm(msg)) return;
+
+  btn.textContent = '⏳ Flagging…';
+  btn.disabled = true;
+
+  try {
+    const res = await api('POST', '/exit/all', {});
+    if (res.ok) {
+      const data = await res.json();
+      const count = data.flagged?.length ?? '?';
+      toast(`Exit flagged for ${count} user(s) — they\'ll close within 10 min`, 'ok');
+      btn.textContent = '✓ Sent!';
+      setTimeout(() => {
+        btn.textContent = '⏹ Close all for update';
+        btn.disabled = false;
+      }, 4000);
+    } else {
+      throw new Error('Server returned ' + res.status);
+    }
+  } catch(e) {
+    toast('Failed to reach server', 'err');
+    btn.textContent = '⏹ Close all for update';
+    btn.disabled = false;
+  }
+});
+
+// ── CSV Export ─────────────────────────────────────────────────────────────
+document.getElementById('exportCsvBtn').addEventListener('click', () => {
+  if (!statsData) { toast('No data loaded yet', 'err'); return; }
+  const d = statsData;
+  const rows = [['Timestamp','User','Key','Label','Type']];
+  // All events newest-first
+  const events = [...d.recentEvents].filter(e => e.key !== '__heartbeat__');
+  events.forEach(e => {
+    const type = UTILITY_KEYS.has(e.key) ? 'Utility' : 'Phrase';
+    rows.push([e.ts, e.user, e.key, e.label, type]);
+  });
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('
+');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = Object.assign(document.createElement('a'), { href: url, download: `obs-stats-${new Date().toISOString().slice(0,10)}.csv` });
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('CSV downloaded!');
+});
+
+// ── Weekly Summary ──────────────────────────────────────────────────────────
+document.getElementById('weeklySummaryBtn').addEventListener('click', () => {
+  if (!statsData) { toast('No data loaded yet', 'err'); return; }
+  const d = statsData;
+
+  // Work out this week Mon–Sun
+  const now   = new Date();
+  const dow   = now.getDay(); // 0=Sun
+  const msSinceMonday = ((dow + 6) % 7) * 86400000;
+  const monday = new Date(now.getTime() - msSinceMonday);
+  monday.setHours(0,0,0,0);
+  const sunday = new Date(monday.getTime() + 6 * 86400000);
+  sunday.setHours(23,59,59,999);
+  const fromStr = monday.toISOString().slice(0,10);
+  const toStr   = sunday.toISOString().slice(0,10);
+
+  const weekEvents = d.recentEvents.filter(e => {
+    const day = e.ts.slice(0,10);
+    return day >= fromStr && day <= toStr && e.key !== '__heartbeat__';
+  });
+
+  if (!weekEvents.length) {
+    document.getElementById('weeklySummaryText').value = 'No activity recorded this week.';
+    document.getElementById('weeklyModal').style.display = 'flex';
+    return;
+  }
+
+  // Total phrase uses (non-utility)
+  const phraseEvents = weekEvents.filter(e => !UTILITY_KEYS.has(e.key));
+  const utilEvents   = weekEvents.filter(e => UTILITY_KEYS.has(e.key));
+
+  // Per-user breakdown
+  const byUser = {};
+  phraseEvents.forEach(e => {
+    if (!byUser[e.user]) byUser[e.user] = { total:0, byKey:{} };
+    byUser[e.user].total++;
+    byUser[e.user].byKey[e.key] = (byUser[e.user].byKey[e.key]||0)+1;
+  });
+
+  // Top phrases overall
+  const phraseCount = {};
+  phraseEvents.forEach(e => {
+    phraseCount[e.key] = phraseCount[e.key] || { label: d.byKey[e.key]?.label||e.key, count:0 };
+    phraseCount[e.key].count++;
+  });
+  const topPhrases = Object.values(phraseCount).sort((a,b)=>b.count-a.count).slice(0,5);
+
+  // Days active
+  const daysSet = new Set(weekEvents.map(e => e.ts.slice(0,10)));
+
+  // Build summary text
+  const weekLabel = monday.toLocaleDateString('en-AU',{day:'numeric',month:'long'}) + ' – ' + sunday.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+  let out = `LSO WEEKLY SUMMARY — ${weekLabel}
+`;
+  out += '='.repeat(52) + '
+
+';
+  out += `Total phrase uses:  ${phraseEvents.length}
+`;
+  out += `Utility hotkeys:    ${utilEvents.length}
+`;
+  out += `Active LSOs:        ${Object.keys(byUser).length}
+`;
+  out += `Days with activity: ${daysSet.size}
+
+`;
+
+  out += 'TOP PHRASES
+' + '-'.repeat(30) + '
+';
+  topPhrases.forEach((p,i) => {
+    out += `  ${i+1}. ${p.label.padEnd(28)} ${p.count}x
+`;
+  });
+
+  out += '
+PER-USER BREAKDOWN
+' + '-'.repeat(30) + '
+';
+  Object.entries(byUser).sort((a,b)=>b[1].total-a[1].total).forEach(([user, data]) => {
+    const topKey = Object.entries(data.byKey).sort((a,b)=>b[1]-a[1])[0];
+    const topLabel = topKey ? (d.byKey[topKey[0]]?.label || topKey[0]) : '—';
+    out += `  ${user.padEnd(16)} ${String(data.total).padStart(3)} uses  · top: ${topLabel}
+`;
+  });
+
+  out += '
+FIRST-USE DATES
+' + '-'.repeat(30) + '
+';
+  Object.entries(firstSeenData).sort((a,b)=>a[1]<b[1]?-1:1).forEach(([user, ts]) => {
+    const dateStr = new Date(ts).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
+    out += `  ${user.padEnd(16)} ${dateStr}
+`;
+  });
+
+  document.getElementById('weeklySummaryText').value = out;
+  document.getElementById('weeklyModal').style.display = 'flex';
+});
+
+document.getElementById('weeklyCloseBtn').addEventListener('click', () => {
+  document.getElementById('weeklyModal').style.display = 'none';
+});
+
+document.getElementById('weeklyCopyBtn').addEventListener('click', () => {
+  const text = document.getElementById('weeklySummaryText').value;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('weeklyCopyBtn');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+});
+
+// Close modal on background click
+document.getElementById('weeklyModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('weeklyModal'))
+    document.getElementById('weeklyModal').style.display = 'none';
+});
 
 // ── Auto refresh ───────────────────────────────────────────────────────────
-setInterval(() => { loadStats(); loadHeartbeats(); }, 30000);
+setInterval(loadStats, 30000);
+setInterval(loadHeartbeats, 30000);
 
 // ── Init ───────────────────────────────────────────────────────────────────
 if (serverUrl && adminPw) bootApp();
