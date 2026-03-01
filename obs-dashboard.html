@@ -295,7 +295,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
       <div class="page-header"><div class="page-header-left"><div class="page-title">Configuration</div><div class="page-sub">Server connection and admin settings</div></div></div>
       <div class="section-card">
         <div class="section-card-title">Server</div>
-        <div class="config-field"><label class="config-label">Server URL</label><div class="row"><input class="input" id="cfgUrl" type="text" /><button class="btn btn-secondary" id="cfgTestBtn">Test</button></div></div>
+        <div class="config-field"><label class="config-label">Server URL</label><div class="row"><input class="input" id="cfgUrl" type="text" placeholder="https://timetable-server-r6nb.onrender.com" /><button class="btn btn-secondary" id="cfgTestBtn">Test</button></div></div>
         <div class="config-field"><label class="config-label">Admin Password</label><div class="row"><input class="input" id="cfgPw" type="password" /><button class="btn btn-primary" id="cfgSaveBtn">Save & Connect</button></div></div>
         <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted);margin-top:8px" id="cfgStatus"></div>
       </div>
@@ -312,7 +312,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
     <p>Enter your server URL and admin password to continue.</p>
     <div class="config-field" style="margin-bottom:12px">
       <label class="config-label">Server URL</label>
-      <input class="input" id="loginUrl" type="text" />
+      <input class="input" id="loginUrl" type="text" placeholder="https://timetable-server-r6nb.onrender.com" />
     </div>
     <div class="login-row">
       <input class="input" id="loginPw" type="password" placeholder="Admin password" />
@@ -426,6 +426,11 @@ document.querySelectorAll('.nav-item').forEach(item => {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     item.classList.add('active');
     document.getElementById(item.dataset.page).classList.add('active');
+    // Keep config fields in sync with current values
+    if (item.dataset.page === 'configPage') {
+      document.getElementById('cfgUrl').value = serverUrl || localStorage.getItem('obs-server') || '';
+      document.getElementById('cfgPw').value  = adminPw  || localStorage.getItem('obs-pw')     || '';
+    }
   });
 });
 
