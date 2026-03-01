@@ -147,6 +147,26 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .cell-data.flash-copy { background:var(--soft); }
 .cell-data.flash-copy::after { content:'✓'; position:absolute; top:7px; right:9px; font-size:0.7rem; color:#22a85a; }
 .cell-data.empty { cursor:default; }
+
+/* ── Email Composer ── */
+.email-section { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:22px; margin-bottom:20px; }
+.email-preview-wrap { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:18px 22px; margin-bottom:14px; font-family:'DM Mono',monospace; font-size:0.82rem; line-height:1.9; color:var(--text); white-space:pre-wrap; min-height:160px; }
+.email-period-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
+.period-label { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:4px; }
+.email-period-input { background:var(--surface2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'Outfit',sans-serif; font-size:0.85rem; padding:8px 11px; outline:none; transition:border-color .2s; width:100%; }
+.email-period-input:focus { border-color:var(--text); }
+.email-copy-btn { background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.88rem; font-weight:700; padding:12px 28px; border-radius:10px; cursor:pointer; transition:opacity .15s,background .2s; width:100%; }
+.email-copy-btn:hover { opacity:0.82; }
+.email-copy-btn.copied { background:#22a85a; color:#fff; }
+.email-two-col { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+@media(max-width:600px) { .email-two-col { grid-template-columns:1fr; } .email-period-grid { grid-template-columns:repeat(2,1fr); } }
+.email-history-list { display:flex; flex-direction:column; gap:6px; max-height:200px; overflow-y:auto; }
+.email-history-item { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; transition:border-color .15s; }
+.email-history-item:hover { border-color:var(--text); }
+.email-history-date { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); flex-shrink:0; }
+.email-history-preview { font-size:0.78rem; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
+.email-history-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.9rem; padding:3px 6px; border-radius:5px; flex-shrink:0; }
+.email-history-del:hover { color:#e05151; background:rgba(224,81,81,0.1); }
 </style>
 </head>
 <body>
@@ -159,6 +179,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   <nav class="tab-bar">
     <button class="tab-btn active" data-tab="timetableTab">📋 Timetable</button>
     <button class="tab-btn" data-tab="settingsTab">⚙ Settings</button>
+    <button class="tab-btn" data-tab="emailTab">✉ Email</button>
   </nav>
   <div class="header-right">
     <div class="site-day" id="todayLabel"></div>
@@ -328,6 +349,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.classList.add('active');
     document.getElementById(btn.dataset.tab).classList.add('active');
     if (btn.dataset.tab === 'settingsTab') { refreshColourNameList(); renderOverrideTable(); }
+    if (btn.dataset.tab === 'emailTab') { setTimeout(initEmailTab, 50); }
   });
 });
 
@@ -710,6 +732,219 @@ function activateGroup(id){
   if(panel)panel.classList.add('active');
 }
 function flash(btn){const orig=btn.textContent;btn.textContent='✓ Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copied');},2000);}
+
+// ── Email Tab ──────────────────────────────────────────────────────────────
+const DEFAULT_EMAIL_TEMPLATE = `LSO {DATE}\tGood morning teachers,
+
+Today I will be attending and supporting the students within your classes.
+
+{PERIODS}
+Please introduce me to the students as {NAME}.
+
+I look forward to working with you today and providing effective support to our students.`;
+
+function getEmailTemplate() {
+  return localStorage.getItem('tt-email-template') || DEFAULT_EMAIL_TEMPLATE;
+}
+
+function buildPeriodsText() {
+  const lines = [];
+  for (let p = 1; p <= 6; p++) {
+    const val = document.querySelector(`.period-val[data-p="${p}"]`)?.value.trim() || '';
+    lines.push(`P${p} - ${val}`);
+  }
+  return lines.join('\n');
+}
+
+function buildEmailPreview() {
+  const name     = document.getElementById('emailDisplayName').value.trim() || '(your name)';
+  const date     = document.getElementById('emailDate').value.trim() || '';
+  const periods  = buildPeriodsText();
+  const template = getEmailTemplate();
+  return template
+    .replace('{DATE}', date)
+    .replace('{NAME}', name)
+    .replace('{PERIODS}', periods);
+}
+
+function updateEmailPreview() {
+  const el = document.getElementById('emailPreview');
+  if (el) el.textContent = buildEmailPreview();
+}
+
+function initEmailTab() {
+  const today = new Date();
+  document.getElementById('emailDate').value = today.toLocaleDateString('en-AU',{day:'2-digit',month:'2-digit',year:'2-digit'});
+  const savedName = localStorage.getItem('tt-email-name') || '';
+  document.getElementById('emailDisplayName').value = savedName;
+  document.getElementById('emailTemplate').value = getEmailTemplate();
+  updateEmailPreview();
+  renderEmailHistory();
+}
+
+document.getElementById('emailDisplayName').addEventListener('input', () => {
+  localStorage.setItem('tt-email-name', document.getElementById('emailDisplayName').value.trim());
+  updateEmailPreview();
+});
+document.querySelectorAll('.period-val').forEach(el => el.addEventListener('input', updateEmailPreview));
+
+document.getElementById('emailCopyBtn').addEventListener('click', () => {
+  const text = buildEmailPreview();
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('emailCopyBtn');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+  });
+});
+
+document.getElementById('emailSaveHistoryBtn').addEventListener('click', () => {
+  const text = buildEmailPreview();
+  const history = JSON.parse(localStorage.getItem('tt-email-history') || '[]');
+  history.unshift({ ts: new Date().toISOString(), text });
+  if (history.length > 20) history.splice(20);
+  localStorage.setItem('tt-email-history', JSON.stringify(history));
+  renderEmailHistory();
+  setStatus('emailStatus', '✓ Saved to history', 'green');
+});
+
+document.getElementById('emailClearBtn').addEventListener('click', () => {
+  document.querySelectorAll('.period-val').forEach(el => el.value = '');
+  updateEmailPreview();
+});
+
+document.getElementById('saveTemplateBtn').addEventListener('click', () => {
+  localStorage.setItem('tt-email-template', document.getElementById('emailTemplate').value);
+  updateEmailPreview();
+  setStatus('emailStatus', '✓ Template saved', 'green');
+});
+
+document.getElementById('resetTemplateBtn').addEventListener('click', () => {
+  if (!confirm('Reset to default template?')) return;
+  localStorage.removeItem('tt-email-template');
+  document.getElementById('emailTemplate').value = DEFAULT_EMAIL_TEMPLATE;
+  updateEmailPreview();
+});
+
+function renderEmailHistory() {
+  const el = document.getElementById('emailHistoryList');
+  const history = JSON.parse(localStorage.getItem('tt-email-history') || '[]');
+  if (!history.length) { el.innerHTML = '<div style="color:var(--muted);font-size:0.82rem;padding:4px 0">No saved emails yet.</div>'; return; }
+  el.innerHTML = '';
+  history.forEach((item, i) => {
+    const date = new Date(item.ts).toLocaleDateString('en-AU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+    const preview = item.text.replace(/\n/g,' ').slice(0,60) + '…';
+    const row = document.createElement('div');
+    row.className = 'email-history-item';
+    row.innerHTML = `<span class="email-history-date">${date}</span><span class="email-history-preview">${escapeHTML(preview)}</span><button class="email-history-del" title="Delete" onclick="event.stopPropagation()">✕</button>`;
+    row.addEventListener('click', e => {
+      if (e.target.classList.contains('email-history-del')) {
+        const h = JSON.parse(localStorage.getItem('tt-email-history') || '[]');
+        h.splice(i, 1);
+        localStorage.setItem('tt-email-history', JSON.stringify(h));
+        renderEmailHistory();
+        return;
+      }
+      document.getElementById('emailPreview').textContent = item.text;
+    });
+    el.appendChild(row);
+  });
+}
+
+// Init email tab whenever it's clicked
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  if (btn.dataset.tab === 'emailTab') btn.addEventListener('click', () => setTimeout(initEmailTab, 50));
+});
+initEmailTab();
+
 </script>
+<!-- ══ EMAIL TAB ══ -->
+<div class="tab-page" id="emailTab">
+  <div class="settings-page">
+
+    <!-- Composer -->
+    <div class="email-section">
+      <div class="section-title">Morning Email Composer</div>
+      <p class="section-desc">Fill in your period schedule below. The email preview updates live — copy it and paste into Outlook.</p>
+
+      <!-- Name + greeting fields -->
+      <div class="email-two-col">
+        <div class="field-group">
+          <span class="field-label">Your display name (e.g. Mr. Chew)</span>
+          <input id="emailDisplayName" class="field-input" type="text" placeholder="Mr. Chew" />
+        </div>
+        <div class="field-group">
+          <span class="field-label">Date (auto-filled today)</span>
+          <input id="emailDate" class="field-input" type="text" readonly />
+        </div>
+      </div>
+
+      <!-- Period inputs -->
+      <div class="section-title" style="margin-bottom:10px">Periods</div>
+      <div class="email-period-grid">
+        <div>
+          <div class="period-label">P1</div>
+          <input class="email-period-input period-val" data-p="1" type="text" placeholder="Class / teacher" />
+        </div>
+        <div>
+          <div class="period-label">P2</div>
+          <input class="email-period-input period-val" data-p="2" type="text" placeholder="Class / teacher" />
+        </div>
+        <div>
+          <div class="period-label">P3</div>
+          <input class="email-period-input period-val" data-p="3" type="text" placeholder="Class / teacher" />
+        </div>
+        <div>
+          <div class="period-label">P4</div>
+          <input class="email-period-input period-val" data-p="4" type="text" placeholder="Class / teacher" />
+        </div>
+        <div>
+          <div class="period-label">P5</div>
+          <input class="email-period-input period-val" data-p="5" type="text" placeholder="Class / teacher" />
+        </div>
+        <div>
+          <div class="period-label">P6</div>
+          <input class="email-period-input period-val" data-p="6" type="text" placeholder="Class / teacher" />
+        </div>
+      </div>
+
+      <!-- Live preview -->
+      <div class="section-title" style="margin-bottom:10px">Preview</div>
+      <div class="email-preview-wrap" id="emailPreview"></div>
+
+      <!-- Action buttons -->
+      <div class="btn-row">
+        <button class="email-copy-btn" id="emailCopyBtn" style="max-width:220px">📋 Copy email</button>
+        <button class="s-btn secondary" id="emailSaveHistoryBtn">💾 Save to history</button>
+        <button class="s-btn secondary" id="emailClearBtn">Clear</button>
+      </div>
+      <div class="field-status" id="emailStatus"></div>
+    </div>
+
+    <!-- Template editor -->
+    <div class="email-section">
+      <div class="section-title">Email Template</div>
+      <p class="section-desc">Customise the template. Use <code style="font-family:'DM Mono',monospace;background:var(--soft);padding:1px 5px;border-radius:4px">{DATE}</code>, <code style="font-family:'DM Mono',monospace;background:var(--soft);padding:1px 5px;border-radius:4px">{NAME}</code>, and <code style="font-family:'DM Mono',monospace;background:var(--soft);padding:1px 5px;border-radius:4px">{PERIODS}</code> as placeholders.</p>
+      <div class="field-group">
+        <textarea id="emailTemplate" class="field-input" rows="10" style="resize:vertical;font-family:'DM Mono',monospace;font-size:0.8rem;line-height:1.7"></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="s-btn green" id="saveTemplateBtn">Save template</button>
+        <button class="s-btn secondary" id="resetTemplateBtn">Reset to default</button>
+      </div>
+    </div>
+
+    <!-- Email history -->
+    <div class="email-section">
+      <div class="section-title">Sent History <span style="font-weight:400;color:var(--muted)">(saved locally)</span></div>
+      <div class="email-history-list" id="emailHistoryList">
+        <div style="color:var(--muted);font-size:0.82rem;padding:4px 0">No saved emails yet.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
 </body>
 </html>
