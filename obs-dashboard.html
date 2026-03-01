@@ -16,10 +16,7 @@
 html{font-size:15px;}
 body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;}
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");opacity:0.5;}
-
 .shell{position:relative;z-index:1;display:grid;grid-template-columns:220px 1fr;min-height:100vh;}
-
-/* Sidebar */
 .sidebar{background:var(--surface);border-right:1px solid var(--border);padding:28px 0;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;}
 .logo{padding:0 24px 28px;border-bottom:1px solid var(--border);}
 .logo-mark{font-size:1.5rem;font-weight:800;letter-spacing:-0.03em;line-height:1;}
@@ -35,8 +32,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .status-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0;}
 .status-dot.ok{background:var(--green);box-shadow:0 0 6px var(--green);}
 .status-dot.err{background:var(--red);}
-
-/* Main */
 .main{padding:36px 40px 80px;max-width:1100px;}
 .page{display:none;animation:fadeIn .2s ease both;}
 .page.active{display:block;}
@@ -45,8 +40,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .page-header-left{}
 .page-title{font-size:2rem;font-weight:800;letter-spacing:-0.04em;line-height:1;}
 .page-sub{color:var(--muted2);font-size:0.85rem;margin-top:6px;}
-
-/* Login */
 .login-wall{max-width:420px;margin:80px auto;text-align:center;}
 .login-wall h2{font-size:1.4rem;font-weight:700;margin-bottom:8px;}
 .login-wall p{color:var(--muted2);font-size:0.85rem;margin-bottom:24px;}
@@ -62,8 +55,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .btn-sm{padding:7px 14px;font-size:0.78rem;}
 .btn-ghost{background:none;border:1px solid var(--border2);color:var(--muted2);}
 .btn-ghost:hover{color:var(--text);border-color:var(--muted2);opacity:1;}
-
-/* Stat cards */
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px;margin-bottom:28px;}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;position:relative;overflow:hidden;}
 .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);}
@@ -73,36 +64,26 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .stat-label{font-family:var(--mono);font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;}
 .stat-value{font-size:2.2rem;font-weight:800;letter-spacing:-0.04em;margin-top:4px;line-height:1;}
 .stat-sub{font-size:0.75rem;color:var(--muted2);margin-top:4px;}
-
-/* Chart card */
 .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px;}
 .chart-title{font-size:0.75rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;}
-
-/* Bar chart */
 .bar-chart{display:flex;flex-direction:column;gap:8px;}
 .bar-row{display:grid;grid-template-columns:140px 1fr 50px;align-items:center;gap:12px;}
 .bar-label{font-size:0.78rem;color:var(--muted2);text-align:right;font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .bar-track{background:var(--surface2);border-radius:4px;height:10px;overflow:hidden;}
 .bar-fill{height:100%;border-radius:4px;background:var(--accent);transition:width .6s cubic-bezier(.4,0,.2,1);}
 .bar-count{font-size:0.75rem;font-family:var(--mono);color:var(--muted2);text-align:right;}
-
-/* Day sparkline */
 .day-chart{display:flex;align-items:flex-end;gap:3px;height:72px;}
 .day-bar-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
 .day-bar{width:100%;border-radius:3px 3px 0 0;background:var(--accent);opacity:0.65;min-height:2px;transition:opacity .2s;cursor:pointer;position:relative;}
 .day-bar:hover{opacity:1;}
 .day-bar[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border2);border-radius:5px;padding:3px 8px;font-family:var(--mono);font-size:0.6rem;white-space:nowrap;pointer-events:none;z-index:10;}
 .day-label{font-family:var(--mono);font-size:0.52rem;color:var(--muted);}
-
-/* Online status */
 .online-grid{display:flex;flex-wrap:wrap;gap:10px;}
 .online-chip{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:0.82rem;font-weight:600;}
 .online-chip.active{border-color:var(--green);}
 .online-dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex-shrink:0;}
 .online-dot.active{background:var(--green);box-shadow:0 0 8px var(--green);}
 .online-time{font-family:var(--mono);font-size:0.65rem;color:var(--muted);margin-left:4px;}
-
-/* User table */
 .user-table{width:100%;border-collapse:collapse;}
 .user-table th{font-family:var(--mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);padding:0 16px 12px;text-align:left;border-bottom:1px solid var(--border);}
 .user-table td{padding:13px 16px;border-bottom:1px solid var(--border);font-size:0.85rem;}
@@ -111,15 +92,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .user-table tbody tr:hover td{background:var(--surface2);}
 .user-badge{display:inline-flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:3px 10px;font-family:var(--mono);font-size:0.75rem;}
 .user-avatar{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;}
-
-/* User filter tabs */
 .view-toggle{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap;}
 .view-chip{background:var(--surface2);border:1.5px solid var(--border2);border-radius:8px;padding:6px 14px;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;}
 .view-chip:hover{border-color:var(--accent);color:var(--accent);}
 .view-chip.active{background:var(--accent);border-color:var(--accent);color:#fff;}
 .view-chip .dot{width:7px;height:7px;border-radius:50%;}
-
-/* Feed */
 .feed{display:flex;flex-direction:column;}
 .feed-item{display:grid;grid-template-columns:110px 1fr 110px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:0.82rem;gap:16px;}
 .feed-item:last-child{border-bottom:none;}
@@ -127,12 +104,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .feed-key{background:var(--surface2);border:1px solid var(--border2);border-radius:5px;padding:2px 8px;font-family:var(--mono);font-size:0.72rem;display:inline-block;}
 .feed-key.utility{border-color:var(--blue);color:var(--blue);}
 .feed-user{font-family:var(--mono);font-size:0.72rem;color:var(--muted2);text-align:right;}
-
-/* Back btn */
 .back-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--border2);color:var(--muted2);font-family:var(--font);font-size:0.82rem;font-weight:600;padding:7px 14px;border-radius:8px;cursor:pointer;transition:all .15s;margin-bottom:24px;}
 .back-btn:hover{color:var(--text);border-color:var(--muted);}
-
-/* Section card (phrases) */
 .section-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px;}
 .section-card-title{font-size:0.72rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;}
 .phrase-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
@@ -153,22 +126,18 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .config-field{margin-bottom:16px;}
 .config-label{display:block;font-family:var(--mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:6px;}
 .row{display:flex;gap:10px;}
-
-
-
 /* Version badge */
 .version-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-family:var(--mono);font-size:0.62rem;font-weight:700;border:1px solid;}
 .version-badge.current{background:rgba(52,211,153,0.1);border-color:rgba(52,211,153,0.35);color:var(--green);}
 .version-badge.outdated{background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.35);color:var(--yellow);}
 .version-badge.unknown{background:var(--surface2);border-color:var(--border);color:var(--muted);}
 .exit-pending-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--yellow);box-shadow:0 0 6px var(--yellow);margin-left:4px;flex-shrink:0;}
-/* Export / weekly summary */
+/* Toolbar */
 .toolbar-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:24px;}
 .btn-outline{background:none;border:1.5px solid var(--border2);color:var(--muted2);font-family:var(--font);font-size:0.8rem;font-weight:700;padding:8px 16px;border-radius:9px;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
 .btn-outline:hover{border-color:var(--accent);color:var(--accent);}
 .btn-outline.blue:hover{border-color:var(--blue);color:var(--blue);}
 .btn-outline.green:hover{border-color:var(--green);color:var(--green);}
-
 /* Weekly summary modal */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
 .modal-box{background:var(--surface);border:1px solid var(--border2);border-radius:18px;padding:28px;max-width:600px;width:92%;max-height:85vh;display:flex;flex-direction:column;gap:16px;animation:fadeIn .2s ease;}
@@ -208,7 +177,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 
     <!-- ══ STATS PAGE ══ -->
     <div class="page active" id="statsPage">
-      <!-- Summary cards -->
       <div class="page-header">
         <div class="page-header-left">
           <div class="page-title" id="statsTitle">Usage Stats</div>
@@ -217,11 +185,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
         <button class="back-btn" id="backToAll" style="display:none">← All users</button>
       </div>
 
-      <!-- Export / summary toolbar -->
+      <!-- Toolbar -->
       <div class="toolbar-row" id="statsToolbar">
         <button class="btn-outline green" id="exportCsvBtn">⬇ Export CSV</button>
         <button class="btn-outline blue" id="weeklySummaryBtn">📋 Weekly summary</button>
-        <button class="btn-outline" id="forceUpdateBtn" style="margin-left:auto">⏹ Close all for update</button>
+        <button class="btn-outline" id="closeAllBtn" style="margin-left:auto">⏹ Close all for update</button>
       </div>
 
       <div class="stat-grid" id="statGrid">
@@ -237,7 +205,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
         <div class="online-grid" id="onlineGrid"></div>
       </div>
 
-      <!-- User filter tabs — shown in "all" view -->
+      <!-- User table -->
       <div id="userFilterWrap">
         <div class="chart-card">
           <div class="chart-title">Click a user to see their individual stats</div>
@@ -248,25 +216,18 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
         </div>
       </div>
 
-      <!-- Phrase bar chart -->
       <div class="chart-card">
         <div class="chart-title" id="barChartTitle">Phrase usage</div>
         <div class="bar-chart" id="phraseBarChart"></div>
       </div>
-
-      <!-- Utility bar chart -->
       <div class="chart-card">
         <div class="chart-title" id="utilChartTitle">Utility hotkeys</div>
         <div class="bar-chart" id="utilBarChart"></div>
       </div>
-
-      <!-- Day sparkline -->
       <div class="chart-card">
         <div class="chart-title" id="dayChartTitle">Activity — last 30 days</div>
         <div class="day-chart" id="dayChart"></div>
       </div>
-
-      <!-- Activity feed -->
       <div class="chart-card">
         <div class="chart-title">Recent activity</div>
         <div class="feed" id="activityFeed"></div>
@@ -338,27 +299,28 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 
 <script>
 // ── Constants ──────────────────────────────────────────────────────────────
-const RENDER_URL    = 'https://timetable-server-r6nb.onrender.com';
-const UTILITY_KEYS  = new Set(['Ctrl+Alt+E','Ctrl+Alt+T','Ctrl+Alt+P','Ctrl+Alt+F','Ctrl+Alt+W','Ctrl+Alt+S','Ctrl+Alt+M','__heartbeat__']);
-const CURRENT_VERSION = 'v3.0'; // Update this whenever you release a new AHK version
-const USER_COLORS   = ['#af5cfa','#60a5fa','#34d399','#fbbf24','#f87171','#a78bfa','#fb923c','#38bdf8'];
+const RENDER_URL      = 'https://timetable-server-r6nb.onrender.com';
+const UTILITY_KEYS    = new Set(['Ctrl+Alt+E','Ctrl+Alt+T','Ctrl+Alt+P','Ctrl+Alt+F','Ctrl+Alt+W','Ctrl+Alt+S','Ctrl+Alt+M','__heartbeat__']);
+const CURRENT_VERSION = 'v3.0'; // bump this whenever you release a new AHK version
+const USER_COLORS     = ['#af5cfa','#60a5fa','#34d399','#fbbf24','#f87171','#a78bfa','#fb923c','#38bdf8'];
 
 // ── State ──────────────────────────────────────────────────────────────────
-let serverUrl = localStorage.getItem('obs-server') || '';
-let adminPw   = localStorage.getItem('obs-pw') || '';
-let statsData = null;
-let firstSeenData = {};
-let heartbeatData = {};
-let selectedUser  = null;   // null = all users view
-let allUsers      = [];
+let serverUrl            = localStorage.getItem('obs-server') || '';
+let adminPw              = localStorage.getItem('obs-pw')     || '';
+let statsData            = null;
+let firstSeenData        = {};
+let heartbeatData        = {};
+let selectedUser         = null;
+let allUsers             = [];
 let selectedOverrideUser = null;
 
-// ── API ────────────────────────────────────────────────────────────────────
+// ── API helpers ────────────────────────────────────────────────────────────
 async function api(method, path, body) {
   const headers = { 'Content-Type': 'application/json', 'X-Admin-Password': adminPw };
-  const res = await fetch(serverUrl + path, { method, headers, body: body ? JSON.stringify(body) : undefined });
-  return res;
+  return fetch(serverUrl + path, { method, headers, body: body ? JSON.stringify(body) : undefined });
 }
+
+function escH(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 function toast(msg, type='ok') {
   const el = document.getElementById('toast');
@@ -368,7 +330,15 @@ function toast(msg, type='ok') {
   el._t = setTimeout(() => el.className = '', 3000);
 }
 
-// ── Login ──────────────────────────────────────────────────────────────────
+function timeAgo(date) {
+  const s = Math.floor((Date.now() - date) / 1000);
+  if (s < 60)    return s + 's ago';
+  if (s < 3600)  return Math.floor(s/60) + 'm ago';
+  if (s < 86400) return Math.floor(s/3600) + 'h ago';
+  return Math.floor(s/86400) + 'd ago';
+}
+
+// ── Auth / Login ───────────────────────────────────────────────────────────
 async function tryConnect(url, pw) {
   try {
     const res = await fetch(url + '/stats', { headers: { 'X-Admin-Password': pw } });
@@ -376,11 +346,10 @@ async function tryConnect(url, pw) {
   } catch(e) { return false; }
 }
 
-// Autofill URL on load
 document.getElementById('loginUrl').value = localStorage.getItem('obs-server') || RENDER_URL;
 
 document.getElementById('loginBtn').addEventListener('click', async () => {
-  const url = document.getElementById('loginUrl').value.trim().replace(/\/$/,'');
+  const url = document.getElementById('loginUrl').value.trim().replace(/\/$/, '');
   const pw  = document.getElementById('loginPw').value.trim();
   const st  = document.getElementById('loginStatus');
   st.textContent = 'Connecting…'; st.style.color = 'var(--muted)';
@@ -395,7 +364,9 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
     st.style.color = 'var(--red)';
   }
 });
-document.getElementById('loginPw').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('loginBtn').click(); });
+document.getElementById('loginPw').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('loginBtn').click();
+});
 
 // ── Boot ───────────────────────────────────────────────────────────────────
 async function bootApp() {
@@ -403,11 +374,11 @@ async function bootApp() {
   const ok = await tryConnect(serverUrl, adminPw);
   if (!ok) {
     document.getElementById('loginWall').style.display = '';
-    document.getElementById('appShell').style.display = 'none';
+    document.getElementById('appShell').style.display  = 'none';
     return;
   }
   document.getElementById('loginWall').style.display = 'none';
-  document.getElementById('appShell').style.display = 'grid';
+  document.getElementById('appShell').style.display  = 'grid';
   document.getElementById('cfgUrl').value = serverUrl;
   document.getElementById('cfgPw').value  = adminPw;
   setStatus(true);
@@ -415,7 +386,7 @@ async function bootApp() {
 }
 
 function setStatus(ok) {
-  document.getElementById('statusDot').className  = 'status-dot ' + (ok ? 'ok' : 'err');
+  document.getElementById('statusDot').className   = 'status-dot ' + (ok ? 'ok' : 'err');
   document.getElementById('statusText').textContent = ok ? 'Connected' : 'Offline';
 }
 
@@ -426,7 +397,6 @@ document.querySelectorAll('.nav-item').forEach(item => {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     item.classList.add('active');
     document.getElementById(item.dataset.page).classList.add('active');
-    // Keep config fields in sync with current values
     if (item.dataset.page === 'configPage') {
       document.getElementById('cfgUrl').value = serverUrl || localStorage.getItem('obs-server') || '';
       document.getElementById('cfgPw').value  = adminPw  || localStorage.getItem('obs-pw')     || '';
@@ -434,7 +404,7 @@ document.querySelectorAll('.nav-item').forEach(item => {
   });
 });
 
-// ── Stats ──────────────────────────────────────────────────────────────────
+// ── Stats loading ──────────────────────────────────────────────────────────
 async function loadStats() {
   try {
     const res = await api('GET', '/stats');
@@ -455,41 +425,32 @@ async function loadFirstSeen() {
 async function loadHeartbeats() {
   try {
     const res = await api('GET', '/heartbeat');
-    if (res.ok) {
-      heartbeatData = await res.json();
-      renderOnline();
-    }
+    if (res.ok) { heartbeatData = await res.json(); renderOnline(); }
   } catch(e) {}
 }
 
+// ── Render ─────────────────────────────────────────────────────────────────
 function renderStats() {
   if (!statsData) return;
-  if (selectedUser) renderUserDetail(selectedUser);
-  else renderAllStats();
+  selectedUser ? renderUserDetail(selectedUser) : renderAllStats();
 }
 
 function renderAllStats() {
   const d = statsData;
-  document.getElementById('statsTitle').textContent = 'Usage Stats';
-  document.getElementById('statsSub').textContent   = 'All users combined';
+  document.getElementById('statsTitle').textContent  = 'Usage Stats';
+  document.getElementById('statsSub').textContent    = 'All users combined';
   document.getElementById('backToAll').style.display = 'none';
   document.getElementById('userFilterWrap').style.display = '';
 
-  // Filter out heartbeat events for display counts
-  const realEvents = d.recentEvents.filter(e => e.key !== '__heartbeat__');
-  const totalReal  = d.totalEvents - (d.byKey['__heartbeat__']?.total || 0);
-
+  const totalReal = d.totalEvents - (d.byKey['__heartbeat__']?.total || 0);
   document.getElementById('statTotal').textContent = totalReal.toLocaleString();
   document.getElementById('statUsers').textContent = Object.keys(d.byUser).length;
 
   const today = new Date().toISOString().slice(0,10);
-  document.getElementById('statToday').textContent    = (d.byDay[today] || 0).toLocaleString();
+  document.getElementById('statToday').textContent     = (d.byDay[today] || 0).toLocaleString();
   document.getElementById('statTodayDate').textContent = today;
 
-  // Top phrase (exclude utility keys)
-  const phraseSorted = Object.entries(d.byKey)
-    .filter(([k]) => !UTILITY_KEYS.has(k))
-    .sort((a,b) => b[1].total - a[1].total);
+  const phraseSorted = Object.entries(d.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b) => b[1].total - a[1].total);
   if (phraseSorted.length) {
     document.getElementById('statTop').textContent      = phraseSorted[0][1].label;
     document.getElementById('statTopCount').textContent = phraseSorted[0][1].total.toLocaleString() + ' uses';
@@ -498,28 +459,32 @@ function renderAllStats() {
   // User table
   const tbody = document.getElementById('userTableBody');
   tbody.innerHTML = '';
-  const usersSorted = Object.entries(d.byUser).sort((a,b) => b[1].total - a[1].total);
-  usersSorted.forEach(([user, data], i) => {
-    const color = USER_COLORS[i % USER_COLORS.length];
-    const initials = user.slice(0,2).toUpperCase();
-    const topEntry = Object.entries(data.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b)=>b[1]-a[1])[0];
-    const topLabel = topEntry ? (d.byKey[topEntry[0]]?.label || topEntry[0]) : '—';
-    const utilTotal = Object.entries(data.byKey).filter(([k]) => UTILITY_KEYS.has(k) && k !== '__heartbeat__').reduce((s,[,v]) => s+v, 0);
-    const lastEvent = d.recentEvents.find(e => e.user === user);
+  Object.entries(d.byUser).sort((a,b) => b[1].total - a[1].total).forEach(([user, data], i) => {
+    const color      = USER_COLORS[i % USER_COLORS.length];
+    const initials   = user.slice(0,2).toUpperCase();
+    const topEntry   = Object.entries(data.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b)=>b[1]-a[1])[0];
+    const topLabel   = topEntry ? (d.byKey[topEntry[0]]?.label || topEntry[0]) : '—';
+    const utilTotal  = Object.entries(data.byKey).filter(([k]) => UTILITY_KEYS.has(k) && k !== '__heartbeat__').reduce((s,[,v]) => s+v, 0);
+    const lastEvent  = d.recentEvents.find(e => e.user === user);
     const lastActive = lastEvent ? new Date(lastEvent.ts).toLocaleDateString('en-AU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '—';
-    const online = heartbeatData[user]?.online;
-    const firstSeenTs = firstSeenData[user];
-    const firstSeen = firstSeenTs ? new Date(firstSeenTs).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) : '—';
+    const online      = heartbeatData[user]?.online;
     const userVersion = heartbeatData[user]?.version || null;
+    const firstSeenTs = firstSeenData[user];
+    const firstSeen   = firstSeenTs ? new Date(firstSeenTs).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) : '—';
+
+    const vBadge = userVersion
+      ? '<span class="version-badge ' + (userVersion === CURRENT_VERSION ? 'current' : 'outdated') + '">' + escH(userVersion) + '</span>'
+      : '<span class="version-badge unknown">—</span>';
+
     const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><div class="user-badge"><div class="user-avatar" style="background:${color}22;color:${color}">${escH(initials)}</div>${escH(user)}${online ? ' <span style="color:var(--green);font-size:0.65rem">● online</span>' : ''}</div></td>
-      <td style="font-family:var(--mono)">${(data.total - (data.byKey['__heartbeat__']||0)).toLocaleString()}</td>
-      <td style="color:var(--muted2)">${escH(topLabel)}</td>
-      <td style="font-family:var(--mono);color:var(--muted2)">${utilTotal}</td>
-      <td>${userVersion ? `<span class="version-badge ${userVersion === CURRENT_VERSION ? 'current' : 'outdated'}">${escH(userVersion)}</span>` : '<span class="version-badge unknown">—</span>'}</td>
-      <td style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">${firstSeen}</td>
-      <td style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">${lastActive}</td>`;
+    tr.innerHTML =
+      '<td><div class="user-badge"><div class="user-avatar" style="background:' + color + '22;color:' + color + '">' + escH(initials) + '</div>' + escH(user) + (online ? ' <span style="color:var(--green);font-size:0.65rem">● online</span>' : '') + '</div></td>' +
+      '<td style="font-family:var(--mono)">' + (data.total - (data.byKey['__heartbeat__']||0)).toLocaleString() + '</td>' +
+      '<td style="color:var(--muted2)">' + escH(topLabel) + '</td>' +
+      '<td style="font-family:var(--mono);color:var(--muted2)">' + utilTotal + '</td>' +
+      '<td>' + vBadge + '</td>' +
+      '<td style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">' + firstSeen + '</td>' +
+      '<td style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">' + lastActive + '</td>';
     tr.addEventListener('click', () => drillIntoUser(user));
     tbody.appendChild(tr);
   });
@@ -536,23 +501,22 @@ function renderUserDetail(user) {
   document.getElementById('backToAll').style.display = '';
   document.getElementById('userFilterWrap').style.display = 'none';
 
-  const userData = d.byUser[user] || { total: 0, byKey: {} };
+  const userData   = d.byUser[user] || { total: 0, byKey: {} };
   const userEvents = d.recentEvents.filter(e => e.user === user);
-  const today = new Date().toISOString().slice(0,10);
+  const today      = new Date().toISOString().slice(0,10);
   const todayCount = userEvents.filter(e => e.ts.slice(0,10) === today).length;
   const phraseSorted = Object.entries(userData.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b)=>b[1]-a[1]);
-  const totalReal = (userData.total || 0) - (userData.byKey['__heartbeat__'] || 0);
+  const totalReal  = (userData.total || 0) - (userData.byKey['__heartbeat__'] || 0);
 
-  document.getElementById('statTotal').textContent = totalReal.toLocaleString();
-  document.getElementById('statUsers').textContent = '—';
-  document.getElementById('statToday').textContent = todayCount;
+  document.getElementById('statTotal').textContent     = totalReal.toLocaleString();
+  document.getElementById('statUsers').textContent     = '—';
+  document.getElementById('statToday').textContent     = todayCount;
   document.getElementById('statTodayDate').textContent = today;
   if (phraseSorted.length) {
     document.getElementById('statTop').textContent      = d.byKey[phraseSorted[0][0]]?.label || phraseSorted[0][0];
     document.getElementById('statTopCount').textContent = phraseSorted[0][1].toLocaleString() + ' uses';
   }
 
-  // Build a fake per-user byKey for the bar charts
   const userByKey = {};
   Object.entries(userData.byKey).forEach(([k, count]) => {
     userByKey[k] = { label: d.byKey[k]?.label || k, total: count, byUser: {} };
@@ -569,36 +533,29 @@ function buildUserByDay(events) {
   return byDay;
 }
 
-function drillIntoUser(user) {
-  selectedUser = user;
-  renderStats();
-}
+function drillIntoUser(user) { selectedUser = user; renderStats(); }
 
-document.getElementById('backToAll').addEventListener('click', () => {
-  selectedUser = null;
-  renderStats();
-});
+document.getElementById('backToAll').addEventListener('click', () => { selectedUser = null; renderStats(); });
 
 function renderBarChart(d, user) {
   const phraseChart = document.getElementById('phraseBarChart');
   const utilChart   = document.getElementById('utilBarChart');
   phraseChart.innerHTML = ''; utilChart.innerHTML = '';
+  document.getElementById('barChartTitle').textContent  = user ? user + ' — Phrase usage'   : 'Phrase usage — all users';
+  document.getElementById('utilChartTitle').textContent = user ? user + ' — Utility hotkeys' : 'Utility hotkeys — all users';
 
   const phrases = Object.entries(d.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b)=>b[1].total-a[1].total);
   const utils   = Object.entries(d.byKey).filter(([k]) => UTILITY_KEYS.has(k) && k !== '__heartbeat__').sort((a,b)=>b[1].total-a[1].total);
-
-  document.getElementById('barChartTitle').textContent  = user ? `${user} — Phrase usage` : 'Phrase usage — all users';
-  document.getElementById('utilChartTitle').textContent = user ? `${user} — Utility hotkeys` : 'Utility hotkeys — all users';
-
   const maxP = phrases[0]?.[1].total || 1;
-  phrases.slice(0,15).forEach(([key, {label, total}]) => {
-    phraseChart.innerHTML += `<div class="bar-row"><div class="bar-label">${escH(label)}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(total/maxP*100)}%"></div></div><div class="bar-count">${total}</div></div>`;
+  const maxU = utils[0]?.[1].total   || 1;
+
+  phrases.slice(0,15).forEach(([,{label, total}]) => {
+    phraseChart.innerHTML += '<div class="bar-row"><div class="bar-label">' + escH(label) + '</div><div class="bar-track"><div class="bar-fill" style="width:' + Math.round(total/maxP*100) + '%"></div></div><div class="bar-count">' + total + '</div></div>';
   });
   if (!phrases.length) phraseChart.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">No phrase data yet</div>';
 
-  const maxU = utils[0]?.[1].total || 1;
-  utils.forEach(([key, {label, total}]) => {
-    utilChart.innerHTML += `<div class="bar-row"><div class="bar-label" style="color:var(--blue)">${escH(label)}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(total/maxU*100)}%;background:var(--blue)"></div></div><div class="bar-count">${total}</div></div>`;
+  utils.forEach(([,{label, total}]) => {
+    utilChart.innerHTML += '<div class="bar-row"><div class="bar-label" style="color:var(--blue)">' + escH(label) + '</div><div class="bar-track"><div class="bar-fill" style="width:' + Math.round(total/maxU*100) + '%;background:var(--blue)"></div></div><div class="bar-count">' + total + '</div></div>';
   });
   if (!utils.length) utilChart.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">No utility data yet</div>';
 }
@@ -606,17 +563,14 @@ function renderBarChart(d, user) {
 function renderDayChart(d, user) {
   const el = document.getElementById('dayChart');
   el.innerHTML = '';
-  document.getElementById('dayChartTitle').textContent = user ? `${user} — last 30 days` : 'Activity — last 30 days';
+  document.getElementById('dayChartTitle').textContent = user ? user + ' — last 30 days' : 'Activity — last 30 days';
   const days = [];
-  for (let i = 29; i >= 0; i--) {
-    const dt = new Date(); dt.setDate(dt.getDate()-i);
-    days.push(dt.toISOString().slice(0,10));
-  }
+  for (let i = 29; i >= 0; i--) { const dt = new Date(); dt.setDate(dt.getDate()-i); days.push(dt.toISOString().slice(0,10)); }
   const maxDay = Math.max(...days.map(day => d.byDay[day]||0), 1);
   days.forEach(day => {
     const count = d.byDay[day]||0;
-    const pct = Math.round((count/maxDay)*100);
-    el.innerHTML += `<div class="day-bar-wrap"><div class="day-bar" style="height:${Math.max(pct,2)}%" data-tip="${day}: ${count}"></div><div class="day-label">${day.slice(8)==='01'||day===days[0]||day===days[29]?day.slice(5):''}</div></div>`;
+    const pct   = Math.round((count/maxDay)*100);
+    el.innerHTML += '<div class="day-bar-wrap"><div class="day-bar" style="height:' + Math.max(pct,2) + '%" data-tip="' + day + ': ' + count + '"></div><div class="day-label">' + (day.slice(8)==='01'||day===days[0]||day===days[29] ? day.slice(5) : '') + '</div></div>';
   });
 }
 
@@ -626,35 +580,27 @@ function renderFeed(events, user) {
   const filtered = events.filter(e => e.key !== '__heartbeat__').slice(0, 50);
   if (!filtered.length) { el.innerHTML = '<div style="color:var(--muted);font-size:0.82rem;padding:8px 0">No activity yet</div>'; return; }
   filtered.forEach(ev => {
-    const t = new Date(ev.ts);
+    const t       = new Date(ev.ts);
     const timeStr = t.toLocaleDateString('en-AU',{day:'numeric',month:'short'}) + ' ' + t.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'});
-    const isUtil = UTILITY_KEYS.has(ev.key);
-    el.innerHTML += `<div class="feed-item"><div class="feed-time">${timeStr}</div><div><span class="feed-key${isUtil?' utility':''}">${escH(ev.key)}</span> <span style="color:var(--muted2)">${escH(ev.label)}</span></div><div class="feed-user">${user ? '' : escH(ev.user)}</div></div>`;
+    const isUtil  = UTILITY_KEYS.has(ev.key);
+    el.innerHTML += '<div class="feed-item"><div class="feed-time">' + timeStr + '</div><div><span class="feed-key' + (isUtil?' utility':'') + '">' + escH(ev.key) + '</span> <span style="color:var(--muted2)">' + escH(ev.label) + '</span></div><div class="feed-user">' + (user ? '' : escH(ev.user)) + '</div></div>';
   });
 }
 
 function renderOnline() {
-  const el = document.getElementById('onlineGrid');
+  const el      = document.getElementById('onlineGrid');
   const entries = Object.entries(heartbeatData).sort((a,b) => (b[1].online?1:0)-(a[1].online?1:0));
   if (!entries.length) { el.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">No heartbeat data yet — AHK script will populate this</div>'; return; }
   el.innerHTML = '';
   entries.forEach(([user, data]) => {
     const { online, lastSeen, version, exitPending } = data;
-    const ago = lastSeen ? timeAgo(new Date(lastSeen)) : 'never';
+    const ago    = lastSeen ? timeAgo(new Date(lastSeen)) : 'never';
     const vBadge = version
-      ? `<span class="version-badge ${version === CURRENT_VERSION ? 'current' : 'outdated'}">${escH(version)}</span>`
-      : `<span class="version-badge unknown">unknown</span>`;
-    const exitDot = exitPending ? `<span class="exit-pending-dot" title="Exit pending"></span>` : '';
-    el.innerHTML += `<div class="online-chip${online?' active':''}"><div class="online-dot${online?' active':''}"></div><strong>${escH(user)}</strong>${vBadge}${exitDot}<span class="online-time">${online ? 'online' : ago}</span></div>`;
+      ? '<span class="version-badge ' + (version === CURRENT_VERSION ? 'current' : 'outdated') + '">' + escH(version) + '</span>'
+      : '<span class="version-badge unknown">unknown</span>';
+    const exitDot = exitPending ? '<span class="exit-pending-dot" title="Exit pending"></span>' : '';
+    el.innerHTML += '<div class="online-chip' + (online?' active':'') + '"><div class="online-dot' + (online?' active':'') + '"></div><strong>' + escH(user) + '</strong>' + vBadge + exitDot + '<span class="online-time">' + (online ? 'online' : ago) + '</span></div>';
   });
-}
-
-function timeAgo(date) {
-  const s = Math.floor((Date.now() - date)/1000);
-  if (s < 60) return `${s}s ago`;
-  if (s < 3600) return `${Math.floor(s/60)}m ago`;
-  if (s < 86400) return `${Math.floor(s/3600)}h ago`;
-  return `${Math.floor(s/86400)}d ago`;
 }
 
 // ── Phrases ────────────────────────────────────────────────────────────────
@@ -684,19 +630,23 @@ function renderBaseList(phrases) {
   phrases.forEach(p => addPhraseRow(list, p.key, p.label, p.text));
 }
 
-function addPhraseRow(container, key='', label='', text='') {
+function addPhraseRow(container, key, label, text) {
+  key = key || ''; label = label || ''; text = text || '';
   const row = document.createElement('div');
   row.className = 'phrase-row';
-  row.innerHTML = `<div class="phrase-key-badge" data-key="${escH(key)}">${escH(key)||'key'}</div><input class="phrase-input" type="text" value="${escH(label)}" placeholder="Label" /><input class="phrase-input phrase-text-input" type="text" value="${escH(text.replace(/\n/g,'\\n'))}" placeholder="Text (\\n = newline)" /><button class="phrase-del">✕</button>`;
+  row.innerHTML = '<div class="phrase-key-badge" data-key="' + escH(key) + '">' + (escH(key)||'key') + '</div>' +
+    '<input class="phrase-input" type="text" value="' + escH(label) + '" placeholder="Label" />' +
+    '<input class="phrase-input phrase-text-input" type="text" value="' + escH(text.replace(/\n/g,'\\n')) + '" placeholder="Text (\\n = newline)" />' +
+    '<button class="phrase-del">✕</button>';
   row.querySelector('.phrase-del').addEventListener('click', () => row.remove());
   container.appendChild(row);
 }
 
 function collectPhrases(listEl) {
   return [...listEl.querySelectorAll('.phrase-row')].map(row => {
-    const key = row.querySelector('.phrase-key-badge').dataset.key;
+    const key   = row.querySelector('.phrase-key-badge').dataset.key;
     const label = row.querySelectorAll('.phrase-input')[0].value.trim();
-    const text  = row.querySelectorAll('.phrase-input')[1].value.replace(/\\n/g,'\n');
+    const text  = row.querySelectorAll('.phrase-input')[1].value.replace(/\\n/g, '\n');
     return (key && label) ? { key, label, text } : null;
   }).filter(Boolean);
 }
@@ -709,7 +659,7 @@ document.getElementById('addBasePhrase').addEventListener('click', () => {
 
 document.getElementById('saveBasePhrases').addEventListener('click', async () => {
   const base = collectPhrases(document.getElementById('baseList'));
-  const res = await api('POST', '/phrases/base', { base });
+  const res  = await api('POST', '/phrases/base', { base });
   res.ok ? toast('Base phrases saved!') : toast('Save failed', 'err');
 });
 
@@ -718,13 +668,13 @@ function renderUserChips() {
   chips.innerHTML = '<span style="font-size:0.8rem;color:var(--muted)">Select user:</span>';
   allUsers.forEach(u => {
     const chip = document.createElement('div');
-    chip.className = 'user-chip' + (u===selectedOverrideUser?' active':'');
+    chip.className = 'user-chip' + (u === selectedOverrideUser ? ' active' : '');
     chip.textContent = u;
     chip.addEventListener('click', () => selectOverrideUser(u));
     chips.appendChild(chip);
   });
   const addBtn = document.createElement('div');
-  addBtn.className = 'user-chip'; addBtn.textContent = '+ New user'; addBtn.style.borderStyle='dashed';
+  addBtn.className = 'user-chip'; addBtn.textContent = '+ New user'; addBtn.style.borderStyle = 'dashed';
   addBtn.addEventListener('click', () => {
     const name = prompt('Username (must match Windows login):');
     if (!name) return;
@@ -737,148 +687,118 @@ function renderUserChips() {
 async function selectOverrideUser(user) {
   selectedOverrideUser = user; renderUserChips();
   try {
-    const res = await api('GET', `/phrases?user=${encodeURIComponent(user)}`);
+    const res  = await api('GET', '/phrases?user=' + encodeURIComponent(user));
     const data = await res.json();
-    const ol = document.getElementById('overrideList'); ol.innerHTML = '';
+    const ol   = document.getElementById('overrideList'); ol.innerHTML = '';
     (data.overrides||[]).forEach(p => addPhraseRow(ol, p.key, p.label, p.text));
   } catch(e) {}
 }
 
 document.getElementById('addOverridePhrase').addEventListener('click', () => {
-  if (!selectedOverrideUser) { toast('Select a user first','err'); return; }
+  if (!selectedOverrideUser) { toast('Select a user first', 'err'); return; }
   const key = prompt('Key to override (e.g. "1" or "Alt+1"):');
   if (!key) return;
   addPhraseRow(document.getElementById('overrideList'), key.trim(), '', '');
 });
 
 document.getElementById('saveUserOverrides').addEventListener('click', async () => {
-  if (!selectedOverrideUser) { toast('No user selected','err'); return; }
+  if (!selectedOverrideUser) { toast('No user selected', 'err'); return; }
   const overrides = collectPhrases(document.getElementById('overrideList'));
   const res = await api('POST', '/phrases/override', { user: selectedOverrideUser, overrides });
-  res.ok ? toast(`Overrides saved for ${selectedOverrideUser}`) : toast('Save failed','err');
+  res.ok ? toast('Overrides saved for ' + selectedOverrideUser) : toast('Save failed', 'err');
 });
 
 // ── Config ─────────────────────────────────────────────────────────────────
 document.getElementById('cfgSaveBtn').addEventListener('click', async () => {
-  const url = document.getElementById('cfgUrl').value.trim().replace(/\/$/,'');
+  const url = document.getElementById('cfgUrl').value.trim().replace(/\/$/, '');
   const pw  = document.getElementById('cfgPw').value.trim();
   const ok  = await tryConnect(url, pw);
   if (ok) {
-    serverUrl=url; adminPw=pw;
-    localStorage.setItem('obs-server',url); localStorage.setItem('obs-pw',pw);
-    document.getElementById('cfgStatus').textContent='✓ Connected'; document.getElementById('cfgStatus').style.color='var(--green)';
+    serverUrl = url; adminPw = pw;
+    localStorage.setItem('obs-server', url); localStorage.setItem('obs-pw', pw);
+    document.getElementById('cfgStatus').textContent = '✓ Connected'; document.getElementById('cfgStatus').style.color = 'var(--green)';
     setStatus(true); toast('Config saved!');
   } else {
-    document.getElementById('cfgStatus').textContent='✕ Could not connect'; document.getElementById('cfgStatus').style.color='var(--red)';
-    toast('Connection failed','err');
+    document.getElementById('cfgStatus').textContent = '✕ Could not connect'; document.getElementById('cfgStatus').style.color = 'var(--red)';
+    toast('Connection failed', 'err');
   }
 });
 
 document.getElementById('cfgTestBtn').addEventListener('click', async () => {
-  const url = document.getElementById('cfgUrl').value.trim().replace(/\/$/,'');
+  const url = document.getElementById('cfgUrl').value.trim().replace(/\/$/, '');
   const pw  = document.getElementById('cfgPw').value.trim();
-  toast(await tryConnect(url,pw) ? 'Server reachable!' : 'Cannot reach server', await tryConnect(url,pw)?'ok':'err');
+  const ok  = await tryConnect(url, pw);
+  toast(ok ? 'Server reachable!' : 'Cannot reach server', ok ? 'ok' : 'err');
 });
 
-function escH(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-
-
-// ── Force Update ────────────────────────────────────────────────────────────
-document.getElementById('forceUpdateBtn').addEventListener('click', async () => {
-  const btn = document.getElementById('forceUpdateBtn');
-
-  // Count online users to give helpful feedback
+// ── Close all for update ───────────────────────────────────────────────────
+document.getElementById('closeAllBtn').addEventListener('click', async () => {
+  const btn         = document.getElementById('closeAllBtn');
   const onlineUsers = Object.entries(heartbeatData).filter(([,v]) => v.online).map(([u]) => u);
-  const total = Object.keys(heartbeatData).length;
+  const total       = Object.keys(heartbeatData).length;
 
-  if (total === 0) {
-    toast('No users have connected yet', 'err');
-    return;
-  }
+  if (total === 0) { toast('No users have connected yet', 'err'); return; }
 
   const msg = onlineUsers.length
-    ? `Close all scripts for update?\n\nCurrently online: ${onlineUsers.join(', ')}\n\nThey'll see a message and exit within 10 min. Offline users will exit on next launch.\n\nThey will need to reopen the program themselves.`
-    : `Close all scripts for update?\n\n${total} user(s) flagged — they'll exit on next launch.\n\nThey will need to reopen the program themselves.`;
+    ? 'Close all scripts for update?\n\nCurrently online: ' + onlineUsers.join(', ') + '\n\nThey\'ll see a message and exit within 10 min.\nOffline users will exit on next launch.\n\nThey must reopen the program themselves to update.'
+    : 'Close all scripts for update?\n\n' + total + ' user(s) flagged — they\'ll exit on next launch.\nThey must reopen the program themselves to update.';
 
   if (!window.confirm(msg)) return;
 
-  btn.textContent = '⏳ Flagging…';
-  btn.disabled = true;
-
+  btn.textContent = '⏳ Flagging…'; btn.disabled = true;
   try {
     const res = await api('POST', '/exit/all', {});
     if (res.ok) {
-      const data = await res.json();
+      const data  = await res.json();
       const count = data.flagged?.length ?? '?';
-      toast(`Exit flagged for ${count} user(s) — they\'ll close within 10 min`, 'ok');
+      toast('Exit flagged for ' + count + ' user(s) — they\'ll close within 10 min');
       btn.textContent = '✓ Sent!';
-      setTimeout(() => {
-        btn.textContent = '⏹ Close all for update';
-        btn.disabled = false;
-      }, 4000);
-    } else {
-      throw new Error('Server returned ' + res.status);
-    }
+      setTimeout(() => { btn.textContent = '⏹ Close all for update'; btn.disabled = false; }, 4000);
+    } else { throw new Error(); }
   } catch(e) {
     toast('Failed to reach server', 'err');
-    btn.textContent = '⏹ Close all for update';
-    btn.disabled = false;
+    btn.textContent = '⏹ Close all for update'; btn.disabled = false;
   }
 });
 
-// ── CSV Export ─────────────────────────────────────────────────────────────
+// ── Export CSV ─────────────────────────────────────────────────────────────
 document.getElementById('exportCsvBtn').addEventListener('click', () => {
   if (!statsData) { toast('No data loaded yet', 'err'); return; }
-  const d = statsData;
-  const rows = [['Timestamp','User','Key','Label','Type']];
-  // All events newest-first
-  const events = [...d.recentEvents].filter(e => e.key !== '__heartbeat__');
-  events.forEach(e => {
-    const type = UTILITY_KEYS.has(e.key) ? 'Utility' : 'Phrase';
-    rows.push([e.ts, e.user, e.key, e.label, type]);
-  });
-  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('
-');
+  const rows   = [['Timestamp','User','Key','Label','Type']];
+  const events = statsData.recentEvents.filter(e => e.key !== '__heartbeat__');
+  events.forEach(e => rows.push([e.ts, e.user, e.key, e.label, UTILITY_KEYS.has(e.key) ? 'Utility' : 'Phrase']));
+  const csv  = rows.map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\n');
   const blob = new Blob([csv], { type: 'text/csv' });
   const url  = URL.createObjectURL(blob);
-  const a    = Object.assign(document.createElement('a'), { href: url, download: `obs-stats-${new Date().toISOString().slice(0,10)}.csv` });
+  const a    = Object.assign(document.createElement('a'), { href: url, download: 'obs-stats-' + new Date().toISOString().slice(0,10) + '.csv' });
   a.click();
   URL.revokeObjectURL(url);
   toast('CSV downloaded!');
 });
 
-// ── Weekly Summary ──────────────────────────────────────────────────────────
+// ── Weekly Summary ─────────────────────────────────────────────────────────
 document.getElementById('weeklySummaryBtn').addEventListener('click', () => {
   if (!statsData) { toast('No data loaded yet', 'err'); return; }
-  const d = statsData;
-
-  // Work out this week Mon–Sun
-  const now   = new Date();
-  const dow   = now.getDay(); // 0=Sun
-  const msSinceMonday = ((dow + 6) % 7) * 86400000;
-  const monday = new Date(now.getTime() - msSinceMonday);
+  const d   = statsData;
+  const now = new Date();
+  const monday = new Date(now.getTime() - ((now.getDay()+6)%7) * 86400000);
   monday.setHours(0,0,0,0);
-  const sunday = new Date(monday.getTime() + 6 * 86400000);
+  const sunday = new Date(monday.getTime() + 6*86400000);
   sunday.setHours(23,59,59,999);
   const fromStr = monday.toISOString().slice(0,10);
   const toStr   = sunday.toISOString().slice(0,10);
 
-  const weekEvents = d.recentEvents.filter(e => {
-    const day = e.ts.slice(0,10);
-    return day >= fromStr && day <= toStr && e.key !== '__heartbeat__';
-  });
-
+  const weekEvents = d.recentEvents.filter(e => e.ts.slice(0,10) >= fromStr && e.ts.slice(0,10) <= toStr && e.key !== '__heartbeat__');
   if (!weekEvents.length) {
     document.getElementById('weeklySummaryText').value = 'No activity recorded this week.';
     document.getElementById('weeklyModal').style.display = 'flex';
     return;
   }
 
-  // Total phrase uses (non-utility)
   const phraseEvents = weekEvents.filter(e => !UTILITY_KEYS.has(e.key));
-  const utilEvents   = weekEvents.filter(e => UTILITY_KEYS.has(e.key));
+  const utilEvents   = weekEvents.filter(e =>  UTILITY_KEYS.has(e.key));
+  const daysSet      = new Set(weekEvents.map(e => e.ts.slice(0,10)));
 
-  // Per-user breakdown
   const byUser = {};
   phraseEvents.forEach(e => {
     if (!byUser[e.user]) byUser[e.user] = { total:0, byKey:{} };
@@ -886,95 +806,58 @@ document.getElementById('weeklySummaryBtn').addEventListener('click', () => {
     byUser[e.user].byKey[e.key] = (byUser[e.user].byKey[e.key]||0)+1;
   });
 
-  // Top phrases overall
   const phraseCount = {};
   phraseEvents.forEach(e => {
-    phraseCount[e.key] = phraseCount[e.key] || { label: d.byKey[e.key]?.label||e.key, count:0 };
+    if (!phraseCount[e.key]) phraseCount[e.key] = { label: d.byKey[e.key]?.label||e.key, count:0 };
     phraseCount[e.key].count++;
   });
   const topPhrases = Object.values(phraseCount).sort((a,b)=>b.count-a.count).slice(0,5);
 
-  // Days active
-  const daysSet = new Set(weekEvents.map(e => e.ts.slice(0,10)));
-
-  // Build summary text
-  const weekLabel = monday.toLocaleDateString('en-AU',{day:'numeric',month:'long'}) + ' – ' + sunday.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
-  let out = `LSO WEEKLY SUMMARY — ${weekLabel}
-`;
-  out += '='.repeat(52) + '
-
-';
-  out += `Total phrase uses:  ${phraseEvents.length}
-`;
-  out += `Utility hotkeys:    ${utilEvents.length}
-`;
-  out += `Active LSOs:        ${Object.keys(byUser).length}
-`;
-  out += `Days with activity: ${daysSet.size}
-
-`;
-
-  out += 'TOP PHRASES
-' + '-'.repeat(30) + '
-';
-  topPhrases.forEach((p,i) => {
-    out += `  ${i+1}. ${p.label.padEnd(28)} ${p.count}x
-`;
-  });
-
-  out += '
-PER-USER BREAKDOWN
-' + '-'.repeat(30) + '
-';
+  const weekLabel = monday.toLocaleDateString('en-AU',{day:'numeric',month:'long'}) + ' \u2013 ' + sunday.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+  let out = 'LSO WEEKLY SUMMARY \u2014 ' + weekLabel + '\n';
+  out += '='.repeat(52) + '\n\n';
+  out += 'Total phrase uses:  ' + phraseEvents.length + '\n';
+  out += 'Utility hotkeys:    ' + utilEvents.length   + '\n';
+  out += 'Active LSOs:        ' + Object.keys(byUser).length + '\n';
+  out += 'Days with activity: ' + daysSet.size + '\n\n';
+  out += 'TOP PHRASES\n' + '-'.repeat(30) + '\n';
+  topPhrases.forEach((p,i) => { out += '  ' + (i+1) + '. ' + p.label.padEnd(28) + ' ' + p.count + 'x\n'; });
+  out += '\nPER-USER BREAKDOWN\n' + '-'.repeat(30) + '\n';
   Object.entries(byUser).sort((a,b)=>b[1].total-a[1].total).forEach(([user, data]) => {
-    const topKey = Object.entries(data.byKey).sort((a,b)=>b[1]-a[1])[0];
-    const topLabel = topKey ? (d.byKey[topKey[0]]?.label || topKey[0]) : '—';
-    out += `  ${user.padEnd(16)} ${String(data.total).padStart(3)} uses  · top: ${topLabel}
-`;
+    const topKey   = Object.entries(data.byKey).sort((a,b)=>b[1]-a[1])[0];
+    const topLabel = topKey ? (d.byKey[topKey[0]]?.label || topKey[0]) : '\u2014';
+    out += '  ' + user.padEnd(16) + ' ' + String(data.total).padStart(3) + ' uses  \u00b7 top: ' + topLabel + '\n';
   });
-
-  out += '
-FIRST-USE DATES
-' + '-'.repeat(30) + '
-';
+  out += '\nFIRST-USE DATES\n' + '-'.repeat(30) + '\n';
   Object.entries(firstSeenData).sort((a,b)=>a[1]<b[1]?-1:1).forEach(([user, ts]) => {
-    const dateStr = new Date(ts).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
-    out += `  ${user.padEnd(16)} ${dateStr}
-`;
+    out += '  ' + user.padEnd(16) + ' ' + new Date(ts).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) + '\n';
   });
 
   document.getElementById('weeklySummaryText').value = out;
   document.getElementById('weeklyModal').style.display = 'flex';
 });
 
-document.getElementById('weeklyCloseBtn').addEventListener('click', () => {
-  document.getElementById('weeklyModal').style.display = 'none';
-});
-
+document.getElementById('weeklyCloseBtn').addEventListener('click', () => { document.getElementById('weeklyModal').style.display = 'none'; });
 document.getElementById('weeklyCopyBtn').addEventListener('click', () => {
-  const text = document.getElementById('weeklySummaryText').value;
-  navigator.clipboard.writeText(text).then(() => {
+  navigator.clipboard.writeText(document.getElementById('weeklySummaryText').value).then(() => {
     const btn = document.getElementById('weeklyCopyBtn');
     btn.textContent = '✓ Copied!';
     setTimeout(() => btn.textContent = 'Copy', 2000);
   });
 });
-
-// Close modal on background click
 document.getElementById('weeklyModal').addEventListener('click', e => {
-  if (e.target === document.getElementById('weeklyModal'))
-    document.getElementById('weeklyModal').style.display = 'none';
+  if (e.target === document.getElementById('weeklyModal')) document.getElementById('weeklyModal').style.display = 'none';
 });
 
 // ── Auto refresh ───────────────────────────────────────────────────────────
-setInterval(loadStats, 30000);
+setInterval(loadStats,      30000);
 setInterval(loadHeartbeats, 30000);
 
 // ── Init ───────────────────────────────────────────────────────────────────
 if (serverUrl && adminPw) bootApp();
 else {
   document.getElementById('loginWall').style.display = '';
-  document.getElementById('appShell').style.display = 'none';
+  document.getElementById('appShell').style.display  = 'none';
 }
 </script>
 </body>
