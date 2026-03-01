@@ -126,6 +126,18 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .config-field{margin-bottom:16px;}
 .config-label{display:block;font-family:var(--mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:6px;}
 .row{display:flex;gap:10px;}
+
+/* Users page */
+.kill-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:6px;font-family:var(--mono);font-size:0.65rem;font-weight:700;}
+.kill-badge.disabled{background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.35);color:var(--red);}
+.kill-badge.enabled{background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);color:var(--green);}
+.btn-kill{background:none;border:1.5px solid rgba(248,113,113,0.4);color:var(--red);font-family:var(--font);font-size:0.75rem;font-weight:700;padding:5px 12px;border-radius:7px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-kill:hover{background:rgba(248,113,113,0.12);}
+.btn-kill.reenable{border-color:rgba(52,211,153,0.4);color:var(--green);}
+.btn-kill.reenable:hover{background:rgba(52,211,153,0.1);}
+.btn-close-user{background:none;border:1.5px solid rgba(251,191,36,0.4);color:var(--yellow);font-family:var(--font);font-size:0.75rem;font-weight:700;padding:5px 12px;border-radius:7px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-close-user:hover{background:rgba(251,191,36,0.1);}
+.btn-close-user:disabled{opacity:0.35;cursor:default;}
 /* Version badge */
 .version-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-family:var(--mono);font-size:0.62rem;font-weight:700;border:1px solid;}
 .version-badge.current{background:rgba(52,211,153,0.1);border-color:rgba(52,211,153,0.35);color:var(--green);}
@@ -163,6 +175,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
     <nav class="nav">
       <div class="nav-item active" data-page="statsPage"><span class="icon">📊</span> Stats</div>
       <div class="nav-item" data-page="phrasesPage"><span class="icon">📝</span> Phrases</div>
+      <div class="nav-item" data-page="usersPage"><span class="icon">👥</span> Users</div>
       <div class="nav-item" data-page="configPage"><span class="icon">⚙️</span> Config</div>
     </nav>
     <div class="sidebar-footer">
@@ -248,6 +261,33 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
         <div class="phrase-list" id="overrideList"></div>
         <button class="add-phrase-btn" id="addOverridePhrase">+ Add personal phrase / override</button>
         <p style="font-size:0.75rem;color:var(--muted);margin-top:8px">Overrides replace a base phrase that has the same key. New keys are added on top of the base.</p>
+      </div>
+    </div>
+
+
+    <!-- ══ USERS PAGE ══ -->
+    <div class="page" id="usersPage">
+      <div class="page-header">
+        <div class="page-header-left">
+          <div class="page-title">Users</div>
+          <div class="page-sub">Kill switch &amp; remote close per user</div>
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="section-card-title">
+          <span>All users</span>
+          <button class="btn btn-secondary btn-sm" id="refreshUsersBtn">↻ Refresh</button>
+        </div>
+        <div id="usersTableWrap">
+          <table class="user-table" id="usersTable">
+            <thead><tr><th>User</th><th>Status</th><th>Version</th><th>Last seen</th><th>Kill switch</th><th>Close for update</th></tr></thead>
+            <tbody id="usersTableBody"></tbody>
+          </table>
+        </div>
+        <p style="font-size:0.72rem;color:var(--muted);margin-top:16px;line-height:1.6">
+          <strong style="color:var(--red)">Kill switch</strong> — permanently disables the user's script. They will see an "Access Disabled" message and the script will exit. Re-enable to restore access.<br>
+          <strong style="color:var(--yellow)">Close for update</strong> — sends a one-time exit signal to a single user. They see a message and exit within 10 min, then reopen themselves.
+        </p>
       </div>
     </div>
 
@@ -706,6 +746,132 @@ document.getElementById('saveUserOverrides').addEventListener('click', async () 
   const overrides = collectPhrases(document.getElementById('overrideList'));
   const res = await api('POST', '/phrases/override', { user: selectedOverrideUser, overrides });
   res.ok ? toast('Overrides saved for ' + selectedOverrideUser) : toast('Save failed', 'err');
+});
+
+
+// ── Users page ─────────────────────────────────────────────────────────────
+let killedData = {};  // { user: true/false }
+
+async function loadKilled() {
+  try {
+    const res = await api('GET', '/users/killed');
+    if (res.ok) killedData = await res.json();
+  } catch(e) {}
+}
+
+async function renderUsersPage() {
+  await Promise.all([loadHeartbeats(), loadKilled()]);
+
+  // Collect all known users from heartbeat + stats
+  const knownUsers = new Set([
+    ...Object.keys(heartbeatData),
+    ...Object.keys(statsData?.byUser || {})
+  ]);
+
+  const tbody = document.getElementById('usersTableBody');
+  tbody.innerHTML = '';
+
+  if (!knownUsers.size) {
+    tbody.innerHTML = '<tr><td colspan="6" style="color:var(--muted);text-align:center;padding:24px">No users found — AHK scripts must connect first</td></tr>';
+    return;
+  }
+
+  // Sort: online first, then alpha
+  [...knownUsers].sort((a, b) => {
+    const ao = heartbeatData[a]?.online ? 1 : 0;
+    const bo = heartbeatData[b]?.online ? 1 : 0;
+    return bo - ao || a.localeCompare(b);
+  }).forEach(user => {
+    const hb        = heartbeatData[user] || {};
+    const online    = hb.online || false;
+    const version   = hb.version || null;
+    const lastSeen  = hb.lastSeen ? timeAgo(new Date(hb.lastSeen)) : 'never';
+    const killed    = !!killedData[user];
+    const exitPend  = !!hb.exitPending;
+
+    const statusDot = online
+      ? '<span style="color:var(--green);font-size:0.75rem">● online</span>'
+      : '<span style="color:var(--muted);font-size:0.75rem">○ offline</span>';
+
+    const vBadge = version
+      ? '<span class="version-badge ' + (version === CURRENT_VERSION ? 'current' : 'outdated') + '">' + escH(version) + '</span>'
+      : '<span class="version-badge unknown">—</span>';
+
+    const killBadge = killed
+      ? '<span class="kill-badge disabled">⛔ disabled</span>'
+      : '<span class="kill-badge enabled">✓ enabled</span>';
+
+    const killBtn = killed
+      ? '<button class="btn-kill reenable" data-user="' + escH(user) + '" data-action="enable">✓ Re-enable</button>'
+      : '<button class="btn-kill" data-user="' + escH(user) + '" data-action="kill">⛔ Disable</button>';
+
+    const closeBtn = exitPend
+      ? '<button class="btn-close-user" disabled>⏳ pending…</button>'
+      : '<button class="btn-close-user" data-user="' + escH(user) + '">⏹ Close</button>';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td><div class="user-badge" style="gap:8px">' + escH(user) + '</div></td>' +
+      '<td>' + statusDot + '</td>' +
+      '<td>' + vBadge + '</td>' +
+      '<td style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">' + lastSeen + '</td>' +
+      '<td>' + killBadge + ' ' + killBtn + '</td>' +
+      '<td>' + closeBtn + '</td>';
+    tbody.appendChild(tr);
+  });
+
+  // Kill switch button listeners
+  tbody.querySelectorAll('.btn-kill').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const user   = btn.dataset.user;
+      const action = btn.dataset.action;
+      const kill   = action === 'kill';
+
+      if (kill && !confirm('Disable ' + user + '?\n\nThey will see an Access Disabled message and the script will exit.\n\nYou can re-enable them at any time.')) return;
+
+      btn.textContent = '…'; btn.disabled = true;
+      try {
+        const res = await api('POST', '/user/kill', { user, killed: kill });
+        if (res.ok) {
+          killedData[user] = kill;
+          toast(kill ? user + ' disabled' : user + ' re-enabled', 'ok');
+          renderUsersPage();
+        } else { throw new Error(); }
+      } catch(e) {
+        toast('Failed — check server', 'err');
+        btn.disabled = false;
+        btn.textContent = kill ? '⛔ Disable' : '✓ Re-enable';
+      }
+    });
+  });
+
+  // Per-user close button listeners
+  tbody.querySelectorAll('.btn-close-user').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const user = btn.dataset.user;
+      if (!confirm('Close ' + user + ' for update?\n\nThey will see a message and exit within 10 min, then reopen themselves.')) return;
+
+      btn.textContent = '⏳ pending…'; btn.disabled = true;
+      try {
+        const res = await api('POST', '/exit/user', { user });
+        if (res.ok) {
+          toast(user + ' flagged — will close within 10 min');
+        } else { throw new Error(); }
+      } catch(e) {
+        toast('Failed — check server', 'err');
+        btn.disabled = false; btn.textContent = '⏹ Close';
+      }
+    });
+  });
+}
+
+document.getElementById('refreshUsersBtn').addEventListener('click', renderUsersPage);
+
+// Trigger render when Users nav item is clicked
+document.querySelectorAll('.nav-item').forEach(item => {
+  if (item.dataset.page === 'usersPage') {
+    item.addEventListener('click', renderUsersPage);
+  }
 });
 
 // ── Config ─────────────────────────────────────────────────────────────────
