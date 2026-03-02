@@ -448,9 +448,17 @@ function timeAgo(date) {
 }
 
 // ── Date range helpers ─────────────────────────────────────────────────────
+// Get today's local date as YYYY-MM-DD
+function localDateStr(date) {
+  const d = date || new Date();
+  return d.getFullYear() + '-' +
+    String(d.getMonth()+1).padStart(2,'0') + '-' +
+    String(d.getDate()).padStart(2,'0');
+}
+
 function getRangeBounds(range) {
   const now   = new Date();
-  const today = now.toISOString().slice(0,10);
+  const today = localDateStr(now);
   if (range === 'day') {
     return { from: today, to: today };
   }
@@ -458,12 +466,12 @@ function getRangeBounds(range) {
     const mon = new Date(now.getTime() - ((now.getDay()+6)%7)*86400000);
     mon.setHours(0,0,0,0);
     const sun = new Date(mon.getTime() + 6*86400000);
-    return { from: mon.toISOString().slice(0,10), to: sun.toISOString().slice(0,10) };
+    return { from: localDateStr(mon), to: localDateStr(sun) };
   }
   if (range === 'month') {
     const from = today.slice(0,7) + '-01';
     const lastDay = new Date(now.getFullYear(), now.getMonth()+1, 0);
-    return { from, to: lastDay.toISOString().slice(0,10) };
+    return { from, to: localDateStr(lastDay) };
   }
   if (range === 'custom') {
     return { from: customFrom || '2000-01-01', to: customTo || today };
@@ -482,10 +490,13 @@ function getRangeLabel(range) {
 function filterEventsByRange(events, range) {
   if (range === 'all') return events;
   const { from, to } = getRangeBounds(range);
-  return events.filter(e => e.ts.slice(0,10) >= from && e.ts.slice(0,10) <= to);
+  return events.filter(e => {
+    const localDate = localDateStr(new Date(e.ts));
+    return localDate >= from && localDate <= to;
+  });
 }
 
-// Rebuild stats aggregates from filtered events
+// Rebuild stats aggregates from filtered events (used for bar charts and feed only)
 function buildFilteredStats(allData, range) {
   const events = filterEventsByRange(allData.recentEvents, range).filter(e => e.key !== '__heartbeat__');
   const byKey  = {};
@@ -493,21 +504,43 @@ function buildFilteredStats(allData, range) {
   const byDay  = {};
 
   events.forEach(e => {
-    // byKey
     if (!byKey[e.key]) byKey[e.key] = { label: allData.byKey[e.key]?.label || e.key, total: 0, byUser: {} };
     byKey[e.key].total++;
-
-    // byUser
     if (!byUser[e.user]) byUser[e.user] = { total: 0, byKey: {} };
     byUser[e.user].total++;
     byUser[e.user].byKey[e.key] = (byUser[e.user].byKey[e.key] || 0) + 1;
-
-    // byDay
     const d = e.ts.slice(0,10);
     byDay[d] = (byDay[d] || 0) + 1;
   });
 
   return { byKey, byUser, byDay, recentEvents: events };
+}
+
+// Sum phrase counts from byUserDay for a user over a date range
+// byUserDay shape: { "username": { "2026-03-02": { phrases: N, utility: N } } }
+function sumUserDayRange(byUserDay, user, range) {
+  const userDays = byUserDay?.[user] || {};
+  if (range === 'all') {
+    return Object.values(userDays).reduce((s, v) => ({ phrases: s.phrases + (v.phrases||0), utility: s.utility + (v.utility||0) }), { phrases: 0, utility: 0 });
+  }
+  const { from, to } = getRangeBounds(range);
+  let phrases = 0, utility = 0;
+  for (const [day, v] of Object.entries(userDays)) {
+    if (day >= from && day <= to) {
+      phrases += v.phrases || 0;
+      utility += v.utility || 0;
+    }
+  }
+  return { phrases, utility };
+}
+
+// Sum all users' phrase counts from byUserDay over a date range
+function sumAllUsersDayRange(byUserDay, range) {
+  let total = 0;
+  for (const user of Object.keys(byUserDay || {})) {
+    total += sumUserDayRange(byUserDay, user, range).phrases;
+  }
+  return total;
 }
 
 // ── Auth / Login ───────────────────────────────────────────────────────────
@@ -647,39 +680,38 @@ function renderStats() {
 
 function renderAllStats() {
   if (!statsData) return;
-  const d     = buildFilteredStats(statsData, currentRange);
   const allD  = statsData;
   const label = getRangeLabel(currentRange);
+  const byUD  = allD.byUserDay || {};
 
   document.getElementById('statsTitle').textContent  = 'Usage Stats';
   document.getElementById('statsSub').textContent    = label;
   document.getElementById('backToAll').style.display = 'none';
   document.getElementById('userFilterWrap').style.display = '';
 
-  // For "all time", use the server-side aggregates (allD.byKey) which include ALL events,
-  // not just the capped recentEvents window that buildFilteredStats counts from.
+  // Total Uses — use server aggregates for all-time, byUserDay for ranged
   let phraseTotal;
   if (currentRange === 'all') {
     phraseTotal = Object.entries(allD.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).reduce((s,[,v]) => s + (v.total||0), 0);
   } else {
-    phraseTotal = Object.entries(d.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).reduce((s,[,v]) => s+v.total, 0);
+    phraseTotal = sumAllUsersDayRange(byUD, currentRange);
   }
   document.getElementById('statTotal').textContent    = phraseTotal.toLocaleString();
   document.getElementById('statTotalSub').textContent = label;
-  // Active users: always from server aggregates so we don't miss users not in recent window
   document.getElementById('statUsers').textContent    = Object.keys(allD.byUser).length;
 
-  // "This Week" card — always from recentEvents (week fits in the window)
+  // This Week card — always current week from byUserDay
+  const weekTotal = sumAllUsersDayRange(byUD, 'week');
   const weekBounds = getRangeBounds('week');
-  const weekEvents = filterEventsByRange(allD.recentEvents, 'week').filter(e => !UTILITY_KEYS.has(e.key));
-  document.getElementById('statPeriod').textContent    = weekEvents.length.toLocaleString();
+  document.getElementById('statPeriod').textContent    = weekTotal.toLocaleString();
   document.getElementById('statPeriodSub').textContent = weekBounds.from + ' – ' + weekBounds.to;
   if (currentRange === 'week') {
     document.getElementById('statPeriod').textContent    = phraseTotal.toLocaleString();
     document.getElementById('statPeriodSub').textContent = 'this week';
   }
 
-  // Top phrase — use server aggregates for all-time, filtered for ranged views
+  // Top phrase — server aggregates for all-time, events for ranged (bar chart source)
+  const d = buildFilteredStats(allD, currentRange);
   const topSource = currentRange === 'all'
     ? Object.entries(allD.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b) => b[1].total - a[1].total)
     : Object.entries(d.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b) => b[1].total - a[1].total);
@@ -691,27 +723,30 @@ function renderAllStats() {
     document.getElementById('statTopCount').textContent = '';
   }
 
-  // User table — sort by true all-time server total, show range total / all-time
+  // User table — use byUserDay for range counts, server aggregates for all-time
   const tbody = document.getElementById('userTableBody');
   tbody.innerHTML = '';
-  // allTimePhrase per user: sum non-utility keys from server's byKey for that user
   Object.entries(allD.byUser).sort((a,b) => b[1].total - a[1].total).forEach(([user, data], i) => {
-    const color      = USER_COLORS[i % USER_COLORS.length];
-    const initials   = user.slice(0,2).toUpperCase();
-    const rangeUserData = d.byUser[user] || { total: 0, byKey: {} };
-    const topEntry   = Object.entries(rangeUserData.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b)=>b[1]-a[1])[0];
-    const topLabel   = topEntry ? (allD.byKey[topEntry[0]]?.label || topEntry[0]) : '—';
-    const utilTotal  = Object.entries(rangeUserData.byKey).filter(([k]) => UTILITY_KEYS.has(k)).reduce((s,[,v]) => s+v, 0);
-    const lastEvent  = allD.recentEvents.find(e => e.user === user);
-    const lastActive = lastEvent ? new Date(lastEvent.ts).toLocaleDateString('en-AU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '—';
-    const online     = heartbeatData[user]?.online;
-    const userVersion= heartbeatData[user]?.version || null;
-    const firstSeenTs= firstSeenData[user];
-    const firstSeen  = firstSeenTs ? new Date(firstSeenTs).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) : '—';
-    const rangeTotal = Object.entries(rangeUserData.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).reduce((s,[,v])=>s+v,0);
+    const color       = USER_COLORS[i % USER_COLORS.length];
+    const initials    = user.slice(0,2).toUpperCase();
+    const online      = heartbeatData[user]?.online;
+    const userVersion = heartbeatData[user]?.version || null;
+    const firstSeenTs = firstSeenData[user];
+    const firstSeen   = firstSeenTs ? new Date(firstSeenTs).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) : '—';
+    const lastEvent   = allD.recentEvents.find(e => e.user === user);
+    const lastActive  = lastEvent ? new Date(lastEvent.ts).toLocaleDateString('en-AU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '—';
 
-    // All-time phrase count: use server-side byKey values (integers) directly
+    // All-time phrase count from server aggregates
     const allTimePhrase = Object.entries(data.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).reduce((s,[,v]) => s + (typeof v === 'object' ? (v.total||0) : v), 0);
+
+    // Ranged counts from byUserDay (accurate, not capped)
+    const ranged = sumUserDayRange(byUD, user, currentRange);
+
+    // Top phrase for range from events (best we can do without more server data)
+    const rangeUserData = d.byUser[user] || { byKey: {} };
+    const topEntry  = Object.entries(rangeUserData.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b)=>b[1]-a[1])[0];
+    const topLabel  = topEntry ? (allD.byKey[topEntry[0]]?.label || topEntry[0]) : '—';
+    const utilTotal = ranged.utility;
 
     const vBadge = userVersion
       ? '<span class="version-badge ' + (userVersion === CURRENT_VERSION ? 'current' : 'outdated') + '">' + escH(userVersion) + '</span>'
@@ -719,7 +754,7 @@ function renderAllStats() {
 
     const countCell = currentRange === 'all'
       ? allTimePhrase.toLocaleString()
-      : rangeTotal.toLocaleString() + ' <span style="color:var(--muted);font-size:0.68rem">/ ' + allTimePhrase.toLocaleString() + '</span>';
+      : ranged.phrases.toLocaleString() + ' <span style="color:var(--muted);font-size:0.68rem">/ ' + allTimePhrase.toLocaleString() + '</span>';
 
     const tr = document.createElement('tr');
     tr.innerHTML =
@@ -740,8 +775,8 @@ function renderAllStats() {
 }
 
 function renderUserDetail(user) {
-  const allD = statsData;
-  const d    = buildFilteredStats(allD, currentRange);
+  const allD  = statsData;
+  const byUD  = allD.byUserDay || {};
   const label = getRangeLabel(currentRange);
 
   document.getElementById('statsTitle').textContent  = user;
@@ -749,18 +784,26 @@ function renderUserDetail(user) {
   document.getElementById('backToAll').style.display = '';
   document.getElementById('userFilterWrap').style.display = 'none';
 
-  const userData   = d.byUser[user] || { total: 0, byKey: {} };
-  const userEvents = d.recentEvents.filter(e => e.user === user);
-  const phraseSorted = Object.entries(userData.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b)=>b[1]-a[1]);
-  const totalReal  = phraseSorted.reduce((s,[,v])=>s+v,0);
+  // All-time from server aggregates
+  const userData     = allD.byUser[user] || { total: 0, byKey: {} };
+  const allTimePhrase = Object.entries(userData.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).reduce((s,[,v]) => s+(typeof v==='object'?(v.total||0):v), 0);
 
-  const weekBounds = getRangeBounds('week');
-  const weekUserEvents = filterEventsByRange(allD.recentEvents, 'week').filter(e => e.user === user && !UTILITY_KEYS.has(e.key));
+  // Ranged from byUserDay
+  const ranged     = sumUserDayRange(byUD, user, currentRange);
+  const weekRanged = sumUserDayRange(byUD, user, 'week');
 
-  document.getElementById('statTotal').textContent     = totalReal.toLocaleString();
+  const displayTotal = currentRange === 'all' ? allTimePhrase : ranged.phrases;
+
+  // Top phrase from recentEvents (best available without full event scan)
+  const d = buildFilteredStats(allD, currentRange);
+  const rangeUserData  = d.byUser[user] || { byKey: {} };
+  const userEvents     = d.recentEvents.filter(e => e.user === user);
+  const phraseSorted   = Object.entries(rangeUserData.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b)=>b[1]-a[1]);
+
+  document.getElementById('statTotal').textContent     = displayTotal.toLocaleString();
   document.getElementById('statTotalSub').textContent  = label;
   document.getElementById('statUsers').textContent     = '—';
-  document.getElementById('statPeriod').textContent    = weekUserEvents.length.toLocaleString();
+  document.getElementById('statPeriod').textContent    = weekRanged.phrases.toLocaleString();
   document.getElementById('statPeriodSub').textContent = 'this week';
   if (phraseSorted.length) {
     document.getElementById('statTop').textContent      = allD.byKey[phraseSorted[0][0]]?.label || phraseSorted[0][0];
@@ -771,8 +814,8 @@ function renderUserDetail(user) {
   }
 
   const userByKey = {};
-  Object.entries(userData.byKey).forEach(([k, count]) => {
-    userByKey[k] = { label: allD.byKey[k]?.label || k, total: count, byUser: {} };
+  Object.entries(rangeUserData.byKey).forEach(([k, count]) => {
+    userByKey[k] = { label: allD.byKey[k]?.label || k, total: count };
   });
   const fakeD = { byKey: userByKey, byDay: buildUserByDay(userEvents), recentEvents: userEvents };
   renderBarChart(fakeD, user);
@@ -1001,16 +1044,25 @@ function showUserDetailViewInUsers(user) {
   const allD      = statsData;
   if (!allD) { document.getElementById('userDetailStatGrid').innerHTML = '<div style="color:var(--muted)">No stats data loaded</div>'; return; }
 
-  const d         = buildFilteredStats(allD, 'all'); // always show all-time in user detail here
-  const userData  = d.byUser[user] || { total: 0, byKey: {} };
-  const userEvents= allD.recentEvents.filter(e => e.user === user && e.key !== '__heartbeat__');
-  const phraseSorted = Object.entries(userData.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b)=>b[1]-a[1]);
-  const totalPhrases = phraseSorted.reduce((s,[,v])=>s+v,0);
-  const utilTotal    = Object.entries(userData.byKey).filter(([k]) => UTILITY_KEYS.has(k)).reduce((s,[,v])=>s+v,0);
-  const weekEvents   = filterEventsByRange(allD.recentEvents, 'week').filter(e => e.user === user && !UTILITY_KEYS.has(e.key));
-  const todayEvents  = filterEventsByRange(allD.recentEvents, 'day').filter(e => e.user === user && !UTILITY_KEYS.has(e.key));
+  const byUD         = allD.byUserDay || {};
+  const userData     = allD.byUser[user] || { total: 0, byKey: {} };
+  const userEvents   = allD.recentEvents.filter(e => e.user === user && e.key !== '__heartbeat__');
+
+  // All-time from server aggregates
+  const allTimePhrase = Object.entries(userData.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).reduce((s,[,v]) => s+(typeof v==='object'?(v.total||0):v), 0);
+  const allTimeUtil   = Object.entries(userData.byKey).filter(([k]) => UTILITY_KEYS.has(k) && k !== '__heartbeat__').reduce((s,[,v]) => s+(typeof v==='object'?(v.total||0):v), 0);
+
+  // Ranged counts from byUserDay — always accurate regardless of recentEvents cap
+  const weekRanged  = sumUserDayRange(byUD, user, 'week');
+  const todayRanged = sumUserDayRange(byUD, user, 'day');
+
   const firstSeenTs  = firstSeenData[user];
   const hb           = heartbeatData[user] || {};
+  const phraseSorted = Object.entries(userData.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b) => {
+    const av = typeof a[1]==='object' ? a[1].total : a[1];
+    const bv = typeof b[1]==='object' ? b[1].total : b[1];
+    return bv - av;
+  });
 
   // Name + badges
   const nameEl   = document.getElementById('userDetailName');
@@ -1023,21 +1075,20 @@ function showUserDetailViewInUsers(user) {
   if (version) badgeHtml += '<span class="version-badge ' + (version===CURRENT_VERSION?'current':'outdated') + '">' + escH(version) + '</span>';
   badgesEl.innerHTML = badgeHtml;
 
-  // Stat grid
   const statGrid = document.getElementById('userDetailStatGrid');
   statGrid.innerHTML = `
-    <div class="user-detail-stat"><div class="stat-label">All Time</div><div class="stat-value">${totalPhrases.toLocaleString()}</div></div>
-    <div class="user-detail-stat"><div class="stat-label">This Week</div><div class="stat-value">${weekEvents.length.toLocaleString()}</div></div>
-    <div class="user-detail-stat"><div class="stat-label">Today</div><div class="stat-value">${todayEvents.length.toLocaleString()}</div></div>
-    <div class="user-detail-stat"><div class="stat-label">Utility Uses</div><div class="stat-value">${utilTotal.toLocaleString()}</div></div>
+    <div class="user-detail-stat"><div class="stat-label">All Time</div><div class="stat-value">${allTimePhrase.toLocaleString()}</div></div>
+    <div class="user-detail-stat"><div class="stat-label">This Week</div><div class="stat-value">${weekRanged.phrases.toLocaleString()}</div></div>
+    <div class="user-detail-stat"><div class="stat-label">Today</div><div class="stat-value">${todayRanged.phrases.toLocaleString()}</div></div>
+    <div class="user-detail-stat"><div class="stat-label">Utility Uses</div><div class="stat-value">${allTimeUtil.toLocaleString()}</div></div>
     <div class="user-detail-stat"><div class="stat-label">First Seen</div><div class="stat-value" style="font-size:0.85rem;margin-top:6px">${firstSeenTs ? new Date(firstSeenTs).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) : '—'}</div></div>
     <div class="user-detail-stat"><div class="stat-label">Top Phrase</div><div class="stat-value" style="font-size:0.85rem;margin-top:6px">${escH(phraseSorted[0] ? (allD.byKey[phraseSorted[0][0]]?.label || phraseSorted[0][0]) : '—')}</div></div>
   `;
 
-  // Bar charts
+  // Bar charts — use server aggregates (all-time, accurate)
   const userByKey = {};
-  Object.entries(userData.byKey).forEach(([k, count]) => {
-    userByKey[k] = { label: allD.byKey[k]?.label || k, total: count };
+  Object.entries(userData.byKey).forEach(([k, v]) => {
+    userByKey[k] = { label: allD.byKey[k]?.label || k, total: typeof v === 'object' ? (v.total||0) : v };
   });
 
   const phraseBar = document.getElementById('userDetailPhraseBar');
