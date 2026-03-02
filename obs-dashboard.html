@@ -656,8 +656,7 @@ function renderAllStats() {
   document.getElementById('backToAll').style.display = 'none';
   document.getElementById('userFilterWrap').style.display = '';
 
-  const totalReal = Object.values(d.byKey).filter((_,i) => !UTILITY_KEYS.has(Object.keys(d.byKey)[i])).reduce((s,v) => s+v.total, 0);
-  const phraseKeys = Object.entries(d.byKey).filter(([k]) => !UTILITY_KEYS.has(k));
+  const phraseKeys  = Object.entries(d.byKey).filter(([k]) => !UTILITY_KEYS.has(k));
   const phraseTotal = phraseKeys.reduce((s,[,v]) => s+v.total, 0);
   document.getElementById('statTotal').textContent    = phraseTotal.toLocaleString();
   document.getElementById('statTotalSub').textContent = label;
@@ -705,9 +704,11 @@ function renderAllStats() {
       ? '<span class="version-badge ' + (userVersion === CURRENT_VERSION ? 'current' : 'outdated') + '">' + escH(userVersion) + '</span>'
       : '<span class="version-badge unknown">—</span>';
 
+    const allTimePhrase = Object.entries(data.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).reduce((s,[,v]) => s+v, 0);
+
     const countCell = currentRange === 'all'
-      ? (data.total - (data.byKey['__heartbeat__']||0)).toLocaleString()
-      : rangeTotal.toLocaleString() + ' <span style="color:var(--muted);font-size:0.68rem">/ ' + (data.total - (data.byKey['__heartbeat__']||0)).toLocaleString() + '</span>';
+      ? allTimePhrase.toLocaleString()
+      : rangeTotal.toLocaleString() + ' <span style="color:var(--muted);font-size:0.68rem">/ ' + allTimePhrase.toLocaleString() + '</span>';
 
     const tr = document.createElement('tr');
     tr.innerHTML =
