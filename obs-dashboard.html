@@ -32,7 +32,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .status-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0;}
 .status-dot.ok{background:var(--green);box-shadow:0 0 6px var(--green);}
 .status-dot.err{background:var(--red);}
-.main{padding:36px 40px 80px;max-width:1100px;}
+.main{padding:36px 40px 80px;max-width:1200px;}
 .page{display:none;animation:fadeIn .2s ease both;}
 .page.active{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
@@ -84,8 +84,13 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .online-dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex-shrink:0;}
 .online-dot.active{background:var(--green);box-shadow:0 0 8px var(--green);}
 .online-time{font-family:var(--mono);font-size:0.65rem;color:var(--muted);margin-left:4px;}
-.user-table{width:100%;border-collapse:collapse;}
+/* Sortable table headers */
 .user-table th{font-family:var(--mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);padding:0 16px 12px;text-align:left;border-bottom:1px solid var(--border);}
+.user-table th.sortable{cursor:pointer;user-select:none;white-space:nowrap;}
+.user-table th.sortable:hover{color:var(--text);}
+.user-table th.sort-asc::after{content:' ↑';color:var(--accent);}
+.user-table th.sort-desc::after{content:' ↓';color:var(--accent);}
+.user-table{width:100%;border-collapse:collapse;}
 .user-table td{padding:13px 16px;border-bottom:1px solid var(--border);font-size:0.85rem;}
 .user-table tr:last-child td{border-bottom:none;}
 .user-table tbody tr{cursor:pointer;transition:background .12s;}
@@ -126,13 +131,31 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .config-field{margin-bottom:16px;}
 .config-label{display:block;font-family:var(--mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:6px;}
 .row{display:flex;gap:10px;}
-
+/* Group badge */
+.group-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:5px;font-family:var(--mono);font-size:0.65rem;font-weight:700;border:1px solid;}
+.group-badge.Cranbourne{background:rgba(96,165,250,0.12);border-color:rgba(96,165,250,0.4);color:var(--blue);}
+.group-badge.Clyde{background:rgba(175,92,250,0.12);border-color:rgba(175,92,250,0.4);color:var(--accent);}
+.group-badge.Other{background:var(--surface2);border-color:var(--border);color:var(--muted2);}
+.group-badge.Unassigned{background:var(--surface2);border-color:var(--border);color:var(--muted);}
+/* Group filter chips */
+.group-filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;}
+.group-filter-chip{background:var(--surface2);border:1.5px solid var(--border2);border-radius:8px;padding:5px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;transition:all .15s;font-family:var(--mono);}
+.group-filter-chip:hover{border-color:var(--accent);}
+.group-filter-chip.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.group-filter-chip.Cranbourne.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+.group-filter-chip.Clyde.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+/* Nickname edit */
+.nick-edit-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.75rem;padding:2px 4px;border-radius:4px;transition:color .15s;line-height:1;}
+.nick-edit-btn:hover{color:var(--accent);}
+.nick-inline{background:var(--surface2);border:1px solid var(--accent);border-radius:5px;color:var(--text);font-family:var(--mono);font-size:0.75rem;padding:2px 6px;outline:none;width:100px;}
+/* Group select */
+.group-select{background:var(--surface2);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:3px 6px;outline:none;cursor:pointer;}
+.group-select:focus{border-color:var(--accent);}
 /* Date range filter */
 .date-range-bar{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:24px;width:fit-content;}
 .range-btn{background:none;border:none;color:var(--muted2);font-family:var(--font);font-size:0.78rem;font-weight:700;padding:6px 16px;border-radius:7px;cursor:pointer;transition:all .15s;}
 .range-btn:hover{color:var(--text);}
 .range-btn.active{background:var(--accent);color:#fff;}
-
 /* Users page */
 .kill-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:6px;font-family:var(--mono);font-size:0.65rem;font-weight:700;}
 .kill-badge.disabled{background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.35);color:var(--red);}
@@ -144,27 +167,22 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .btn-close-user{background:none;border:1.5px solid rgba(251,191,36,0.4);color:var(--yellow);font-family:var(--font);font-size:0.75rem;font-weight:700;padding:5px 12px;border-radius:7px;cursor:pointer;transition:all .15s;white-space:nowrap;}
 .btn-close-user:hover{background:rgba(251,191,36,0.1);}
 .btn-close-user:disabled{opacity:0.35;cursor:default;}
-/* Version badge */
 .version-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-family:var(--mono);font-size:0.62rem;font-weight:700;border:1px solid;}
 .version-badge.current{background:rgba(52,211,153,0.1);border-color:rgba(52,211,153,0.35);color:var(--green);}
 .version-badge.outdated{background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.35);color:var(--yellow);}
 .version-badge.unknown{background:var(--surface2);border-color:var(--border);color:var(--muted);}
 .exit-pending-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--yellow);box-shadow:0 0 6px var(--yellow);margin-left:4px;flex-shrink:0;}
-/* Toolbar */
 .toolbar-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:24px;}
 .btn-outline{background:none;border:1.5px solid var(--border2);color:var(--muted2);font-family:var(--font);font-size:0.8rem;font-weight:700;padding:8px 16px;border-radius:9px;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
 .btn-outline:hover{border-color:var(--accent);color:var(--accent);}
 .btn-outline.blue:hover{border-color:var(--blue);color:var(--blue);}
 .btn-outline.green:hover{border-color:var(--green);color:var(--green);}
-/* Weekly summary modal */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
 .modal-box{background:var(--surface);border:1px solid var(--border2);border-radius:18px;padding:28px;max-width:600px;width:92%;max-height:85vh;display:flex;flex-direction:column;gap:16px;animation:fadeIn .2s ease;}
 .modal-box h3{font-size:1.1rem;font-weight:800;letter-spacing:-0.02em;}
 .modal-textarea{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:var(--mono);font-size:0.78rem;line-height:1.8;padding:14px 16px;flex:1;resize:none;outline:none;min-height:280px;}
 .modal-textarea:focus{border-color:var(--accent);}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;}
-
-/* User detail panel in Users page */
 .user-detail-panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-top:20px;animation:fadeIn .2s ease;}
 .user-detail-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
 .user-detail-name{font-size:1.4rem;font-weight:800;letter-spacing:-0.03em;}
@@ -174,7 +192,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .user-detail-stat .stat-value{font-size:1.6rem;font-weight:800;letter-spacing:-0.04em;margin-top:3px;line-height:1;}
 .btn-view-stats{background:var(--accent);border:none;color:#fff;font-family:var(--font);font-size:0.75rem;font-weight:700;padding:6px 14px;border-radius:7px;cursor:pointer;transition:opacity .15s;}
 .btn-view-stats:hover{opacity:0.85;}
-/* Toast */
 #toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:12px 22px;font-size:0.85rem;font-weight:600;opacity:0;transition:opacity .25s,transform .25s;z-index:1000;pointer-events:none;white-space:nowrap;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 #toast.ok{border-color:var(--green);color:var(--green);}
@@ -215,11 +232,19 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
         <button class="back-btn" id="backToAll" style="display:none">← All users</button>
       </div>
 
-      <!-- Toolbar -->
       <div class="toolbar-row" id="statsToolbar">
         <button class="btn-outline green" id="exportCsvBtn">⬇ Export CSV</button>
         <button class="btn-outline blue" id="weeklySummaryBtn">📋 Weekly summary</button>
         <button class="btn-outline" id="closeAllBtn" style="margin-left:auto">⏹ Close all for update</button>
+      </div>
+
+      <!-- Group filter -->
+      <div class="group-filter-bar" id="groupFilterBar">
+        <span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);align-self:center">Group:</span>
+        <div class="group-filter-chip active" data-group="all">All</div>
+        <div class="group-filter-chip Cranbourne" data-group="Cranbourne">Cranbourne</div>
+        <div class="group-filter-chip Clyde" data-group="Clyde">Clyde</div>
+        <div class="group-filter-chip" data-group="Other">Other</div>
       </div>
 
       <!-- Date range filter -->
@@ -230,7 +255,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
         <button class="range-btn active" data-range="all">All Time</button>
         <button class="range-btn" data-range="custom">Custom ▾</button>
       </div>
-      <!-- Custom date range row -->
       <div id="customRangeRow" style="display:none;align-items:center;gap:10px;margin-bottom:24px;flex-wrap:wrap;">
         <span style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">From</span>
         <input class="input" type="date" id="customFrom" style="width:160px" />
@@ -246,18 +270,27 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
         <div class="stat-card yellow"><div class="stat-label">Top Phrase</div><div class="stat-value" style="font-size:1rem;margin-top:8px" id="statTop">—</div><div class="stat-sub" id="statTopCount"></div></div>
       </div>
 
-      <!-- Online now -->
       <div class="chart-card" id="onlineCard">
         <div class="chart-title">Who's online now <span style="color:var(--muted);font-size:0.7rem">(seen in last 3 min)</span></div>
         <div class="online-grid" id="onlineGrid"></div>
       </div>
 
-      <!-- User table -->
       <div id="userFilterWrap">
         <div class="chart-card">
           <div class="chart-title">Click a user to see their individual stats</div>
           <table class="user-table" id="userTable">
-            <thead><tr><th>User</th><th>Total</th><th>Top phrase</th><th>Utility</th><th>Version</th><th>First use</th><th>Last active</th></tr></thead>
+            <thead>
+              <tr>
+                <th class="sortable" data-col="user">User</th>
+                <th class="sortable" data-col="total">Total</th>
+                <th>Top phrase</th>
+                <th class="sortable" data-col="utility">Utility</th>
+                <th class="sortable" data-col="version">Version</th>
+                <th class="sortable" data-col="first">First use</th>
+                <th class="sortable" data-col="last">Last active</th>
+                <th class="sortable" data-col="group">Group</th>
+              </tr>
+            </thead>
             <tbody id="userTableBody"></tbody>
           </table>
         </div>
@@ -298,7 +331,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
       </div>
     </div>
 
-
     <!-- ══ USERS PAGE ══ -->
     <div class="page" id="usersPage">
       <div class="page-header">
@@ -309,7 +341,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
         <button class="back-btn" id="backToUsers" style="display:none">← All users</button>
       </div>
 
-      <!-- All users table view -->
       <div id="usersListView">
         <div class="section-card">
           <div class="section-card-title">
@@ -318,7 +349,18 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
           </div>
           <div id="usersTableWrap">
             <table class="user-table" id="usersTable">
-              <thead><tr><th>User</th><th>Status</th><th>Version</th><th>Last seen</th><th>Kill switch</th><th>Close for update</th><th>Stats</th></tr></thead>
+              <thead>
+                <tr>
+                  <th class="sortable" data-col="user">User</th>
+                  <th class="sortable" data-col="online">Status</th>
+                  <th class="sortable" data-col="version">Version</th>
+                  <th class="sortable" data-col="last">Last seen</th>
+                  <th class="sortable" data-col="group">Group</th>
+                  <th>Kill switch</th>
+                  <th>Close</th>
+                  <th>Stats</th>
+                </tr>
+              </thead>
               <tbody id="usersTableBody"></tbody>
             </table>
           </div>
@@ -329,7 +371,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
         </div>
       </div>
 
-      <!-- Individual user stats view -->
       <div id="userDetailView" style="display:none">
         <div class="user-detail-panel">
           <div class="user-detail-header">
@@ -409,6 +450,7 @@ const RENDER_URL      = 'https://timetable-server-r6nb.onrender.com';
 const UTILITY_KEYS    = new Set(['Ctrl+Alt+E','Ctrl+Alt+T','Ctrl+Alt+P','Ctrl+Alt+F','Ctrl+Alt+W','Ctrl+Alt+S','Ctrl+Alt+M','__heartbeat__']);
 const CURRENT_VERSION = 'v3.0';
 const USER_COLORS     = ['#af5cfa','#60a5fa','#34d399','#fbbf24','#f87171','#a78bfa','#fb923c','#38bdf8'];
+const GROUPS          = ['Cranbourne', 'Clyde', 'Other'];
 
 // ── State ──────────────────────────────────────────────────────────────────
 let serverUrl            = localStorage.getItem('obs-server') || '';
@@ -416,12 +458,29 @@ let adminPw              = localStorage.getItem('obs-pw')     || '';
 let statsData            = null;
 let firstSeenData        = {};
 let heartbeatData        = {};
-let selectedUser         = null; // stats page drill-down
+let selectedUser         = null;
 let allUsers             = [];
 let selectedOverrideUser = null;
-let currentRange         = 'all'; // 'day','week','month','all','custom'
+let currentRange         = 'all';
 let customFrom           = null;
 let customTo             = null;
+let statsGroupFilter     = 'all';
+let statsSort            = { col: 'total', dir: 'desc' };
+let usersSort            = { col: 'online', dir: 'desc' };
+
+// Nicknames & groups (localStorage)
+let userNicknames = JSON.parse(localStorage.getItem('obs-nicknames') || '{}');
+let userGroups    = JSON.parse(localStorage.getItem('obs-groups')    || '{}');
+
+function saveNicknames() { localStorage.setItem('obs-nicknames', JSON.stringify(userNicknames)); }
+function saveGroups()    { localStorage.setItem('obs-groups',    JSON.stringify(userGroups));    }
+function getNick(user)   { return userNicknames[user] || ''; }
+function groupOf(user)   { return userGroups[user] || 'Other'; }
+
+function displayName(user) {
+  const nick = getNick(user);
+  return escH(user) + (nick ? ' <span style="color:var(--muted2);font-size:0.8em">(' + escH(nick) + ')</span>' : '');
+}
 
 // ── API helpers ────────────────────────────────────────────────────────────
 async function api(method, path, body) {
@@ -448,7 +507,6 @@ function timeAgo(date) {
 }
 
 // ── Date range helpers ─────────────────────────────────────────────────────
-// Get today's local date as YYYY-MM-DD
 function localDateStr(date) {
   const d = date || new Date();
   return d.getFullYear() + '-' +
@@ -459,9 +517,7 @@ function localDateStr(date) {
 function getRangeBounds(range) {
   const now   = new Date();
   const today = localDateStr(now);
-  if (range === 'day') {
-    return { from: today, to: today };
-  }
+  if (range === 'day') return { from: today, to: today };
   if (range === 'week') {
     const mon = new Date(now.getTime() - ((now.getDay()+6)%7)*86400000);
     mon.setHours(0,0,0,0);
@@ -473,10 +529,8 @@ function getRangeBounds(range) {
     const lastDay = new Date(now.getFullYear(), now.getMonth()+1, 0);
     return { from, to: localDateStr(lastDay) };
   }
-  if (range === 'custom') {
-    return { from: customFrom || '2000-01-01', to: customTo || today };
-  }
-  return { from: '2000-01-01', to: '2099-12-31' }; // all
+  if (range === 'custom') return { from: customFrom || '2000-01-01', to: customTo || today };
+  return { from: '2000-01-01', to: '2099-12-31' };
 }
 
 function getRangeLabel(range) {
@@ -491,12 +545,11 @@ function filterEventsByRange(events, range) {
   if (range === 'all') return events;
   const { from, to } = getRangeBounds(range);
   return events.filter(e => {
-    const localDate = localDateStr(new Date(e.ts));
+    const localDate = localDateStr(new Date(e.ts));  // ← FIX: local time, not UTC
     return localDate >= from && localDate <= to;
   });
 }
 
-// Rebuild stats aggregates from filtered events (used for bar charts and feed only)
 function buildFilteredStats(allData, range) {
   const events = filterEventsByRange(allData.recentEvents, range).filter(e => e.key !== '__heartbeat__');
   const byKey  = {};
@@ -509,15 +562,13 @@ function buildFilteredStats(allData, range) {
     if (!byUser[e.user]) byUser[e.user] = { total: 0, byKey: {} };
     byUser[e.user].total++;
     byUser[e.user].byKey[e.key] = (byUser[e.user].byKey[e.key] || 0) + 1;
-    const d = e.ts.slice(0,10);
+    const d = localDateStr(new Date(e.ts));  // ← FIX: local time
     byDay[d] = (byDay[d] || 0) + 1;
   });
 
   return { byKey, byUser, byDay, recentEvents: events };
 }
 
-// Sum phrase counts from byUserDay for a user over a date range
-// byUserDay shape: { "username": { "2026-03-02": { phrases: N, utility: N } } }
 function sumUserDayRange(byUserDay, user, range) {
   const userDays = byUserDay?.[user] || {};
   if (range === 'all') {
@@ -526,15 +577,11 @@ function sumUserDayRange(byUserDay, user, range) {
   const { from, to } = getRangeBounds(range);
   let phrases = 0, utility = 0;
   for (const [day, v] of Object.entries(userDays)) {
-    if (day >= from && day <= to) {
-      phrases += v.phrases || 0;
-      utility += v.utility || 0;
-    }
+    if (day >= from && day <= to) { phrases += v.phrases || 0; utility += v.utility || 0; }
   }
   return { phrases, utility };
 }
 
-// Sum all users' phrase counts from byUserDay over a date range
 function sumAllUsersDayRange(byUserDay, range) {
   let total = 0;
   for (const user of Object.keys(byUserDay || {})) {
@@ -591,8 +638,8 @@ async function bootApp() {
 }
 
 function setStatus(ok) {
-  document.getElementById('statusDot').className   = 'status-dot ' + (ok ? 'ok' : 'err');
-  document.getElementById('statusText').textContent = ok ? 'Connected' : 'Offline';
+  document.getElementById('statusDot').className    = 'status-dot ' + (ok ? 'ok' : 'err');
+  document.getElementById('statusText').textContent  = ok ? 'Connected' : 'Offline';
 }
 
 // ── Nav ────────────────────────────────────────────────────────────────────
@@ -606,11 +653,45 @@ document.querySelectorAll('.nav-item').forEach(item => {
       document.getElementById('cfgUrl').value = serverUrl || localStorage.getItem('obs-server') || '';
       document.getElementById('cfgPw').value  = adminPw  || localStorage.getItem('obs-pw')     || '';
     }
-    if (item.dataset.page === 'usersPage') {
-      renderUsersPage();
-    }
+    if (item.dataset.page === 'usersPage') renderUsersPage();
   });
 });
+
+// ── Group filter (Stats page) ──────────────────────────────────────────────
+document.querySelectorAll('.group-filter-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.group-filter-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    statsGroupFilter = chip.dataset.group;
+    renderStats();
+  });
+});
+
+// ── Sortable column headers ────────────────────────────────────────────────
+document.getElementById('userTable').querySelectorAll('th[data-col]').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.col;
+    if (statsSort.col === col) statsSort.dir = statsSort.dir === 'asc' ? 'desc' : 'asc';
+    else { statsSort.col = col; statsSort.dir = col === 'user' || col === 'group' ? 'asc' : 'desc'; }
+    renderStats();
+  });
+});
+
+document.getElementById('usersTable').querySelectorAll('th[data-col]').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.col;
+    if (usersSort.col === col) usersSort.dir = usersSort.dir === 'asc' ? 'desc' : 'asc';
+    else { usersSort.col = col; usersSort.dir = col === 'user' || col === 'group' ? 'asc' : 'desc'; }
+    renderUsersPage();
+  });
+});
+
+function updateSortHeaders(tableId, sortState) {
+  document.getElementById(tableId).querySelectorAll('th[data-col]').forEach(th => {
+    th.classList.remove('sort-asc', 'sort-desc');
+    if (th.dataset.col === sortState.col) th.classList.add('sort-' + sortState.dir);
+  });
+}
 
 // ── Date range buttons ─────────────────────────────────────────────────────
 document.querySelectorAll('.range-btn').forEach(btn => {
@@ -639,8 +720,8 @@ document.querySelectorAll('.range-btn').forEach(btn => {
 });
 
 document.getElementById('applyCustomRange').addEventListener('click', () => {
-  customFrom   = document.getElementById('customFrom').value;
-  customTo     = document.getElementById('customTo').value;
+  customFrom = document.getElementById('customFrom').value;
+  customTo   = document.getElementById('customTo').value;
   if (!customFrom || !customTo) { toast('Select both dates', 'err'); return; }
   currentRange = 'custom';
   document.getElementById('customRangeRow').style.display = 'none';
@@ -678,6 +759,46 @@ function renderStats() {
   selectedUser ? renderUserDetail(selectedUser) : renderAllStats();
 }
 
+function sortUsers(entries, sortState, allD, byUD, d) {
+  return entries.sort((a, b) => {
+    const [ua, da] = a; const [ub, db] = b;
+    const mul = sortState.dir === 'asc' ? 1 : -1;
+    switch (sortState.col) {
+      case 'user':    return mul * ua.localeCompare(ub);
+      case 'group':   return mul * groupOf(ua).localeCompare(groupOf(ub));
+      case 'version': {
+        const va = heartbeatData[ua]?.version || '';
+        const vb = heartbeatData[ub]?.version || '';
+        return mul * va.localeCompare(vb);
+      }
+      case 'utility': {
+        const ua2 = sumUserDayRange(byUD, ua, currentRange).utility;
+        const ub2 = sumUserDayRange(byUD, ub, currentRange).utility;
+        return mul * (ua2 - ub2);
+      }
+      case 'first': {
+        const fa = firstSeenData[ua] || '9999';
+        const fb = firstSeenData[ub] || '9999';
+        return mul * (fa < fb ? -1 : fa > fb ? 1 : 0);
+      }
+      case 'last': {
+        const la = allD.recentEvents.find(e => e.user === ua)?.ts || '0';
+        const lb = allD.recentEvents.find(e => e.user === ub)?.ts || '0';
+        return mul * (la < lb ? -1 : la > lb ? 1 : 0);
+      }
+      default: { // total
+        const ta = currentRange === 'all'
+          ? Object.entries(da.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).reduce((s,[,v]) => s+(typeof v==='object'?(v.total||0):v), 0)
+          : sumUserDayRange(byUD, ua, currentRange).phrases;
+        const tb = currentRange === 'all'
+          ? Object.entries(db.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).reduce((s,[,v]) => s+(typeof v==='object'?(v.total||0):v), 0)
+          : sumUserDayRange(byUD, ub, currentRange).phrases;
+        return mul * (ta - tb);
+      }
+    }
+  });
+}
+
 function renderAllStats() {
   if (!statsData) return;
   const allD  = statsData;
@@ -685,23 +806,33 @@ function renderAllStats() {
   const byUD  = allD.byUserDay || {};
 
   document.getElementById('statsTitle').textContent  = 'Usage Stats';
-  document.getElementById('statsSub').textContent    = label;
+  document.getElementById('statsSub').textContent    = label + (statsGroupFilter !== 'all' ? ' · ' + statsGroupFilter : '');
   document.getElementById('backToAll').style.display = 'none';
   document.getElementById('userFilterWrap').style.display = '';
 
-  // Total Uses — use server aggregates for all-time, byUserDay for ranged
+  updateSortHeaders('userTable', statsSort);
+
+  // Filter users by group
+  const filteredUserEntries = Object.entries(allD.byUser).filter(([user]) =>
+    statsGroupFilter === 'all' || groupOf(user) === statsGroupFilter
+  );
+
+  // Total Uses
   let phraseTotal;
   if (currentRange === 'all') {
-    phraseTotal = Object.entries(allD.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).reduce((s,[,v]) => s + (v.total||0), 0);
+    phraseTotal = filteredUserEntries.reduce((s, [user]) => {
+      return s + sumUserDayRange(byUD, user, 'all').phrases;
+    }, 0);
   } else {
-    phraseTotal = sumAllUsersDayRange(byUD, currentRange);
+    phraseTotal = filteredUserEntries.reduce((s, [user]) => {
+      return s + sumUserDayRange(byUD, user, currentRange).phrases;
+    }, 0);
   }
   document.getElementById('statTotal').textContent    = phraseTotal.toLocaleString();
   document.getElementById('statTotalSub').textContent = label;
-  document.getElementById('statUsers').textContent    = Object.keys(allD.byUser).length;
+  document.getElementById('statUsers').textContent    = filteredUserEntries.length;
 
-  // This Week card — always current week from byUserDay
-  const weekTotal = sumAllUsersDayRange(byUD, 'week');
+  const weekTotal  = filteredUserEntries.reduce((s, [user]) => s + sumUserDayRange(byUD, user, 'week').phrases, 0);
   const weekBounds = getRangeBounds('week');
   document.getElementById('statPeriod').textContent    = weekTotal.toLocaleString();
   document.getElementById('statPeriodSub').textContent = weekBounds.from + ' – ' + weekBounds.to;
@@ -710,23 +841,30 @@ function renderAllStats() {
     document.getElementById('statPeriodSub').textContent = 'this week';
   }
 
-  // Top phrase — server aggregates for all-time, events for ranged (bar chart source)
   const d = buildFilteredStats(allD, currentRange);
-  const topSource = currentRange === 'all'
-    ? Object.entries(allD.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b) => b[1].total - a[1].total)
-    : Object.entries(d.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b) => b[1].total - a[1].total);
+  // Top phrase across filtered users only
+  const filteredUserSet = new Set(filteredUserEntries.map(([u]) => u));
+  const filteredEvents  = d.recentEvents.filter(e => filteredUserSet.has(e.user));
+  const topPhraseMap    = {};
+  filteredEvents.filter(e => !UTILITY_KEYS.has(e.key)).forEach(e => {
+    topPhraseMap[e.key] = (topPhraseMap[e.key] || 0) + 1;
+  });
+  const topSource = Object.entries(topPhraseMap).sort((a,b) => b[1]-a[1]);
   if (topSource.length) {
-    document.getElementById('statTop').textContent      = topSource[0][1].label;
-    document.getElementById('statTopCount').textContent = topSource[0][1].total.toLocaleString() + ' uses';
+    document.getElementById('statTop').textContent      = allD.byKey[topSource[0][0]]?.label || topSource[0][0];
+    document.getElementById('statTopCount').textContent = topSource[0][1].toLocaleString() + ' uses';
   } else {
     document.getElementById('statTop').textContent      = '—';
     document.getElementById('statTopCount').textContent = '';
   }
 
-  // User table — use byUserDay for range counts, server aggregates for all-time
+  // User table
   const tbody = document.getElementById('userTableBody');
   tbody.innerHTML = '';
-  Object.entries(allD.byUser).sort((a,b) => b[1].total - a[1].total).forEach(([user, data], i) => {
+
+  const sortedEntries = sortUsers([...filteredUserEntries], statsSort, allD, byUD, d);
+
+  sortedEntries.forEach(([user, data], i) => {
     const color       = USER_COLORS[i % USER_COLORS.length];
     const initials    = user.slice(0,2).toUpperCase();
     const online      = heartbeatData[user]?.online;
@@ -736,17 +874,14 @@ function renderAllStats() {
     const lastEvent   = allD.recentEvents.find(e => e.user === user);
     const lastActive  = lastEvent ? new Date(lastEvent.ts).toLocaleDateString('en-AU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '—';
 
-    // All-time phrase count from server aggregates
-    const allTimePhrase = Object.entries(data.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).reduce((s,[,v]) => s + (typeof v === 'object' ? (v.total||0) : v), 0);
-
-    // Ranged counts from byUserDay (accurate, not capped)
-    const ranged = sumUserDayRange(byUD, user, currentRange);
-
-    // Top phrase for range from events (best we can do without more server data)
+    const allTimePhrase = Object.entries(data.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).reduce((s,[,v]) => s+(typeof v==='object'?(v.total||0):v), 0);
+    const ranged        = sumUserDayRange(byUD, user, currentRange);
     const rangeUserData = d.byUser[user] || { byKey: {} };
-    const topEntry  = Object.entries(rangeUserData.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b)=>b[1]-a[1])[0];
-    const topLabel  = topEntry ? (allD.byKey[topEntry[0]]?.label || topEntry[0]) : '—';
-    const utilTotal = ranged.utility;
+    const topEntry      = Object.entries(rangeUserData.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b)=>b[1]-a[1])[0];
+    const topLabel      = topEntry ? (allD.byKey[topEntry[0]]?.label || topEntry[0]) : '—';
+    const utilTotal     = ranged.utility;
+    const grp           = groupOf(user);
+    const nick          = getNick(user);
 
     const vBadge = userVersion
       ? '<span class="version-badge ' + (userVersion === CURRENT_VERSION ? 'current' : 'outdated') + '">' + escH(userVersion) + '</span>'
@@ -756,15 +891,18 @@ function renderAllStats() {
       ? allTimePhrase.toLocaleString()
       : ranged.phrases.toLocaleString() + ' <span style="color:var(--muted);font-size:0.68rem">/ ' + allTimePhrase.toLocaleString() + '</span>';
 
+    const grpBadge = '<span class="group-badge ' + escH(grp) + '">' + escH(grp) + '</span>';
+
     const tr = document.createElement('tr');
     tr.innerHTML =
-      '<td><div class="user-badge"><div class="user-avatar" style="background:' + color + '22;color:' + color + '">' + escH(initials) + '</div>' + escH(user) + (online ? ' <span style="color:var(--green);font-size:0.65rem">● online</span>' : '') + '</div></td>' +
+      '<td><div class="user-badge"><div class="user-avatar" style="background:' + color + '22;color:' + color + '">' + escH(initials) + '</div>' + displayName(user) + (online ? ' <span style="color:var(--green);font-size:0.65rem">●</span>' : '') + '</div></td>' +
       '<td style="font-family:var(--mono)">' + countCell + '</td>' +
       '<td style="color:var(--muted2)">' + escH(topLabel) + '</td>' +
       '<td style="font-family:var(--mono);color:var(--muted2)">' + utilTotal + '</td>' +
       '<td>' + vBadge + '</td>' +
       '<td style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">' + firstSeen + '</td>' +
-      '<td style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">' + lastActive + '</td>';
+      '<td style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">' + lastActive + '</td>' +
+      '<td>' + grpBadge + '</td>';
     tr.addEventListener('click', () => drillIntoUser(user));
     tbody.appendChild(tr);
   });
@@ -779,26 +917,20 @@ function renderUserDetail(user) {
   const byUD  = allD.byUserDay || {};
   const label = getRangeLabel(currentRange);
 
-  document.getElementById('statsTitle').textContent  = user;
+  document.getElementById('statsTitle').textContent  = displayName(user).replace(/<[^>]+>/g, '');
   document.getElementById('statsSub').textContent    = 'Individual stats — ' + label;
   document.getElementById('backToAll').style.display = '';
   document.getElementById('userFilterWrap').style.display = 'none';
 
-  // All-time from server aggregates
-  const userData     = allD.byUser[user] || { total: 0, byKey: {} };
+  const userData      = allD.byUser[user] || { total: 0, byKey: {} };
   const allTimePhrase = Object.entries(userData.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).reduce((s,[,v]) => s+(typeof v==='object'?(v.total||0):v), 0);
-
-  // Ranged from byUserDay
-  const ranged     = sumUserDayRange(byUD, user, currentRange);
-  const weekRanged = sumUserDayRange(byUD, user, 'week');
-
-  const displayTotal = currentRange === 'all' ? allTimePhrase : ranged.phrases;
-
-  // Top phrase from recentEvents (best available without full event scan)
-  const d = buildFilteredStats(allD, currentRange);
-  const rangeUserData  = d.byUser[user] || { byKey: {} };
-  const userEvents     = d.recentEvents.filter(e => e.user === user);
-  const phraseSorted   = Object.entries(rangeUserData.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b)=>b[1]-a[1]);
+  const ranged        = sumUserDayRange(byUD, user, currentRange);
+  const weekRanged    = sumUserDayRange(byUD, user, 'week');
+  const d             = buildFilteredStats(allD, currentRange);
+  const rangeUserData = d.byUser[user] || { byKey: {} };
+  const userEvents    = d.recentEvents.filter(e => e.user === user);
+  const phraseSorted  = Object.entries(rangeUserData.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b)=>b[1]-a[1]);
+  const displayTotal  = currentRange === 'all' ? allTimePhrase : ranged.phrases;
 
   document.getElementById('statTotal').textContent     = displayTotal.toLocaleString();
   document.getElementById('statTotalSub').textContent  = label;
@@ -825,12 +957,14 @@ function renderUserDetail(user) {
 
 function buildUserByDay(events) {
   const byDay = {};
-  events.forEach(e => { const d = e.ts.slice(0,10); byDay[d] = (byDay[d]||0)+1; });
+  events.forEach(e => {
+    const d = localDateStr(new Date(e.ts));  // ← FIX: local time
+    byDay[d] = (byDay[d]||0)+1;
+  });
   return byDay;
 }
 
 function drillIntoUser(user) { selectedUser = user; renderStats(); }
-
 document.getElementById('backToAll').addEventListener('click', () => { selectedUser = null; renderStats(); });
 
 function renderBarChart(d, user) {
@@ -842,8 +976,8 @@ function renderBarChart(d, user) {
 
   const phrases = Object.entries(d.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b)=>b[1].total-a[1].total);
   const utils   = Object.entries(d.byKey).filter(([k]) => UTILITY_KEYS.has(k) && k !== '__heartbeat__').sort((a,b)=>b[1].total-a[1].total);
-  const maxP = phrases[0]?.[1].total || 1;
-  const maxU = utils[0]?.[1].total   || 1;
+  const maxP    = phrases[0]?.[1].total || 1;
+  const maxU    = utils[0]?.[1].total   || 1;
 
   phrases.slice(0,15).forEach(([,{label, total}]) => {
     phraseChart.innerHTML += '<div class="bar-row"><div class="bar-label">' + escH(label) + '</div><div class="bar-track"><div class="bar-fill" style="width:' + Math.round(total/maxP*100) + '%"></div></div><div class="bar-count">' + total + '</div></div>';
@@ -858,14 +992,17 @@ function renderBarChart(d, user) {
 
 function renderDayChart(d, user) {
   renderDayChartInto(document.getElementById('dayChart'), d, user);
-  if (user) document.getElementById('dayChartTitle').textContent = user + ' — last 30 days';
-  else document.getElementById('dayChartTitle').textContent = 'Activity — last 30 days';
+  document.getElementById('dayChartTitle').textContent = user ? user + ' — last 30 days' : 'Activity — last 30 days';
 }
 
 function renderDayChartInto(el, d, user) {
   el.innerHTML = '';
   const days = [];
-  for (let i = 29; i >= 0; i--) { const dt = new Date(); dt.setDate(dt.getDate()-i); days.push(dt.toISOString().slice(0,10)); }
+  for (let i = 29; i >= 0; i--) {
+    const dt = new Date();
+    dt.setDate(dt.getDate()-i);
+    days.push(localDateStr(dt));  // ← FIX: local time
+  }
   const maxDay = Math.max(...days.map(day => d.byDay[day]||0), 1);
   days.forEach(day => {
     const count = d.byDay[day]||0;
@@ -874,9 +1011,7 @@ function renderDayChartInto(el, d, user) {
   });
 }
 
-function renderFeed(events, user) {
-  renderFeedInto(document.getElementById('activityFeed'), events, user);
-}
+function renderFeed(events, user) { renderFeedInto(document.getElementById('activityFeed'), events, user); }
 
 function renderFeedInto(el, events, user) {
   el.innerHTML = '';
@@ -886,23 +1021,26 @@ function renderFeedInto(el, events, user) {
     const t       = new Date(ev.ts);
     const timeStr = t.toLocaleDateString('en-AU',{day:'numeric',month:'short'}) + ' ' + t.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'});
     const isUtil  = UTILITY_KEYS.has(ev.key);
-    el.innerHTML += '<div class="feed-item"><div class="feed-time">' + timeStr + '</div><div><span class="feed-key' + (isUtil?' utility':'') + '">' + escH(ev.key) + '</span> <span style="color:var(--muted2)">' + escH(ev.label) + '</span></div><div class="feed-user">' + (user ? '' : escH(ev.user)) + '</div></div>';
+    const uName   = user ? '' : displayName(ev.user);
+    el.innerHTML += '<div class="feed-item"><div class="feed-time">' + timeStr + '</div><div><span class="feed-key' + (isUtil?' utility':'') + '">' + escH(ev.key) + '</span> <span style="color:var(--muted2)">' + escH(ev.label) + '</span></div><div class="feed-user">' + uName + '</div></div>';
   });
 }
 
 function renderOnline() {
   const el      = document.getElementById('onlineGrid');
   const entries = Object.entries(heartbeatData).sort((a,b) => (b[1].online?1:0)-(a[1].online?1:0));
-  if (!entries.length) { el.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">No heartbeat data yet — AHK script will populate this</div>'; return; }
+  if (!entries.length) { el.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">No heartbeat data yet</div>'; return; }
   el.innerHTML = '';
   entries.forEach(([user, data]) => {
     const { online, lastSeen, version, exitPending } = data;
     const ago    = lastSeen ? timeAgo(new Date(lastSeen)) : 'never';
+    const nick   = getNick(user);
+    const grp    = groupOf(user);
     const vBadge = version
       ? '<span class="version-badge ' + (version === CURRENT_VERSION ? 'current' : 'outdated') + '">' + escH(version) + '</span>'
-      : '<span class="version-badge unknown">unknown</span>';
+      : '';
     const exitDot = exitPending ? '<span class="exit-pending-dot" title="Exit pending"></span>' : '';
-    el.innerHTML += '<div class="online-chip' + (online?' active':'') + '"><div class="online-dot' + (online?' active':'') + '"></div><strong>' + escH(user) + '</strong>' + vBadge + exitDot + '<span class="online-time">' + (online ? 'online' : ago) + '</span></div>';
+    el.innerHTML += '<div class="online-chip' + (online?' active':'') + '"><div class="online-dot' + (online?' active':'') + '"></div><strong>' + escH(user) + '</strong>' + (nick?'<span style="color:var(--muted2);font-size:0.75rem">('+escH(nick)+')</span>':'') + vBadge + exitDot + '<span class="online-time">' + (online ? 'online' : ago) + '</span><span class="group-badge ' + escH(grp) + '" style="margin-left:4px">' + escH(grp) + '</span></div>';
   });
 }
 
@@ -1011,9 +1149,8 @@ document.getElementById('saveUserOverrides').addEventListener('click', async () 
   res.ok ? toast('Overrides saved for ' + selectedOverrideUser) : toast('Save failed', 'err');
 });
 
-
 // ── Users page ─────────────────────────────────────────────────────────────
-let killedData   = {};
+let killedData = {};
 let selectedUserInUsersPage = null;
 
 async function loadKilled() {
@@ -1037,40 +1174,34 @@ function showUserDetailViewInUsers(user) {
   document.getElementById('usersListView').style.display   = 'none';
   document.getElementById('userDetailView').style.display  = '';
   document.getElementById('backToUsers').style.display     = '';
-  document.getElementById('usersPageTitle').textContent    = user;
+  document.getElementById('usersPageTitle').textContent    = user + (getNick(user) ? ' (' + getNick(user) + ')' : '');
   document.getElementById('usersPageSub').textContent      = 'Individual stats';
 
-  // Populate detail
-  const allD      = statsData;
+  const allD = statsData;
   if (!allD) { document.getElementById('userDetailStatGrid').innerHTML = '<div style="color:var(--muted)">No stats data loaded</div>'; return; }
 
   const byUD         = allD.byUserDay || {};
   const userData     = allD.byUser[user] || { total: 0, byKey: {} };
   const userEvents   = allD.recentEvents.filter(e => e.user === user && e.key !== '__heartbeat__');
-
-  // All-time from server aggregates
   const allTimePhrase = Object.entries(userData.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).reduce((s,[,v]) => s+(typeof v==='object'?(v.total||0):v), 0);
   const allTimeUtil   = Object.entries(userData.byKey).filter(([k]) => UTILITY_KEYS.has(k) && k !== '__heartbeat__').reduce((s,[,v]) => s+(typeof v==='object'?(v.total||0):v), 0);
-
-  // Ranged counts from byUserDay — always accurate regardless of recentEvents cap
-  const weekRanged  = sumUserDayRange(byUD, user, 'week');
-  const todayRanged = sumUserDayRange(byUD, user, 'day');
-
-  const firstSeenTs  = firstSeenData[user];
-  const hb           = heartbeatData[user] || {};
-  const phraseSorted = Object.entries(userData.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b) => {
+  const weekRanged    = sumUserDayRange(byUD, user, 'week');
+  const todayRanged   = sumUserDayRange(byUD, user, 'day');
+  const firstSeenTs   = firstSeenData[user];
+  const hb            = heartbeatData[user] || {};
+  const grp           = groupOf(user);
+  const phraseSorted  = Object.entries(userData.byKey).filter(([k]) => !UTILITY_KEYS.has(k)).sort((a,b) => {
     const av = typeof a[1]==='object' ? a[1].total : a[1];
     const bv = typeof b[1]==='object' ? b[1].total : b[1];
     return bv - av;
   });
 
-  // Name + badges
   const nameEl   = document.getElementById('userDetailName');
-  nameEl.textContent = user;
+  nameEl.innerHTML = displayName(user);
   const badgesEl = document.getElementById('userDetailBadges');
   const online   = hb.online;
   const version  = hb.version;
-  let badgeHtml  = '';
+  let badgeHtml  = '<span class="group-badge ' + escH(grp) + '">' + escH(grp) + '</span>';
   if (online) badgeHtml += '<span style="color:var(--green);font-size:0.8rem">● online</span>';
   if (version) badgeHtml += '<span class="version-badge ' + (version===CURRENT_VERSION?'current':'outdated') + '">' + escH(version) + '</span>';
   badgesEl.innerHTML = badgeHtml;
@@ -1085,7 +1216,6 @@ function showUserDetailViewInUsers(user) {
     <div class="user-detail-stat"><div class="stat-label">Top Phrase</div><div class="stat-value" style="font-size:0.85rem;margin-top:6px">${escH(phraseSorted[0] ? (allD.byKey[phraseSorted[0][0]]?.label || phraseSorted[0][0]) : '—')}</div></div>
   `;
 
-  // Bar charts — use server aggregates (all-time, accurate)
   const userByKey = {};
   Object.entries(userData.byKey).forEach(([k, v]) => {
     userByKey[k] = { label: allD.byKey[k]?.label || k, total: typeof v === 'object' ? (v.total||0) : v };
@@ -1094,7 +1224,6 @@ function showUserDetailViewInUsers(user) {
   const phraseBar = document.getElementById('userDetailPhraseBar');
   const utilBar   = document.getElementById('userDetailUtilBar');
   phraseBar.innerHTML = ''; utilBar.innerHTML = '';
-
   document.getElementById('userDetailBarTitle').textContent  = user + ' — Phrase usage (all time)';
   document.getElementById('userDetailUtilTitle').textContent = user + ' — Utility hotkeys (all time)';
 
@@ -1113,12 +1242,7 @@ function showUserDetailViewInUsers(user) {
   });
   if (!utils.length) utilBar.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">No utility data yet</div>';
 
-  // Day chart
-  const dayEl = document.getElementById('userDetailDayChart');
-  const userDayD = { byDay: buildUserByDay(userEvents) };
-  renderDayChartInto(dayEl, userDayD, user);
-
-  // Feed
+  renderDayChartInto(document.getElementById('userDetailDayChart'), { byDay: buildUserByDay(userEvents) }, user);
   renderFeedInto(document.getElementById('userDetailFeed'), userEvents, user);
 }
 
@@ -1129,6 +1253,7 @@ document.getElementById('backToUsers').addEventListener('click', () => {
 
 async function renderUsersPage() {
   await Promise.all([loadHeartbeats(), loadKilled()]);
+  updateSortHeaders('usersTable', usersSort);
 
   const knownUsers = new Set([
     ...Object.keys(heartbeatData),
@@ -1139,21 +1264,37 @@ async function renderUsersPage() {
   tbody.innerHTML = '';
 
   if (!knownUsers.size) {
-    tbody.innerHTML = '<tr><td colspan="7" style="color:var(--muted);text-align:center;padding:24px">No users found — AHK scripts must connect first</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px">No users found</td></tr>';
     return;
   }
 
-  [...knownUsers].sort((a, b) => {
-    const ao = heartbeatData[a]?.online ? 1 : 0;
-    const bo = heartbeatData[b]?.online ? 1 : 0;
-    return bo - ao || a.localeCompare(b);
-  }).forEach(user => {
-    const hb        = heartbeatData[user] || {};
-    const online    = hb.online || false;
-    const version   = hb.version || null;
-    const lastSeen  = hb.lastSeen ? timeAgo(new Date(hb.lastSeen)) : 'never';
-    const killed    = !!killedData[user];
-    const exitPend  = !!hb.exitPending;
+  // Sort users
+  let userArr = [...knownUsers];
+  userArr.sort((a, b) => {
+    const mul = usersSort.dir === 'asc' ? 1 : -1;
+    switch (usersSort.col) {
+      case 'user':    return mul * a.localeCompare(b);
+      case 'group':   return mul * groupOf(a).localeCompare(groupOf(b));
+      case 'online':  return mul * ((heartbeatData[b]?.online?1:0) - (heartbeatData[a]?.online?1:0));
+      case 'version': return mul * ((heartbeatData[a]?.version||'').localeCompare(heartbeatData[b]?.version||''));
+      case 'last': {
+        const la = heartbeatData[a]?.lastSeen || '0';
+        const lb = heartbeatData[b]?.lastSeen || '0';
+        return mul * (la < lb ? -1 : la > lb ? 1 : 0);
+      }
+      default: return mul * a.localeCompare(b);
+    }
+  });
+
+  userArr.forEach(user => {
+    const hb       = heartbeatData[user] || {};
+    const online   = hb.online || false;
+    const version  = hb.version || null;
+    const lastSeen = hb.lastSeen ? timeAgo(new Date(hb.lastSeen)) : 'never';
+    const killed   = !!killedData[user];
+    const exitPend = !!hb.exitPending;
+    const grp      = groupOf(user);
+    const nick     = getNick(user);
 
     const statusDot = online
       ? '<span style="color:var(--green);font-size:0.75rem">● online</span>'
@@ -1175,21 +1316,64 @@ async function renderUsersPage() {
       ? '<button class="btn-close-user" disabled>⏳ pending…</button>'
       : '<button class="btn-close-user" data-user="' + escH(user) + '">⏹ Close</button>';
 
-    const statsBtn = '<button class="btn-view-stats" data-user="' + escH(user) + '">📊 View stats</button>';
+    const statsBtn = '<button class="btn-view-stats" data-user="' + escH(user) + '">📊 Stats</button>';
+
+    // Nickname + group inline edit
+    const nickDisplay = nick
+      ? '<span style="color:var(--muted2);font-size:0.75rem;font-family:var(--mono)">(' + escH(nick) + ')</span> '
+      : '';
+    const grpBadge = '<span class="group-badge ' + escH(grp) + '">' + escH(grp) + '</span>';
+
+    // Group dropdown
+    const grpSelect = '<select class="group-select" data-user="' + escH(user) + '">' +
+      GROUPS.map(g => '<option value="' + escH(g) + '"' + (g===grp?' selected':'') + '>' + escH(g) + '</option>').join('') +
+      '</select>';
 
     const tr = document.createElement('tr');
     tr.innerHTML =
-      '<td><div class="user-badge" style="gap:8px">' + escH(user) + '</div></td>' +
+      '<td><div style="display:flex;flex-direction:column;gap:3px"><div class="user-badge" style="gap:8px">' + escH(user) + '</div>' +
+      '<div style="display:flex;align-items:center;gap:4px;padding-left:2px">' + nickDisplay +
+      '<button class="nick-edit-btn" data-user="' + escH(user) + '" title="Edit nickname">✏️</button></div></div></td>' +
       '<td>' + statusDot + '</td>' +
       '<td>' + vBadge + '</td>' +
       '<td style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">' + lastSeen + '</td>' +
+      '<td>' + grpSelect + '</td>' +
       '<td>' + killBadge + ' ' + killBtn + '</td>' +
       '<td>' + closeBtn + '</td>' +
       '<td>' + statsBtn + '</td>';
     tbody.appendChild(tr);
   });
 
-  // Kill switch listeners
+  // Nickname edit
+  tbody.querySelectorAll('.nick-edit-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const user    = btn.dataset.user;
+      const current = getNick(user);
+      const nick    = prompt('Nickname for ' + user + ' (leave blank to clear):', current);
+      if (nick === null) return;
+      if (nick.trim()) userNicknames[user] = nick.trim();
+      else delete userNicknames[user];
+      saveNicknames();
+      toast(nick.trim() ? 'Nickname set: ' + nick.trim() : 'Nickname cleared');
+      renderUsersPage();
+    });
+  });
+
+  // Group dropdown change
+  tbody.querySelectorAll('.group-select').forEach(sel => {
+    sel.addEventListener('change', e => {
+      e.stopPropagation();
+      const user = sel.dataset.user;
+      userGroups[user] = sel.value;
+      saveGroups();
+      toast(user + ' → ' + sel.value);
+      // Re-render stats if open to reflect new group
+      if (document.getElementById('statsPage').classList.contains('active')) renderStats();
+    });
+  });
+
+  // Kill switch
   tbody.querySelectorAll('.btn-kill').forEach(btn => {
     btn.addEventListener('click', async () => {
       const user   = btn.dataset.user;
@@ -1203,7 +1387,7 @@ async function renderUsersPage() {
           killedData[user] = kill;
           toast(kill ? user + ' disabled' : user + ' re-enabled', 'ok');
           renderUsersPage();
-        } else { throw new Error(); }
+        } else throw new Error();
       } catch(e) {
         toast('Failed — check server', 'err');
         btn.disabled = false;
@@ -1220,8 +1404,8 @@ async function renderUsersPage() {
       btn.textContent = '⏳ pending…'; btn.disabled = true;
       try {
         const res = await api('POST', '/exit/user', { user });
-        if (res.ok) { toast(user + ' flagged — will close within 10 min'); }
-        else { throw new Error(); }
+        if (res.ok) toast(user + ' flagged — will close within 10 min');
+        else throw new Error();
       } catch(e) {
         toast('Failed — check server', 'err');
         btn.disabled = false; btn.textContent = '⏹ Close';
@@ -1229,9 +1413,9 @@ async function renderUsersPage() {
     });
   });
 
-  // View stats button
+  // View stats
   tbody.querySelectorAll('.btn-view-stats').forEach(btn => {
-    btn.addEventListener('click', (e) => {
+    btn.addEventListener('click', e => {
       e.stopPropagation();
       showUserDetailViewInUsers(btn.dataset.user);
     });
@@ -1279,10 +1463,10 @@ document.getElementById('closeAllBtn').addEventListener('click', async () => {
     if (res.ok) {
       const data  = await res.json();
       const count = data.flagged?.length ?? '?';
-      toast('Exit flagged for ' + count + ' user(s) — they\'ll close within 10 min');
+      toast('Exit flagged for ' + count + ' user(s)');
       btn.textContent = '✓ Sent!';
       setTimeout(() => { btn.textContent = '⏹ Close all for update'; btn.disabled = false; }, 4000);
-    } else { throw new Error(); }
+    } else throw new Error();
   } catch(e) {
     toast('Failed to reach server', 'err');
     btn.textContent = '⏹ Close all for update'; btn.disabled = false;
@@ -1293,8 +1477,11 @@ document.getElementById('closeAllBtn').addEventListener('click', async () => {
 document.getElementById('exportCsvBtn').addEventListener('click', () => {
   if (!statsData) { toast('No data loaded yet', 'err'); return; }
   const rangeEvents = filterEventsByRange(statsData.recentEvents, currentRange).filter(e => e.key !== '__heartbeat__');
-  const rows = [['Timestamp','User','Key','Label','Type']];
-  rangeEvents.forEach(e => rows.push([e.ts, e.user, e.key, e.label, UTILITY_KEYS.has(e.key) ? 'Utility' : 'Phrase']));
+  const rows = [['Timestamp','User','Nickname','Group','Key','Label','Type']];
+  rangeEvents.forEach(e => rows.push([
+    e.ts, e.user, getNick(e.user), groupOf(e.user), e.key, e.label,
+    UTILITY_KEYS.has(e.key) ? 'Utility' : 'Phrase'
+  ]));
   const csv  = rows.map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\n');
   const blob = new Blob([csv], { type: 'text/csv' });
   const url  = URL.createObjectURL(blob);
@@ -1313,10 +1500,14 @@ document.getElementById('weeklySummaryBtn').addEventListener('click', () => {
   monday.setHours(0,0,0,0);
   const sunday = new Date(monday.getTime() + 6*86400000);
   sunday.setHours(23,59,59,999);
-  const fromStr = monday.toISOString().slice(0,10);
-  const toStr   = sunday.toISOString().slice(0,10);
+  const fromStr = localDateStr(monday);
+  const toStr   = localDateStr(sunday);
 
-  const weekEvents = d.recentEvents.filter(e => e.ts.slice(0,10) >= fromStr && e.ts.slice(0,10) <= toStr && e.key !== '__heartbeat__');
+  const weekEvents = d.recentEvents.filter(e =>
+    localDateStr(new Date(e.ts)) >= fromStr &&  // ← FIX: local time
+    localDateStr(new Date(e.ts)) <= toStr &&
+    e.key !== '__heartbeat__'
+  );
   if (!weekEvents.length) {
     document.getElementById('weeklySummaryText').value = 'No activity recorded this week.';
     document.getElementById('weeklyModal').style.display = 'flex';
@@ -1325,7 +1516,7 @@ document.getElementById('weeklySummaryBtn').addEventListener('click', () => {
 
   const phraseEvents = weekEvents.filter(e => !UTILITY_KEYS.has(e.key));
   const utilEvents   = weekEvents.filter(e =>  UTILITY_KEYS.has(e.key));
-  const daysSet      = new Set(weekEvents.map(e => e.ts.slice(0,10)));
+  const daysSet      = new Set(weekEvents.map(e => localDateStr(new Date(e.ts))));
 
   const byUser = {};
   phraseEvents.forEach(e => {
@@ -1354,11 +1545,15 @@ document.getElementById('weeklySummaryBtn').addEventListener('click', () => {
   Object.entries(byUser).sort((a,b)=>b[1].total-a[1].total).forEach(([user, data]) => {
     const topKey   = Object.entries(data.byKey).sort((a,b)=>b[1]-a[1])[0];
     const topLabel = topKey ? (d.byKey[topKey[0]]?.label || topKey[0]) : '\u2014';
-    out += '  ' + user.padEnd(16) + ' ' + String(data.total).padStart(3) + ' uses  \u00b7 top: ' + topLabel + '\n';
+    const nick     = getNick(user);
+    const grp      = groupOf(user);
+    const nameStr  = user + (nick ? ' (' + nick + ')' : '') + ' [' + grp + ']';
+    out += '  ' + nameStr.padEnd(28) + ' ' + String(data.total).padStart(3) + ' uses  \u00b7 top: ' + topLabel + '\n';
   });
   out += '\nFIRST-USE DATES\n' + '-'.repeat(30) + '\n';
   Object.entries(firstSeenData).sort((a,b)=>a[1]<b[1]?-1:1).forEach(([user, ts]) => {
-    out += '  ' + user.padEnd(16) + ' ' + new Date(ts).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) + '\n';
+    const nick = getNick(user); const grp = groupOf(user);
+    out += '  ' + (user + (nick?' ('+nick+')':'')).padEnd(22) + ' [' + grp + ']  ' + new Date(ts).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) + '\n';
   });
 
   document.getElementById('weeklySummaryText').value = out;
