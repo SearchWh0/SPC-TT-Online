@@ -13,6 +13,8 @@
   --shadow:0 2px 12px rgba(0,0,0,0.07); --shadow-lg:0 8px 32px rgba(0,0,0,0.13);
   --toggle-track:#d6d0c8; --toggle-thumb:#ffffff;
   --email-bg:#f0f7ff; --email-border:#c8ddf5; --email-btn:#2563eb;
+  --now-bg:#fff8e6; --now-border:#f5d87a; --now-accent:#d97706;
+  --next-bg:#f0fdf4; --next-border:#86efac; --next-accent:#16a34a;
 }
 [data-theme="dark"] {
   --bg:#111010; --surface:#1c1b1a; --surface2:#232220; --border:#2e2c29;
@@ -20,6 +22,8 @@
   --shadow:0 2px 12px rgba(0,0,0,0.3); --shadow-lg:0 8px 32px rgba(0,0,0,0.45);
   --toggle-track:#3a3835; --toggle-thumb:#f0ece4;
   --email-bg:#0d1a2a; --email-border:#1e3a5f; --email-btn:#3b82f6;
+  --now-bg:#1a1400; --now-border:#78450a; --now-accent:#f59e0b;
+  --next-bg:#001a0d; --next-border:#14532d; --next-accent:#22c55e;
 }
 body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif; min-height:100vh; transition:background .25s,color .25s; }
 
@@ -39,6 +43,40 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 [data-theme="dark"] .toggle-track { background:#c8f542; }
 [data-theme="dark"] .toggle-track::after { transform:translateX(16px); background:#111010; }
 
+/* ── Schedule Banner ── */
+.schedule-banner { max-width:1100px; margin:28px auto 0; padding:0 28px; display:none; }
+.schedule-banner.visible { display:block; }
+.schedule-cards { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media(max-width:580px){ .schedule-cards { grid-template-columns:1fr; } }
+
+.sched-card { border-radius:16px; padding:18px 22px; border:1.5px solid; display:flex; align-items:flex-start; gap:14px; position:relative; overflow:hidden; }
+.sched-card.now  { background:var(--now-bg);  border-color:var(--now-border); }
+.sched-card.next { background:var(--next-bg); border-color:var(--next-border); }
+.sched-card-icon { font-size:1.6rem; flex-shrink:0; margin-top:2px; }
+.sched-card-body { flex:1; min-width:0; }
+.sched-card-label { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; font-weight:500; margin-bottom:4px; }
+.sched-card.now  .sched-card-label { color:var(--now-accent); }
+.sched-card.next .sched-card-label { color:var(--next-accent); }
+.sched-card-period { font-size:1.15rem; font-weight:800; letter-spacing:-0.02em; line-height:1.2; }
+.sched-card-time  { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); margin-top:3px; }
+.sched-card-countdown { font-family:'DM Mono',monospace; font-size:0.68rem; margin-top:5px; }
+.sched-card.now  .sched-card-countdown { color:var(--now-accent); }
+.sched-card.next .sched-card-countdown { color:var(--next-accent); }
+.sched-card-classes { display:flex; flex-wrap:wrap; gap:5px; margin-top:10px; }
+.sched-class-chip { font-family:'DM Mono',monospace; font-size:0.68rem; padding:3px 9px; border-radius:6px; border:1px solid var(--border); background:var(--surface); color:var(--text); display:flex; align-items:center; gap:6px; }
+.sched-class-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.progress-bar-wrap { position:absolute; bottom:0; left:0; right:0; height:3px; background:var(--border); }
+.progress-bar { height:100%; border-radius:0 2px 2px 0; transition:width 1s linear; }
+.sched-card.now  .progress-bar { background:var(--now-accent); }
+.sched-card.next .progress-bar { background:var(--next-accent); }
+
+.weekend-banner { max-width:1100px; margin:28px auto 0; padding:0 28px; display:none; }
+.weekend-banner.visible { display:block; }
+.weekend-pill { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 22px; display:flex; align-items:center; gap:14px; box-shadow:var(--shadow); }
+.weekend-pill-icon { font-size:1.4rem; }
+.weekend-pill-text { font-size:0.88rem; color:var(--muted); font-family:'DM Mono',monospace; }
+
+/* ── States ── */
 .state-wrap { max-width:560px; margin:80px auto; padding:0 24px; text-align:center; }
 .state-icon { font-size:3rem; margin-bottom:20px; opacity:0.4; }
 .state-title { font-size:1.3rem; font-weight:700; margin-bottom:8px; }
@@ -53,20 +91,23 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .setup-input:focus { border-color:var(--text); }
 .setup-btn { background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.85rem; font-weight:600; padding:10px 20px; border-radius:8px; cursor:pointer; white-space:nowrap; }
 
+/* ── Tile View ── */
 .tile-view { display:none; }
 .tile-view.visible { display:block; }
-.tile-grid { max-width:1100px; margin:0 auto; padding:36px 28px 100px; display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:18px; }
+.tile-grid { max-width:1100px; margin:0 auto; padding:28px 28px 100px; display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:18px; }
 .tile { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:0; cursor:pointer; transition:transform .18s ease, box-shadow .18s ease, border-color .18s; overflow:hidden; box-shadow:var(--shadow); display:flex; flex-direction:column; min-height:160px; }
 .tile:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); border-color:var(--muted); }
 .tile:active { transform:translateY(-2px); }
 .tile-colour-bar { height:8px; width:100%; flex-shrink:0; }
 .tile-body { padding:20px 20px 18px; flex:1; display:flex; flex-direction:column; }
-.tile-name { font-size:1.1rem; font-weight:800; letter-spacing:-0.02em; line-height:1.2; margin-bottom:12px; }
+.tile-name { font-size:1.1rem; font-weight:800; letter-spacing:-0.02em; line-height:1.2; margin-bottom:4px; }
+.tile-lso-name { font-size:0.72rem; font-family:'DM Mono',monospace; color:var(--muted); margin-bottom:10px; }
 .tile-periods { display:flex; flex-wrap:wrap; gap:5px; margin-top:auto; }
 .tile-period-chip { font-family:'DM Mono',monospace; font-size:0.65rem; font-weight:500; padding:3px 8px; border-radius:5px; background:var(--soft); color:var(--muted); border:1px solid var(--border); }
 .tile-period-chip.has-data { color:var(--text); border-color:var(--muted); }
 .tile-empty-label { font-size:0.78rem; color:var(--muted); font-style:italic; margin-top:auto; }
 
+/* ── Detail View ── */
 .detail-view { display:none; }
 .detail-view.visible { display:block; }
 .detail-inner { max-width:1000px; margin:0 auto; padding:32px 24px 100px; }
@@ -108,10 +149,12 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .lso-label { display:block; font-size:0.72rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:5px; }
 .lso-value { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-family:'DM Mono',monospace; font-size:0.82rem; color:var(--text); line-height:1.6; white-space:pre-wrap; word-break:break-all; }
 .lso-row2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-.lso-settings { padding:0 24px 20px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+.lso-settings { padding:0 24px 20px; display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; }
+@media(max-width:700px){ .lso-settings { grid-template-columns:1fr 1fr; } }
 .lso-input-wrap label { display:block; font-size:0.7rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:5px; }
 .lso-input { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:7px; color:var(--text); font-family:'DM Mono',monospace; font-size:0.8rem; padding:8px 12px; outline:none; transition:border-color .2s; }
 .lso-input:focus { border-color:var(--email-btn); }
+.lso-name-hint { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); margin-top:4px; }
 .lso-actions { padding:0 24px 20px; display:flex; gap:10px; flex-wrap:wrap; }
 .lso-open-btn { background:var(--email-btn); color:#fff; border:none; font-family:'Outfit',sans-serif; font-size:0.88rem; font-weight:600; padding:11px 24px; border-radius:9px; cursor:pointer; transition:opacity .15s; }
 .lso-open-btn:hover { opacity:0.85; }
@@ -129,7 +172,6 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
 @media(max-width:600px) {
-  .lso-settings { grid-template-columns:1fr 1fr; }
   .lso-row2 { grid-template-columns:1fr; }
   .detail-actions { margin-left:0; width:100%; }
 }
@@ -151,6 +193,17 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
     </div>
   </div>
 </header>
+
+<!-- Live schedule banner -->
+<div class="schedule-banner" id="scheduleBanner">
+  <div class="schedule-cards" id="scheduleCards"></div>
+</div>
+<div class="weekend-banner" id="weekendBanner">
+  <div class="weekend-pill">
+    <span class="weekend-pill-icon">🎉</span>
+    <span class="weekend-pill-text">It's the weekend — no classes today</span>
+  </div>
+</div>
 
 <div class="state-wrap" id="loadingState">
   <div class="spinner"></div>
@@ -181,6 +234,162 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 </div>
 
 <script>
+// ── School schedule ────────────────────────────────────────────────────────
+// Each slot: { label, start, end } — times in "HH:MM" 24h
+const SCHOOL_SCHEDULE = [
+  { label:'Tutor Group', start:'08:50', end:'09:00' },
+  { label:'Period 1',    start:'09:03', end:'09:53', period:1 },
+  { label:'Period 2',    start:'09:56', end:'10:46', period:2 },
+  { label:'Recess',      start:'10:46', end:'11:06' },
+  { label:'Period 3',    start:'11:10', end:'12:00', period:3 },
+  { label:'Period 4',    start:'12:03', end:'12:53', period:4 },
+  { label:'Lunch',       start:'12:53', end:'13:33' },
+  { label:'Period 5',    start:'13:37', end:'14:27', period:5 },
+  { label:'Period 6',    start:'14:30', end:'15:20', period:6 },
+];
+
+function timeToMinutes(t) {
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+
+function nowMinutes() {
+  const n = new Date();
+  return n.getHours() * 60 + n.getMinutes() + n.getSeconds() / 60;
+}
+
+function formatMinutes(mins) {
+  const m = Math.round(mins);
+  if (m <= 0) return 'now';
+  if (m < 60) return `${m}m`;
+  return `${Math.floor(m/60)}h ${m%60}m`;
+}
+
+function formatTime(t) {
+  const [h, m] = t.split(':').map(Number);
+  const ampm = h >= 12 ? 'pm' : 'am';
+  const h12 = h % 12 || 12;
+  return `${h12}:${String(m).padStart(2,'0')}${ampm}`;
+}
+
+function getCurrentAndNext() {
+  const nm = nowMinutes();
+  let current = null, next = null;
+  for (let i = 0; i < SCHOOL_SCHEDULE.length; i++) {
+    const slot = SCHOOL_SCHEDULE[i];
+    const s = timeToMinutes(slot.start);
+    const e = timeToMinutes(slot.end);
+    if (nm >= s && nm < e) { current = { ...slot, startM: s, endM: e }; }
+    else if (nm < s && !next)  { next    = { ...slot, startM: s, endM: e }; }
+  }
+  return { current, next };
+}
+
+// Build class chips for a period slot (from groupMap)
+function getClassesForPeriod(periodNum, groupMap, names) {
+  if (!groupMap || !periodNum) return [];
+  const result = [];
+  groupMap.forEach((grp, key) => {
+    if (grp.slots[periodNum] && grp.slots[periodNum].length > 0) {
+      result.push({ name: names[key] || '—', bg: grp.bg });
+    }
+  });
+  return result;
+}
+
+let scheduleTimer = null;
+
+function renderScheduleBanner() {
+  const banner = document.getElementById('scheduleBanner');
+  const cards  = document.getElementById('scheduleCards');
+  const weekendBanner = document.getElementById('weekendBanner');
+
+  if (isWeekend) {
+    weekendBanner.classList.add('visible');
+    banner.classList.remove('visible');
+    return;
+  }
+
+  const nm = nowMinutes();
+  const schoolStart = timeToMinutes('08:50');
+  const schoolEnd   = timeToMinutes('15:20');
+
+  // Before/after school — don't show
+  if (nm < schoolStart - 30 || nm > schoolEnd + 30) {
+    banner.classList.remove('visible');
+    weekendBanner.classList.remove('visible');
+    return;
+  }
+
+  banner.classList.add('visible');
+  weekendBanner.classList.remove('visible');
+
+  const { current, next } = getCurrentAndNext();
+  cards.innerHTML = '';
+
+  function makeCard(type, slot) {
+    if (!slot) return;
+    const nm2 = nowMinutes();
+    const classes = getClassesForPeriod(slot.period, currentGroupMap, currentNames);
+    const isBreak = !slot.period;
+
+    let countdown = '';
+    let progress = 0;
+    if (type === 'now') {
+      const remaining = slot.endM - nm2;
+      countdown = `${formatMinutes(remaining)} remaining`;
+      const total = slot.endM - slot.startM;
+      progress = Math.min(100, Math.max(0, ((nm2 - slot.startM) / total) * 100));
+    } else {
+      const until = slot.startM - nm2;
+      countdown = `starts in ${formatMinutes(until)}`;
+    }
+
+    const chipsHTML = classes.length > 0
+      ? `<div class="sched-class-classes" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:5px;">
+          ${classes.map(c => `<div class="sched-class-chip"><div class="sched-class-dot" style="background:${c.bg}"></div>${escapeHTML(c.name)}</div>`).join('')}
+        </div>`
+      : (isBreak ? '' : '');
+
+    const icon = type === 'now'
+      ? (isBreak ? '☕' : '📚')
+      : (isBreak ? '⏸' : '➡️');
+
+    const card = document.createElement('div');
+    card.className = `sched-card ${type}`;
+    card.innerHTML = `
+      <div class="sched-card-icon">${icon}</div>
+      <div class="sched-card-body">
+        <div class="sched-card-label">${type === 'now' ? 'Happening now' : 'Up next'}</div>
+        <div class="sched-card-period">${escapeHTML(slot.label)}</div>
+        <div class="sched-card-time">${formatTime(slot.start)} – ${formatTime(slot.end)}</div>
+        <div class="sched-card-countdown">${countdown}</div>
+        ${chipsHTML}
+      </div>
+      ${type === 'now' ? `<div class="progress-bar-wrap"><div class="progress-bar" style="width:${progress}%"></div></div>` : ''}
+    `;
+    cards.appendChild(card);
+  }
+
+  if (!current && !next) {
+    // All done for the day
+    const done = document.createElement('div');
+    done.className = 'sched-card now';
+    done.innerHTML = `<div class="sched-card-icon">🏁</div><div class="sched-card-body"><div class="sched-card-label">School day</div><div class="sched-card-period">All done for today!</div><div class="sched-card-time">School finished at ${formatTime('15:20')}</div></div>`;
+    cards.appendChild(done);
+    return;
+  }
+
+  makeCard('now', current);
+  makeCard('next', next);
+}
+
+function startScheduleLoop() {
+  renderScheduleBanner();
+  if (scheduleTimer) clearInterval(scheduleTimer);
+  scheduleTimer = setInterval(renderScheduleBanner, 15000); // update every 15s
+}
+
 // ── Cycle ──────────────────────────────────────────────────────────────────
 const CYCLE_START = new Date('2026-02-23T00:00:00');
 function getTodayDayNumber() {
@@ -230,13 +439,28 @@ document.getElementById('connectBtn').addEventListener('click', () => {
 function getLuminance(c){const n=(c||'').match(/\d+/g);return(!n||n.length<3)?999:0.299*+n[0]+0.587*+n[1]+0.114*+n[2];}
 function escapeHTML(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
+// ── LSO Name per person ─────────────────────────────────────────────────────
+// Stored in localStorage as { [colourKey]: "Mr. Smith" }
+// The global fallback is also stored: lso-name (legacy)
+function getLSONames() {
+  try { return JSON.parse(localStorage.getItem('tt-lso-names') || '{}'); }
+  catch(e) { return {}; }
+}
+function saveLSONames(obj) {
+  localStorage.setItem('tt-lso-names', JSON.stringify(obj));
+}
+function getLSONameForKey(key) {
+  const names = getLSONames();
+  // per-person name takes priority, then global fallback
+  return names[key] || localStorage.getItem('lso-name') || 'Mr. Chew';
+}
+
 // ── Email helpers ──────────────────────────────────────────────────────────
 function getToday_ddmmyy() {
   const d = new Date();
   return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getFullYear()).slice(-2)}`;
 }
 
-// Load overrides saved by the admin page (same localStorage key)
 function getEmailOverrides() {
   try { return JSON.parse(localStorage.getItem('tt-email-overrides') || '{}'); }
   catch(e) { return {}; }
@@ -244,9 +468,7 @@ function getEmailOverrides() {
 
 function codeToEmailPrefix(code, overrides) {
   const upper = code.toUpperCase().trim();
-  // Check override table first
   if (overrides[upper]) return { prefix: overrides[upper], isOverride: true };
-  // Auto-generate: last letter moves to front
   const lower = upper.toLowerCase();
   return { prefix: lower[lower.length-1] + lower.slice(0, lower.length-1), isOverride: false };
 }
@@ -258,7 +480,7 @@ function buildLSOEmail(slots, lsoSettings) {
   const subject = `LSO ${dd}`;
 
   const periodLines = [];
-  const teacherMap = new Map(); // code → { prefix, isOverride }
+  const teacherMap = new Map();
 
   for (let p = 1; p <= 6; p++) {
     const entries = slots[p];
@@ -297,17 +519,17 @@ function buildLSOEmail(slots, lsoSettings) {
   return { subject, body, teacherEmails, teacherEntries, cc };
 }
 
-function getLSOSettings() {
+function getLSOSettings(key) {
   return {
-    domain: localStorage.getItem('lso-domain') || 'stpeters.vic.edu.au',
-    yourName: localStorage.getItem('lso-name') || 'Mr. Chew',
-    cc: localStorage.getItem('lso-cc') || 'kmcmellon@stpeters.vic.edu.au'
+    domain:   localStorage.getItem('lso-domain') || 'stpeters.vic.edu.au',
+    yourName: getLSONameForKey(key),
+    cc:       localStorage.getItem('lso-cc') || 'kmcmellon@stpeters.vic.edu.au'
   };
 }
-function saveLSOSettings(s) {
+function saveLSOGlobalSettings(s) {
   localStorage.setItem('lso-domain', s.domain);
-  localStorage.setItem('lso-name', s.yourName);
   localStorage.setItem('lso-cc', s.cc);
+  // yourName is saved per-person separately via saveLSONames
 }
 
 // ── State ──────────────────────────────────────────────────────────────────
@@ -323,6 +545,12 @@ function showScreen(id) {
   const target = document.getElementById(id);
   target.style.display = '';
   requestAnimationFrame(() => target.classList.add('visible'));
+  // show/hide schedule banner only on tile view
+  if (id === 'tileView') startScheduleLoop();
+  else {
+    document.getElementById('scheduleBanner').classList.remove('visible');
+    document.getElementById('weekendBanner').classList.remove('visible');
+  }
 }
 
 const backBtn = document.getElementById('backBtn');
@@ -361,7 +589,6 @@ async function loadTimetable() {
     for (const [k,v] of Object.entries(state.map)) groupMap.set(k,v);
     currentGroupMap = groupMap;
     currentNames    = state.names || {};
-    // Cache to localStorage for resilience
     try {
       localStorage.setItem('tt-cached-data', JSON.stringify(state));
       localStorage.setItem('tt-cached-time', Date.now().toString());
@@ -369,7 +596,6 @@ async function loadTimetable() {
     renderTiles(groupMap, currentNames);
     showScreen('tileView');
   } catch(e) {
-    // Fall back to cache
     const cached = localStorage.getItem('tt-cached-data');
     const cachedTime = parseInt(localStorage.getItem('tt-cached-time')||'0');
     const ageHours = (Date.now()-cachedTime)/3600000;
@@ -407,18 +633,22 @@ setInterval(loadTimetable, 600000);
 function renderTiles(groupMap, names) {
   const grid = document.getElementById('tileGrid');
   grid.innerHTML = '';
+  const lsoNames = getLSONames();
   const sorted = [...groupMap.entries()].sort((a,b)=>getLuminance(a[1].bg)-getLuminance(b[1].bg));
   sorted.forEach(([key,{bg,fg,slots}],gi) => {
     const name = names[key]||`Name ${gi+1}`;
+    const lsoName = lsoNames[key] || null;
     const activePeriods = [1,2,3,4,5,6].filter(p=>slots[p]&&slots[p].length>0);
     const tile = document.createElement('div'); tile.className='tile';
     tile.addEventListener('click',()=>openDetail(key));
     const bar = document.createElement('div'); bar.className='tile-colour-bar'; bar.style.background=bg;
     const body = document.createElement('div'); body.className='tile-body';
     const nameEl = document.createElement('div'); nameEl.className='tile-name'; nameEl.textContent=name;
+    const lsoEl  = document.createElement('div'); lsoEl.className='tile-lso-name';
+    lsoEl.textContent = lsoName ? `✉ ${lsoName}` : '';
     if (activePeriods.length===0) {
       const empty = document.createElement('div'); empty.className='tile-empty-label'; empty.textContent='No periods today';
-      body.appendChild(nameEl); body.appendChild(empty);
+      body.appendChild(nameEl); body.appendChild(lsoEl); body.appendChild(empty);
     } else {
       const periods = document.createElement('div'); periods.className='tile-periods';
       [1,2,3,4,5,6].forEach(p=>{
@@ -426,7 +656,7 @@ function renderTiles(groupMap, names) {
         chip.className='tile-period-chip'+(activePeriods.includes(p)?' has-data':'');
         chip.textContent=`P${p}`; periods.appendChild(chip);
       });
-      body.appendChild(nameEl); body.appendChild(periods);
+      body.appendChild(nameEl); body.appendChild(lsoEl); body.appendChild(periods);
     }
     tile.appendChild(bar); tile.appendChild(body); grid.appendChild(tile);
   });
@@ -443,7 +673,8 @@ function renderDetail(key, grp, name) {
     return entries.map(({d1,d2,d3})=>`<div class="period-row"><div class="accent-bar" style="background:${bg}"></div><div class="cell-period has-data">P${p}</div><div class="cell-dash">—</div><div class="cell-data${d1?'':' empty'}" data-copy="${escapeHTML(d1||'')}">${escapeHTML(d1||'')}</div><div class="cell-data${d2?'':' empty'}" data-copy="${escapeHTML(d2||'')}">${escapeHTML(d2||'')}</div><div class="cell-data${d3?'':' empty'}" data-copy="${escapeHTML(d3||'')}">${escapeHTML(d3||'')}</div></div>`).join('');
   }).join('');
 
-  const lsoSettings = getLSOSettings();
+  const lsoSettings = getLSOSettings(key);
+  const currentLSOName = lsoSettings.yourName;
 
   inner.innerHTML = `
     <div class="detail-header">
@@ -461,13 +692,14 @@ function renderDetail(key, grp, name) {
 
     <div class="lso-panel" id="lsoPanel">
       <div class="lso-panel-header">
-        <div class="lso-panel-title"><span>✉</span> LSO Email</div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);">Settings remembered · overrides from Admin page</div>
+        <div class="lso-panel-title"><span>✉</span> LSO Email — <em style="font-weight:400;font-style:normal;color:var(--muted)">${escapeHTML(name)}</em></div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);">Name is saved per person · overrides from Admin page</div>
       </div>
       <div class="lso-settings">
         <div class="lso-input-wrap">
-          <label>Your Name</label>
-          <input class="lso-input" id="lsoName" type="text" value="${escapeHTML(lsoSettings.yourName)}" placeholder="Mr. Chew" />
+          <label>Your Name <span style="font-weight:400;color:var(--muted)">(for this person)</span></label>
+          <input class="lso-input" id="lsoName" type="text" value="${escapeHTML(currentLSOName)}" placeholder="Mr. Chew" />
+          <div class="lso-name-hint" id="lsoNameHint">saved for ${escapeHTML(name)}</div>
         </div>
         <div class="lso-input-wrap">
           <label>Email Domain</label>
@@ -476,6 +708,9 @@ function renderDetail(key, grp, name) {
         <div class="lso-input-wrap">
           <label>CC</label>
           <input class="lso-input" id="lsoCC" type="text" value="${escapeHTML(lsoSettings.cc)}" placeholder="cc@school.edu.au" />
+        </div>
+        <div class="lso-input-wrap" style="display:flex;flex-direction:column;justify-content:flex-end;">
+          <button class="lso-copy-body-btn" id="lsoSaveNameBtn" style="width:100%;margin-top:auto;">💾 Save name for ${escapeHTML(name)}</button>
         </div>
       </div>
       <div class="lso-panel-body">
@@ -510,11 +745,11 @@ function renderDetail(key, grp, name) {
 
   function refreshEmail() {
     const settings = {
-      domain: document.getElementById('lsoDomain').value.trim() || 'stpeters.vic.edu.au',
+      domain:   document.getElementById('lsoDomain').value.trim() || 'stpeters.vic.edu.au',
       yourName: document.getElementById('lsoName').value.trim() || 'Mr. Chew',
-      cc: document.getElementById('lsoCC').value.trim()
+      cc:       document.getElementById('lsoCC').value.trim()
     };
-    saveLSOSettings(settings);
+    saveLSOGlobalSettings(settings);
     lastEmail = buildLSOEmail(slots, settings);
 
     document.getElementById('lsoSubject').textContent = lastEmail.subject;
@@ -534,6 +769,21 @@ function renderDetail(key, grp, name) {
       ).join('');
     }
   }
+
+  // Save name button — persists this person's LSO name
+  inner.querySelector('#lsoSaveNameBtn').addEventListener('click', function() {
+    const lsoNames = getLSONames();
+    const val = document.getElementById('lsoName').value.trim();
+    if (val) lsoNames[key] = val;
+    else delete lsoNames[key];
+    saveLSONames(lsoNames);
+    // Update tile
+    const hint = document.getElementById('lsoNameHint');
+    hint.textContent = `✓ saved for ${name}`;
+    hint.style.color = '#22a85a';
+    setTimeout(() => { hint.textContent = `saved for ${name}`; hint.style.color = ''; }, 2000);
+    renderTiles(currentGroupMap, currentNames);
+  });
 
   inner.querySelector('#emailLSOToggle').addEventListener('click', function() {
     const panel = document.getElementById('lsoPanel');
