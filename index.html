@@ -39,6 +39,24 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 [data-theme="dark"] .toggle-track { background:#c8f542; }
 [data-theme="dark"] .toggle-track::after { transform:translateX(16px); background:#111010; }
 
+/* ── Period strip ── */
+.period-strip { background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:73px; z-index:99; display:none; transition:background .25s,border-color .25s; }
+.period-strip.visible { display:block; }
+.period-strip-inner { max-width:1100px; margin:0 auto; padding:0 28px; height:44px; display:flex; align-items:center; gap:16px; }
+.period-strip-dot { width:7px; height:7px; border-radius:50%; background:#22a85a; flex-shrink:0; animation:pulse-dot 2s ease-in-out infinite; }
+.period-strip-dot.is-break { background:var(--muted); animation:none; }
+@keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.45;transform:scale(0.7)} }
+.period-strip-name { font-weight:700; font-size:0.88rem; letter-spacing:-0.01em; flex-shrink:0; }
+.period-strip-time { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted); flex-shrink:0; }
+.period-strip-bar-wrap { flex:1; height:4px; background:var(--soft); border-radius:2px; overflow:hidden; min-width:40px; max-width:200px; }
+.period-strip-bar { height:100%; border-radius:2px; background:#22a85a; transition:width .9s linear; }
+.period-strip-bar.is-break { background:var(--muted); }
+.period-strip-countdown { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); flex-shrink:0; min-width:64px; }
+.period-strip-sep { width:1px; height:18px; background:var(--border); flex-shrink:0; }
+.period-strip-next { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); flex-shrink:0; }
+.period-strip-next strong { color:var(--text); font-weight:600; }
+@media(max-width:520px){ .period-strip-bar-wrap,.period-strip-sep,.period-strip-next { display:none; } }
+
 /* ── Tile status rows ── */
 .tile-status { border-top:1px solid var(--border); margin-top:12px; padding-top:10px; display:flex; flex-direction:column; gap:5px; }
 .tile-status-row { display:flex; align-items:center; gap:7px; }
@@ -165,6 +183,18 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   </div>
 </header>
 
+<div class="period-strip" id="periodStrip">
+  <div class="period-strip-inner">
+    <div class="period-strip-dot" id="stripDot"></div>
+    <div class="period-strip-name" id="stripName"></div>
+    <div class="period-strip-time" id="stripTime"></div>
+    <div class="period-strip-bar-wrap"><div class="period-strip-bar" id="stripBar"></div></div>
+    <div class="period-strip-countdown" id="stripCountdown"></div>
+    <div class="period-strip-sep"></div>
+    <div class="period-strip-next" id="stripNext"></div>
+  </div>
+</div>
+
 <div class="state-wrap" id="loadingState">
   <div class="spinner"></div>
   <div class="state-title">Loading timetable…</div>
@@ -260,6 +290,88 @@ function startTileRefresh() {
   tileRefreshTimer = setInterval(() => {
     if (currentGroupMap) renderTiles(currentGroupMap, currentNames);
   }, 30000); // refresh tiles every 30s
+}
+
+// ── Period strip ──────────────────────────────────────────────────────────
+function formatTime12(t) {
+  const [h, m] = t.split(':').map(Number);
+  return `${h % 12 || 12}:${String(m).padStart(2,'0')}${h >= 12 ? 'pm' : 'am'}`;
+}
+
+function formatCountdown(secsRemaining) {
+  const s = Math.max(0, Math.round(secsRemaining));
+  const m = Math.floor(s / 60), r = s % 60;
+  if (m === 0) return `${r}s`;
+  return `${m}m ${String(r).padStart(2,'0')}s`;
+}
+
+function updateStrip() {
+  const strip = document.getElementById('periodStrip');
+  // Only show on tile view, weekdays during school hours
+  const tileVisible = document.getElementById('tileView').classList.contains('visible');
+  if (isWeekend || !tileVisible) { strip.classList.remove('visible'); return; }
+
+  const now2 = new Date();
+  const nmSecs = now2.getHours()*3600 + now2.getMinutes()*60 + now2.getSeconds();
+  const schoolStartSecs = timeToMinutes('08:40') * 60;
+  const schoolEndSecs   = timeToMinutes('15:30') * 60;
+  if (nmSecs < schoolStartSecs || nmSecs > schoolEndSecs) {
+    strip.classList.remove('visible'); return;
+  }
+
+  strip.classList.add('visible');
+
+  // Find current and next using seconds precision
+  let current = null, next = null;
+  for (const slot of SCHOOL_SCHEDULE) {
+    const s = timeToMinutes(slot.start) * 60;
+    const e = timeToMinutes(slot.end)   * 60;
+    if (nmSecs >= s && nmSecs < e) current = { ...slot, startSecs: s, endSecs: e };
+    else if (nmSecs < s && !next)  next    = { ...slot, startSecs: s, endSecs: e };
+  }
+
+  const dot       = document.getElementById('stripDot');
+  const nameEl    = document.getElementById('stripName');
+  const timeEl    = document.getElementById('stripTime');
+  const bar       = document.getElementById('stripBar');
+  const countdown = document.getElementById('stripCountdown');
+  const nextEl    = document.getElementById('stripNext');
+
+  if (current) {
+    const isBreak = !!current.break;
+    const remaining = current.endSecs - nmSecs;
+    const total = current.endSecs - current.startSecs;
+    const pct = Math.min(100, ((nmSecs - current.startSecs) / total) * 100);
+
+    dot.className = 'period-strip-dot' + (isBreak ? ' is-break' : '');
+    nameEl.textContent = current.label;
+    timeEl.textContent = `${formatTime12(current.start)} – ${formatTime12(current.end)}`;
+    bar.style.width = pct + '%';
+    bar.className = 'period-strip-bar' + (isBreak ? ' is-break' : '');
+    countdown.textContent = formatCountdown(remaining) + ' left';
+  } else {
+    // Between slots — show time until next
+    dot.className = 'period-strip-dot is-break';
+    nameEl.textContent = 'Between periods';
+    timeEl.textContent = '';
+    bar.style.width = '0%';
+    bar.className = 'period-strip-bar is-break';
+    const until = next ? (next.startSecs - nmSecs) : 0;
+    countdown.textContent = next ? formatCountdown(until) + ' until' : '';
+  }
+
+  if (next) {
+    nextEl.innerHTML = `Next: <strong>${next.label}</strong> ${formatTime12(next.start)}`;
+  } else {
+    nextEl.textContent = 'Last period done';
+  }
+}
+
+let stripTimer = null;
+function startStrip() {
+  updateStrip();
+  if (stripTimer) clearInterval(stripTimer);
+  stripTimer = setInterval(updateStrip, 1000);
 }
 
 // ── Cycle ──────────────────────────────────────────────────────────────────
@@ -417,7 +529,8 @@ function showScreen(id) {
   const target = document.getElementById(id);
   target.style.display = '';
   requestAnimationFrame(() => target.classList.add('visible'));
-  if (id === 'tileView') startTileRefresh();
+  if (id === 'tileView') { startTileRefresh(); startStrip(); }
+  else { document.getElementById('periodStrip').classList.remove('visible'); }
 }
 
 const backBtn = document.getElementById('backBtn');
