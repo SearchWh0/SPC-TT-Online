@@ -71,12 +71,20 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .open-sheet-btn:hover { opacity:0.82; }
 
 .colour-name-list { display:flex; flex-direction:column; gap:8px; }
-.colour-name-row { display:flex; align-items:center; gap:12px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:11px 14px; }
+.colour-name-row { display:flex; align-items:center; gap:12px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:11px 14px; flex-wrap:wrap; }
 .colour-swatch { width:32px; height:32px; border-radius:8px; flex-shrink:0; border:1px solid rgba(0,0,0,0.08); }
 .colour-hex { font-family:'DM Mono',monospace; font-size:0.66rem; color:var(--muted); flex-shrink:0; width:92px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.colour-name-input { flex:1; background:transparent; border:none; border-bottom:1.5px solid var(--border); color:var(--text); font-family:'Outfit',sans-serif; font-size:0.92rem; font-weight:600; padding:3px 4px; outline:none; transition:border-color .2s; }
+.colour-name-input { flex:1; min-width:100px; background:transparent; border:none; border-bottom:1.5px solid var(--border); color:var(--text); font-family:'Outfit',sans-serif; font-size:0.92rem; font-weight:600; padding:3px 4px; outline:none; transition:border-color .2s; }
 .colour-name-input:focus { border-bottom-color:var(--text); }
+.colour-lso-input { flex:1; min-width:100px; background:transparent; border:none; border-bottom:1.5px dashed var(--border); color:var(--text); font-family:'DM Mono',monospace; font-size:0.78rem; padding:3px 4px; outline:none; transition:border-color .2s; }
+.colour-lso-input:focus { border-bottom-color:var(--text); }
+.colour-lso-label { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--muted); white-space:nowrap; }
 .no-colours-msg { font-size:0.84rem; color:var(--muted); font-style:italic; padding:6px 2px; }
+
+/* ── Export/Import ── */
+.export-panel { background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:16px 18px; margin-top:14px; }
+.export-panel-title { font-family:'DM Mono',monospace; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:10px; }
+.export-code { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'DM Mono',monospace; font-size:0.75rem; padding:10px 12px; outline:none; resize:vertical; min-height:80px; line-height:1.5; }
 
 /* ── Email Override Table ── */
 .override-table { width:100%; border-collapse:collapse; margin-bottom:14px; }
@@ -251,29 +259,78 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
         <div class="field-status">Opens the right sheet — Ctrl+A → Ctrl+C → switch back and paste</div>
       </div>
 
-      <!-- Colour names -->
+      <!-- Colour names + LSO names -->
       <div class="settings-section full">
-        <div class="section-title">Colour → Name Mapping</div>
-        <p class="section-desc">Set a permanent name for each colour group. Names are saved in your browser and pushed to the server whenever you upload a timetable. Paste a timetable on the Timetable tab first to see the colours appear here.</p>
+        <div class="section-title">Colour → Name & LSO Name Mapping</div>
+        <p class="section-desc">Set a permanent <strong>name</strong> for each colour group, and an optional <strong>LSO name</strong> — the name used in that person's email ("Please introduce me as…"). If left blank, the global LSO name fallback is used.</p>
         <div class="colour-name-list" id="colourNameList">
           <div class="no-colours-msg">No colours loaded yet — paste a timetable first.</div>
         </div>
         <div class="btn-row">
-          <button class="s-btn green" id="saveNamesBtn">Save & push names to server</button>
+          <button class="s-btn green" id="saveNamesBtn">Save & push to server</button>
           <button class="s-btn secondary" id="clearNamesBtn">Clear all names</button>
         </div>
         <div class="field-status" id="namesStatus"></div>
       </div>
 
-      <!-- ── Teacher Email Overrides ── -->
+      <!-- LSO Global defaults -->
+      <div class="settings-section">
+        <div class="section-title">LSO Email Defaults</div>
+        <p class="section-desc">Global fallback name used when no per-person name is set. Domain and CC apply to all people.</p>
+        <div class="field-group">
+          <span class="field-label">Fallback Name</span>
+          <input id="lsoGlobalName" class="field-input" type="text" placeholder="Mr. Chew" />
+        </div>
+        <div class="field-group">
+          <span class="field-label">Email Domain</span>
+          <input id="lsoGlobalDomain" class="field-input" type="text" placeholder="stpeters.vic.edu.au" />
+        </div>
+        <div class="field-group">
+          <span class="field-label">CC Address</span>
+          <input id="lsoGlobalCC" class="field-input" type="text" placeholder="cc@school.edu.au" />
+        </div>
+        <div class="btn-row">
+          <button class="s-btn" id="saveLSODefaultsBtn">Save Defaults</button>
+        </div>
+        <div class="field-status" id="lsoDefaultsStatus"></div>
+      </div>
+
+      <!-- Export / Import -->
+      <div class="settings-section">
+        <div class="section-title">Export / Import Settings</div>
+        <p class="section-desc">Export all your settings as a JSON code you can paste on another machine to restore everything — names, LSO names, email overrides, server URL, and more.</p>
+        <div class="btn-row">
+          <button class="s-btn green" id="exportSettingsBtn">📤 Export settings</button>
+          <button class="s-btn secondary" id="importSettingsBtn">📥 Import settings</button>
+        </div>
+        <div class="export-panel" id="exportPanel" style="display:none">
+          <div class="export-panel-title">Settings JSON — copy this to another machine</div>
+          <textarea class="export-code" id="exportCode" readonly></textarea>
+          <div class="btn-row" style="margin-top:10px">
+            <button class="s-btn secondary" id="copyExportBtn">📋 Copy to clipboard</button>
+            <button class="s-btn secondary" id="closeExportBtn">Close</button>
+          </div>
+        </div>
+        <div class="export-panel" id="importPanel" style="display:none">
+          <div class="export-panel-title">Paste settings JSON here</div>
+          <textarea class="export-code" id="importCode" placeholder='{"tt-colornames":{"rgb(...)":"Name"},...}'></textarea>
+          <div class="btn-row" style="margin-top:10px">
+            <button class="s-btn green" id="doImportBtn">✓ Apply & restore</button>
+            <button class="s-btn secondary" id="closeImportBtn">Cancel</button>
+          </div>
+          <div class="field-status" id="importStatus"></div>
+        </div>
+        <div class="field-status" id="exportStatus"></div>
+      </div>
+
+      <!-- Teacher Email Overrides -->
       <div class="settings-section full">
         <div class="section-title">Teacher Email Overrides</div>
         <p class="section-desc">
           Most teachers are auto-generated: last letter moves to front (e.g. <strong>WARRD → dwarr@…</strong>, <strong>KOKF → fkok@…</strong>).
-          Add overrides below for teachers whose real email doesn't match that pattern — like <strong>DEGOJ → jdegoldi</strong>.
-          Only enter the part <em>before</em> the @ sign. These are saved in your browser and shared with the viewer page automatically.
+          Add overrides below for teachers whose real email doesn't match that pattern.
+          Only enter the part <em>before</em> the @ sign.
         </p>
-
         <table class="override-table" id="overrideTable">
           <thead>
             <tr>
@@ -285,9 +342,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
           </thead>
           <tbody id="overrideTbody"></tbody>
         </table>
-
         <button class="add-override-btn" id="addOverrideBtn">+ Add override</button>
-
         <div class="btn-row">
           <button class="s-btn green" id="saveOverridesBtn">Save overrides</button>
           <button class="s-btn secondary" id="clearOverridesBtn">Clear all</button>
@@ -305,6 +360,60 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
         <div class="field-status" id="actionStatus"></div>
       </div>
 
+    </div>
+  </div>
+</div>
+
+<!-- ══ EMAIL TAB ══ -->
+<div class="tab-page" id="emailTab">
+  <div class="settings-page">
+    <div class="email-section">
+      <div class="section-title">Morning Email Composer</div>
+      <p class="section-desc">Fill in your period schedule below. The email preview updates live — copy it and paste into Outlook.</p>
+      <div class="email-two-col">
+        <div class="field-group">
+          <span class="field-label">Your display name (e.g. Mr. Chew)</span>
+          <input id="emailDisplayName" class="field-input" type="text" placeholder="Mr. Chew" />
+        </div>
+        <div class="field-group">
+          <span class="field-label">Date (auto-filled today)</span>
+          <input id="emailDate" class="field-input" type="text" readonly />
+        </div>
+      </div>
+      <div class="section-title" style="margin-bottom:10px">Periods</div>
+      <div class="email-period-grid">
+        <div><div class="period-label">P1</div><input class="email-period-input period-val" data-p="1" type="text" placeholder="Class / teacher" /></div>
+        <div><div class="period-label">P2</div><input class="email-period-input period-val" data-p="2" type="text" placeholder="Class / teacher" /></div>
+        <div><div class="period-label">P3</div><input class="email-period-input period-val" data-p="3" type="text" placeholder="Class / teacher" /></div>
+        <div><div class="period-label">P4</div><input class="email-period-input period-val" data-p="4" type="text" placeholder="Class / teacher" /></div>
+        <div><div class="period-label">P5</div><input class="email-period-input period-val" data-p="5" type="text" placeholder="Class / teacher" /></div>
+        <div><div class="period-label">P6</div><input class="email-period-input period-val" data-p="6" type="text" placeholder="Class / teacher" /></div>
+      </div>
+      <div class="section-title" style="margin-bottom:10px">Preview</div>
+      <div class="email-preview-wrap" id="emailPreview"></div>
+      <div class="btn-row">
+        <button class="email-copy-btn" id="emailCopyBtn" style="max-width:220px">📋 Copy email</button>
+        <button class="s-btn secondary" id="emailSaveHistoryBtn">💾 Save to history</button>
+        <button class="s-btn secondary" id="emailClearBtn">Clear</button>
+      </div>
+      <div class="field-status" id="emailStatus"></div>
+    </div>
+    <div class="email-section">
+      <div class="section-title">Email Template</div>
+      <p class="section-desc">Customise the template. Use <code style="font-family:'DM Mono',monospace;background:var(--soft);padding:1px 5px;border-radius:4px">{DATE}</code>, <code style="font-family:'DM Mono',monospace;background:var(--soft);padding:1px 5px;border-radius:4px">{NAME}</code>, and <code style="font-family:'DM Mono',monospace;background:var(--soft);padding:1px 5px;border-radius:4px">{PERIODS}</code> as placeholders.</p>
+      <div class="field-group">
+        <textarea id="emailTemplate" class="field-input" rows="10" style="resize:vertical;font-family:'DM Mono',monospace;font-size:0.8rem;line-height:1.7"></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="s-btn green" id="saveTemplateBtn">Save template</button>
+        <button class="s-btn secondary" id="resetTemplateBtn">Reset to default</button>
+      </div>
+    </div>
+    <div class="email-section">
+      <div class="section-title">Sent History <span style="font-weight:400;color:var(--muted)">(saved locally)</span></div>
+      <div class="email-history-list" id="emailHistoryList">
+        <div style="color:var(--muted);font-size:0.82rem;padding:4px 0">No saved emails yet.</div>
+      </div>
     </div>
   </div>
 </div>
@@ -348,7 +457,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(btn.dataset.tab).classList.add('active');
-    if (btn.dataset.tab === 'settingsTab') { refreshColourNameList(); renderOverrideTable(); }
+    if (btn.dataset.tab === 'settingsTab') { refreshColourNameList(); renderOverrideTable(); loadLSODefaults(); }
     if (btn.dataset.tab === 'emailTab') { setTimeout(initEmailTab, 50); }
   });
 });
@@ -397,40 +506,85 @@ document.getElementById('openSheetBtn').addEventListener('click', () => {
   window.open(`${base}${sep}activeCell=%27Day%20${dayNum}%27!A1&action=default`, '_blank');
 });
 
-// ── Colour name manager ────────────────────────────────────────────────────
+// ── LSO per-person names ───────────────────────────────────────────────────
+function getLSONames() {
+  try { return JSON.parse(localStorage.getItem('tt-lso-names') || '{}'); }
+  catch(e) { return {}; }
+}
+function saveLSONames(obj) { localStorage.setItem('tt-lso-names', JSON.stringify(obj)); }
+
+// ── LSO global defaults ────────────────────────────────────────────────────
+function loadLSODefaults() {
+  document.getElementById('lsoGlobalName').value   = localStorage.getItem('lso-name') || 'Mr. Chew';
+  document.getElementById('lsoGlobalDomain').value = localStorage.getItem('lso-domain') || 'stpeters.vic.edu.au';
+  document.getElementById('lsoGlobalCC').value     = localStorage.getItem('lso-cc') || '';
+}
+document.getElementById('saveLSODefaultsBtn').addEventListener('click', () => {
+  localStorage.setItem('lso-name',   document.getElementById('lsoGlobalName').value.trim());
+  localStorage.setItem('lso-domain', document.getElementById('lsoGlobalDomain').value.trim());
+  localStorage.setItem('lso-cc',     document.getElementById('lsoGlobalCC').value.trim());
+  setStatus('lsoDefaultsStatus', '✓ Saved', 'green');
+});
+
+// ── Colour name manager (now includes LSO name column) ──────────────────────
 function refreshColourNameList() {
   const list = document.getElementById('colourNameList');
+  const lsoNames = getLSONames();
+
   if (!currentGroupMap||currentGroupMap.size===0) {
     list.innerHTML='<div class="no-colours-msg">No colours loaded yet — paste a timetable first.</div>';
     return;
   }
   const sorted = [...currentGroupMap.entries()].sort((a,b)=>getLuminance(a[1].bg)-getLuminance(b[1].bg));
   list.innerHTML = '';
+
+  // Header row
+  const header = document.createElement('div');
+  header.style.cssText = 'display:flex;gap:12px;padding:4px 14px;';
+  header.innerHTML = `<div style="width:32px;flex-shrink:0"></div><div style="width:92px;flex-shrink:0;font-family:DM Mono,monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Colour</div><div style="flex:1;font-family:DM Mono,monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Group Name</div><div style="flex:1;font-family:DM Mono,monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">LSO Name (this person's email)</div>`;
+  list.appendChild(header);
+
   sorted.forEach(([key,{bg,fg}], i) => {
     const row = document.createElement('div'); row.className='colour-name-row';
     const swatch = document.createElement('div'); swatch.className='colour-swatch';
     swatch.style.background=bg; if(fg) swatch.style.outline=`2px solid ${fg}`;
     const hex = document.createElement('div'); hex.className='colour-hex';
     hex.textContent=bg; hex.title=key;
-    const input = document.createElement('input'); input.className='colour-name-input';
-    input.type='text'; input.placeholder=`Name ${i+1}`; input.value=colorNames[key]||''; input.dataset.key=key;
-    input.addEventListener('input', () => {
-      const val=input.value.trim();
+    const nameInput = document.createElement('input'); nameInput.className='colour-name-input';
+    nameInput.type='text'; nameInput.placeholder=`Name ${i+1}`; nameInput.value=colorNames[key]||''; nameInput.dataset.key=key;
+    nameInput.addEventListener('input', () => {
+      const val=nameInput.value.trim();
       if(val) colorNames[key]=val; else delete colorNames[key];
       const navBtn=document.querySelector(`.class-btn[data-ckey="${CSS.escape(key)}"]`);
       if(navBtn){const lbl=navBtn.querySelector('.btn-label');if(lbl)lbl.textContent=val||`Name ${i+1}`;const pt=document.getElementById('ptitle-'+navBtn.dataset.target);if(pt)pt.textContent=val||`Name ${i+1}`;}
     });
-    row.appendChild(swatch); row.appendChild(hex); row.appendChild(input);
+
+    const lsoSep = document.createElement('div');
+    lsoSep.className = 'colour-lso-label'; lsoSep.textContent = '✉';
+    lsoSep.style.cssText = 'color:var(--muted);font-size:0.9rem;flex-shrink:0;';
+    const lsoInput = document.createElement('input'); lsoInput.className='colour-lso-input';
+    lsoInput.type='text'; lsoInput.placeholder=`e.g. Mr. Smith (leave blank for default)`;
+    lsoInput.value = lsoNames[key] || '';
+    lsoInput.dataset.key = key;
+
+    row.appendChild(swatch); row.appendChild(hex); row.appendChild(nameInput);
+    row.appendChild(lsoSep); row.appendChild(lsoInput);
     list.appendChild(row);
   });
 }
 
 document.getElementById('saveNamesBtn').addEventListener('click', async () => {
+  const lsoNames = {};
   document.querySelectorAll('.colour-name-input').forEach(inp=>{
     const val=inp.value.trim();
     if(val) colorNames[inp.dataset.key]=val; else delete colorNames[inp.dataset.key];
   });
+  document.querySelectorAll('.colour-lso-input').forEach(inp=>{
+    const val=inp.value.trim();
+    if(val) lsoNames[inp.dataset.key]=val;
+  });
   localStorage.setItem('tt-colornames',JSON.stringify(colorNames));
+  saveLSONames(lsoNames);
   if(currentGroupMap){ await pushNames(); setStatus('namesStatus','✓ Saved & pushed to server','green'); }
   else setStatus('namesStatus','✓ Saved locally (paste a timetable to push to server)','green');
 });
@@ -439,19 +593,92 @@ document.getElementById('clearNamesBtn').addEventListener('click', () => {
   if(!confirm('Clear all saved names?')) return;
   Object.keys(colorNames).forEach(k=>delete colorNames[k]);
   localStorage.removeItem('tt-colornames');
+  localStorage.removeItem('tt-lso-names');
   document.querySelectorAll('.colour-name-input').forEach(inp=>inp.value='');
+  document.querySelectorAll('.colour-lso-input').forEach(inp=>inp.value='');
   setStatus('namesStatus','Names cleared','');
 });
 
-// ── Teacher Email Overrides ────────────────────────────────────────────────
-// Stored as { "DEGOJ": "jdegoldi", "WARRD": "dwarr" } — user only needs to
-// enter keys that differ from the auto-generated formula.
-// Shared via localStorage key 'tt-email-overrides' — the viewer reads the same key.
+// ── Export / Import ────────────────────────────────────────────────────────
+// Keys to export/import
+const EXPORT_KEYS = [
+  'tt-server','tt-pw','tt-theme','tt-colornames','tt-lso-names',
+  'tt-email-overrides','tt-sharepoint','lso-name','lso-domain','lso-cc',
+  'tt-email-template','tt-email-name'
+];
 
+document.getElementById('exportSettingsBtn').addEventListener('click', () => {
+  const exportPanel = document.getElementById('exportPanel');
+  const importPanel = document.getElementById('importPanel');
+  importPanel.style.display = 'none';
+  exportPanel.style.display = 'block';
+  const obj = {};
+  EXPORT_KEYS.forEach(k => {
+    const v = localStorage.getItem(k);
+    if (v !== null) obj[k] = v;
+  });
+  document.getElementById('exportCode').value = JSON.stringify(obj, null, 2);
+});
+
+document.getElementById('closeExportBtn').addEventListener('click', () => {
+  document.getElementById('exportPanel').style.display = 'none';
+});
+
+document.getElementById('copyExportBtn').addEventListener('click', () => {
+  const ta = document.getElementById('exportCode');
+  navigator.clipboard.writeText(ta.value).then(() => {
+    setStatus('exportStatus', '✓ Copied to clipboard', 'green');
+  });
+});
+
+document.getElementById('importSettingsBtn').addEventListener('click', () => {
+  const exportPanel = document.getElementById('exportPanel');
+  const importPanel = document.getElementById('importPanel');
+  exportPanel.style.display = 'none';
+  importPanel.style.display = 'block';
+  document.getElementById('importCode').value = '';
+  document.getElementById('importStatus').textContent = '';
+});
+
+document.getElementById('closeImportBtn').addEventListener('click', () => {
+  document.getElementById('importPanel').style.display = 'none';
+});
+
+document.getElementById('doImportBtn').addEventListener('click', () => {
+  const raw = document.getElementById('importCode').value.trim();
+  if (!raw) { setStatus('importStatus', '✕ Paste the JSON first', 'red'); return; }
+  try {
+    const obj = JSON.parse(raw);
+    let count = 0;
+    EXPORT_KEYS.forEach(k => {
+      if (obj[k] !== undefined) {
+        localStorage.setItem(k, obj[k]);
+        count++;
+      }
+    });
+    // Reload inputs
+    serverUrlEl.value = localStorage.getItem('tt-server') || '';
+    adminPwEl.value   = localStorage.getItem('tt-pw') || '';
+    spUrlEl.value     = localStorage.getItem('tt-sharepoint') || '';
+    loadLSODefaults();
+    const theme = localStorage.getItem('tt-theme') || 'light';
+    html.setAttribute('data-theme', theme);
+    document.getElementById('toggleLabel').textContent = theme==='dark'?'Dark':'Light';
+    // Reload colornames
+    try { Object.assign(colorNames, JSON.parse(localStorage.getItem('tt-colornames')||'{}')); } catch(e){}
+    renderOverrideTable();
+    refreshColourNameList();
+    setStatus('importStatus', `✓ Imported ${count} setting(s) — everything restored`, 'green');
+    document.getElementById('importPanel').style.display = 'none';
+  } catch(e) {
+    setStatus('importStatus', `✕ Invalid JSON: ${e.message}`, 'red');
+  }
+});
+
+// ── Teacher Email Overrides ────────────────────────────────────────────────
 let emailOverrides = JSON.parse(localStorage.getItem('tt-email-overrides') || '{}');
 
 function codeToEmailAuto(code) {
-  // Last letter to front: WARRD → dwarr
   const lower = code.toLowerCase();
   return lower[lower.length-1] + lower.slice(0, lower.length-1);
 }
@@ -466,58 +693,42 @@ function renderOverrideTable() {
     tbody.appendChild(tr);
     return;
   }
-  entries.forEach(([code, prefix]) => {
-    addOverrideRow(tbody, code, prefix);
-  });
+  entries.forEach(([code, prefix]) => addOverrideRow(tbody, code, prefix));
 }
 
 function addOverrideRow(tbody, code='', prefix='') {
   const tr = document.createElement('tr');
   const autoPreview = code ? codeToEmailAuto(code) : '—';
-
   tr.innerHTML = `
-    <td>
-      <input class="override-input code-input" type="text" value="${escapeHTML(code)}" placeholder="e.g. DEGOJ" maxlength="20" />
-    </td>
+    <td><input class="override-input code-input" type="text" value="${escapeHTML(code)}" placeholder="e.g. DEGOJ" maxlength="20" /></td>
     <td style="text-align:center;color:var(--muted);font-size:0.9rem;">→</td>
     <td>
       <input class="override-input prefix-input" type="text" value="${escapeHTML(prefix)}" placeholder="e.g. jdegoldi" />
       <div class="auto-preview">auto would be: <span class="gen">${escapeHTML(autoPreview)}</span></div>
     </td>
-    <td>
-      <button class="override-del" title="Remove">✕</button>
-    </td>
+    <td><button class="override-del" title="Remove">✕</button></td>
   `;
-
   const codeIn   = tr.querySelector('.code-input');
-  const prefixIn = tr.querySelector('.prefix-input');
   const preview  = tr.querySelector('.auto-preview .gen');
   const delBtn   = tr.querySelector('.override-del');
-
   codeIn.addEventListener('input', () => {
     const c = codeIn.value.trim().toUpperCase();
     codeIn.value = c;
     preview.textContent = c ? codeToEmailAuto(c) : '—';
   });
-
   delBtn.addEventListener('click', () => {
     tr.remove();
-    // Remove empty placeholder row if present
     const empRow = tbody.querySelector('td[colspan]');
     if (empRow) empRow.closest('tr').remove();
   });
-
-  // Remove the "no overrides" placeholder row if it's still there
   const placeholder = tbody.querySelector('td[colspan]');
   if (placeholder) placeholder.closest('tr').remove();
-
   tbody.appendChild(tr);
 }
 
 document.getElementById('addOverrideBtn').addEventListener('click', () => {
   const tbody = document.getElementById('overrideTbody');
   addOverrideRow(tbody);
-  // Focus the new code input
   const rows = tbody.querySelectorAll('tr');
   const lastRow = rows[rows.length - 1];
   if (lastRow) lastRow.querySelector('.code-input').focus();
@@ -534,7 +745,6 @@ document.getElementById('saveOverridesBtn').addEventListener('click', () => {
   emailOverrides = newOverrides;
   localStorage.setItem('tt-email-overrides', JSON.stringify(emailOverrides));
   setStatus('overrideStatus', `✓ Saved ${Object.keys(emailOverrides).length} override(s)`, 'green');
-  // Re-render to clean up any empty rows
   renderOverrideTable();
 });
 
@@ -546,7 +756,6 @@ document.getElementById('clearOverridesBtn').addEventListener('click', () => {
   setStatus('overrideStatus', 'Overrides cleared', '');
 });
 
-// Render on load
 renderOverrideTable();
 
 // ── Actions ────────────────────────────────────────────────────────────────
@@ -743,9 +952,7 @@ Please introduce me to the students as {NAME}.
 
 I look forward to working with you today and providing effective support to our students.`;
 
-function getEmailTemplate() {
-  return localStorage.getItem('tt-email-template') || DEFAULT_EMAIL_TEMPLATE;
-}
+function getEmailTemplate() { return localStorage.getItem('tt-email-template') || DEFAULT_EMAIL_TEMPLATE; }
 
 function buildPeriodsText() {
   const lines = [];
@@ -761,10 +968,7 @@ function buildEmailPreview() {
   const date     = document.getElementById('emailDate').value.trim() || '';
   const periods  = buildPeriodsText();
   const template = getEmailTemplate();
-  return template
-    .replace('{DATE}', date)
-    .replace('{NAME}', name)
-    .replace('{PERIODS}', periods);
+  return template.replace('{DATE}', date).replace('{NAME}', name).replace('{PERIODS}', periods);
 }
 
 function updateEmailPreview() {
@@ -851,100 +1055,11 @@ function renderEmailHistory() {
   });
 }
 
-// Init email tab whenever it's clicked
 document.querySelectorAll('.tab-btn').forEach(btn => {
   if (btn.dataset.tab === 'emailTab') btn.addEventListener('click', () => setTimeout(initEmailTab, 50));
 });
 initEmailTab();
-
+loadLSODefaults();
 </script>
-<!-- ══ EMAIL TAB ══ -->
-<div class="tab-page" id="emailTab">
-  <div class="settings-page">
-
-    <!-- Composer -->
-    <div class="email-section">
-      <div class="section-title">Morning Email Composer</div>
-      <p class="section-desc">Fill in your period schedule below. The email preview updates live — copy it and paste into Outlook.</p>
-
-      <!-- Name + greeting fields -->
-      <div class="email-two-col">
-        <div class="field-group">
-          <span class="field-label">Your display name (e.g. Mr. Chew)</span>
-          <input id="emailDisplayName" class="field-input" type="text" placeholder="Mr. Chew" />
-        </div>
-        <div class="field-group">
-          <span class="field-label">Date (auto-filled today)</span>
-          <input id="emailDate" class="field-input" type="text" readonly />
-        </div>
-      </div>
-
-      <!-- Period inputs -->
-      <div class="section-title" style="margin-bottom:10px">Periods</div>
-      <div class="email-period-grid">
-        <div>
-          <div class="period-label">P1</div>
-          <input class="email-period-input period-val" data-p="1" type="text" placeholder="Class / teacher" />
-        </div>
-        <div>
-          <div class="period-label">P2</div>
-          <input class="email-period-input period-val" data-p="2" type="text" placeholder="Class / teacher" />
-        </div>
-        <div>
-          <div class="period-label">P3</div>
-          <input class="email-period-input period-val" data-p="3" type="text" placeholder="Class / teacher" />
-        </div>
-        <div>
-          <div class="period-label">P4</div>
-          <input class="email-period-input period-val" data-p="4" type="text" placeholder="Class / teacher" />
-        </div>
-        <div>
-          <div class="period-label">P5</div>
-          <input class="email-period-input period-val" data-p="5" type="text" placeholder="Class / teacher" />
-        </div>
-        <div>
-          <div class="period-label">P6</div>
-          <input class="email-period-input period-val" data-p="6" type="text" placeholder="Class / teacher" />
-        </div>
-      </div>
-
-      <!-- Live preview -->
-      <div class="section-title" style="margin-bottom:10px">Preview</div>
-      <div class="email-preview-wrap" id="emailPreview"></div>
-
-      <!-- Action buttons -->
-      <div class="btn-row">
-        <button class="email-copy-btn" id="emailCopyBtn" style="max-width:220px">📋 Copy email</button>
-        <button class="s-btn secondary" id="emailSaveHistoryBtn">💾 Save to history</button>
-        <button class="s-btn secondary" id="emailClearBtn">Clear</button>
-      </div>
-      <div class="field-status" id="emailStatus"></div>
-    </div>
-
-    <!-- Template editor -->
-    <div class="email-section">
-      <div class="section-title">Email Template</div>
-      <p class="section-desc">Customise the template. Use <code style="font-family:'DM Mono',monospace;background:var(--soft);padding:1px 5px;border-radius:4px">{DATE}</code>, <code style="font-family:'DM Mono',monospace;background:var(--soft);padding:1px 5px;border-radius:4px">{NAME}</code>, and <code style="font-family:'DM Mono',monospace;background:var(--soft);padding:1px 5px;border-radius:4px">{PERIODS}</code> as placeholders.</p>
-      <div class="field-group">
-        <textarea id="emailTemplate" class="field-input" rows="10" style="resize:vertical;font-family:'DM Mono',monospace;font-size:0.8rem;line-height:1.7"></textarea>
-      </div>
-      <div class="btn-row">
-        <button class="s-btn green" id="saveTemplateBtn">Save template</button>
-        <button class="s-btn secondary" id="resetTemplateBtn">Reset to default</button>
-      </div>
-    </div>
-
-    <!-- Email history -->
-    <div class="email-section">
-      <div class="section-title">Sent History <span style="font-weight:400;color:var(--muted)">(saved locally)</span></div>
-      <div class="email-history-list" id="emailHistoryList">
-        <div style="color:var(--muted);font-size:0.82rem;padding:4px 0">No saved emails yet.</div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-
 </body>
 </html>
