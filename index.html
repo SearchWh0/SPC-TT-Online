@@ -96,6 +96,21 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .tile-period-chip.has-data { color:var(--text); border-color:var(--muted); }
 .tile-empty-label { font-size:0.78rem; color:var(--muted); font-style:italic; margin-top:auto; }
 
+/* ── Compact view ── */
+.tile-grid.compact { grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:8px; padding-top:20px; }
+.tile-grid.compact .tile { min-height:0; border-radius:12px; }
+.tile-grid.compact .tile-colour-bar { height:5px; }
+.tile-grid.compact .tile-body { padding:10px 12px 10px; }
+.tile-grid.compact .tile-name { font-size:0.82rem; font-weight:700; margin-bottom:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.tile-grid.compact .tile-lso-name,
+.tile-grid.compact .tile-periods,
+.tile-grid.compact .tile-empty-label,
+.tile-grid.compact .tile-status { display:none; }
+
+/* ── View toggle button ── */
+.view-toggle-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'DM Mono',monospace; font-size:0.72rem; padding:6px 12px; border-radius:7px; cursor:pointer; transition:border-color .2s,color .2s; letter-spacing:0.04em; display:flex; align-items:center; gap:6px; white-space:nowrap; }
+.view-toggle-btn:hover { border-color:var(--text); color:var(--text); }
+
 /* ── Detail View ── */
 .detail-view { display:none; }
 .detail-view.visible { display:block; }
@@ -176,6 +191,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   </div>
   <div class="header-right">
     <button class="refresh-btn" id="refreshBtn">↻ Refresh</button>
+    <button class="view-toggle-btn" id="viewToggleBtn" title="Toggle compact/expanded view">⊞ Compact</button>
     <div class="theme-toggle" id="themeToggle">
       <span class="toggle-label" id="toggleLabel">Light</span>
       <div class="toggle-track"></div>
@@ -409,6 +425,26 @@ document.getElementById('themeToggle').addEventListener('click', () => {
   document.getElementById('toggleLabel').textContent = next==='dark'?'Dark':'Light';
   localStorage.setItem('tt-theme', next);
 });
+
+// ── Compact / Expanded toggle ──────────────────────────────────────────────
+let isCompact = localStorage.getItem('tt-compact') === 'true';
+function applyCompactMode() {
+  const grid = document.getElementById('tileGrid');
+  const btn  = document.getElementById('viewToggleBtn');
+  if (isCompact) {
+    grid.classList.add('compact');
+    btn.textContent = '⊟ Expanded';
+  } else {
+    grid.classList.remove('compact');
+    btn.textContent = '⊞ Compact';
+  }
+}
+document.getElementById('viewToggleBtn').addEventListener('click', () => {
+  isCompact = !isCompact;
+  localStorage.setItem('tt-compact', isCompact);
+  applyCompactMode();
+});
+applyCompactMode();
 
 // ── Server ─────────────────────────────────────────────────────────────────
 function getServerUrl() { return 'https://timetable-server-r6nb.onrender.com'; }
