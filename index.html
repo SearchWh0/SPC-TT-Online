@@ -519,6 +519,7 @@ function saveLSOGlobalSettings(s) {
 // ── State ──────────────────────────────────────────────────────────────────
 let currentGroupMap = null;
 let currentNames    = {};
+let activeDetailKey = null; // tracks which person is open
 
 function showScreen(id) {
   ['loadingState','emptyState','noServerState','tileView','detailView'].forEach(s => {
@@ -536,6 +537,7 @@ function showScreen(id) {
 const backBtn = document.getElementById('backBtn');
 
 function goHome() {
+  activeDetailKey = null;
   backBtn.classList.remove('visible');
   siteTitle.textContent = dayNum&&!isWeekend?`Timetable (Day ${dayNum})`:'Timetable';
   showScreen('tileView');
@@ -545,6 +547,7 @@ function openDetail(key) {
   if (!currentGroupMap) return;
   const grp = currentGroupMap.get(key); if (!grp) return;
   const name = currentNames[key] || '—';
+  activeDetailKey = key;
   siteTitle.textContent = name;
   backBtn.classList.add('visible');
   renderDetail(key, grp, name);
@@ -574,7 +577,18 @@ async function loadTimetable() {
       localStorage.setItem('tt-cached-time', Date.now().toString());
     } catch(e) {}
     renderTiles(groupMap, currentNames);
-    showScreen('tileView');
+    // If a detail was open, silently re-render it in place; otherwise go to tiles
+    if (activeDetailKey && groupMap.has(activeDetailKey)) {
+      const grp = groupMap.get(activeDetailKey);
+      const name = currentNames[activeDetailKey] || '—';
+      siteTitle.textContent = name;
+      backBtn.classList.add('visible');
+      renderDetail(activeDetailKey, grp, name);
+      showScreen('detailView');
+    } else {
+      activeDetailKey = null;
+      showScreen('tileView');
+    }
   } catch(e) {
     const cached = localStorage.getItem('tt-cached-data');
     const cachedTime = parseInt(localStorage.getItem('tt-cached-time')||'0');
@@ -587,7 +601,17 @@ async function loadTimetable() {
         currentGroupMap = groupMap;
         currentNames    = state.names || {};
         renderTiles(groupMap, currentNames);
-        showScreen('tileView');
+        if (activeDetailKey && groupMap.has(activeDetailKey)) {
+          const grp = groupMap.get(activeDetailKey);
+          const name = currentNames[activeDetailKey] || '—';
+          siteTitle.textContent = name;
+          backBtn.classList.add('visible');
+          renderDetail(activeDetailKey, grp, name);
+          showScreen('detailView');
+        } else {
+          activeDetailKey = null;
+          showScreen('tileView');
+        }
         showStaleBanner();
         return;
       } catch(e2) {}
