@@ -780,6 +780,7 @@ function renderDetail(key, grp, name) {
       </div>
       <div class="lso-actions">
         <button class="lso-open-btn" id="lsoOpenBtn">📧 Open in Outlook</button>
+        <button class="lso-copy-body-btn" id="lsoCopyLinkBtn">🔗 Copy Outlook Link</button>
         <button class="lso-copy-body-btn" id="lsoCopyBodyBtn">📋 Copy Body</button>
         <button class="lso-copy-body-btn" id="lsoCopySubjectBtn">📋 Copy Subject</button>
       </div>
@@ -846,6 +847,16 @@ function renderDetail(key, grp, name) {
     const { subject, body, teacherEmails, cc } = lastEmail;
     const mailto = `mailto:${teacherEmails.join(';')}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.location.href = mailto;
+  });
+
+  inner.querySelector('#lsoCopyLinkBtn').addEventListener('click', function() {
+    if (!lastEmail) return;
+    const { subject, body, teacherEmails, cc } = lastEmail;
+    const mailto = `mailto:${teacherEmails.join(';')}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    navigator.clipboard.writeText(mailto).then(() => {
+      this.textContent = '✅ Copied!';
+      setTimeout(() => this.textContent = '🔗 Copy Outlook Link', 1800);
+    });
   });
 
   inner.querySelector('#lsoCopyBodyBtn').addEventListener('click', function() {
