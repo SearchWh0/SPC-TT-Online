@@ -494,53 +494,77 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 
 <!-- ══ DAILY CHANGES TAB ══ -->
 <div class="tab-page" id="changesTab">
-  <div class="settings-page" style="max-width:780px;">
+  <div class="settings-page" style="max-width:860px;">
 
-    <div class="settings-section full" style="margin-bottom:20px;">
-      <div class="section-title">Upload Daily Changes Image</div>
-      <p class="section-desc">Take a photo or screenshot of today's daily TT changes sheet and upload it here. Claude will read the text and extract each LSO's assignments per period, then publish it to the viewer so all LSOs can see today's changes.</p>
-
-      <!-- Upload zone -->
-      <div id="dcDropZone" style="border:2px dashed var(--border);border-radius:12px;padding:36px 24px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;margin-bottom:16px;background:var(--surface2);">
-        <div style="font-size:2rem;margin-bottom:8px;">📷</div>
-        <div style="font-weight:700;margin-bottom:4px;">Drop image here or click to upload</div>
-        <div style="font-size:0.8rem;color:var(--muted);">PNG, JPG, HEIC — screenshot or photo of the changes sheet</div>
-        <input type="file" id="dcFileInput" accept="image/*" style="display:none;" />
-      </div>
-
-      <!-- Preview -->
-      <div id="dcPreviewWrap" style="display:none;margin-bottom:16px;">
-        <img id="dcPreviewImg" style="max-width:100%;max-height:300px;border-radius:10px;border:1px solid var(--border);display:block;" />
-        <button id="dcClearImg" style="margin-top:8px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.8rem;">✕ Remove image</button>
-      </div>
-
-      <!-- Read button -->
-      <div class="btn-row">
-        <button class="s-btn green" id="dcReadBtn" disabled>🤖 Read with Claude</button>
-        <button class="s-btn secondary" id="dcPublishBtn" disabled>📤 Publish to viewer</button>
-        <button class="s-btn secondary" id="dcClearBtn" style="color:#ef4444;">🗑 Clear published changes</button>
-      </div>
-      <div id="dcStatus" style="margin-top:12px;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--muted);min-height:20px;"></div>
+    <!-- Mode switcher -->
+    <div style="display:flex;gap:10px;margin-bottom:20px;">
+      <button class="s-btn" id="dcModeAuto" style="flex:1;background:var(--text);color:var(--bg);">📷 Upload Image (auto-read)</button>
+      <button class="s-btn secondary" id="dcModeManual" style="flex:1;">✏️ Enter Manually</button>
     </div>
 
-    <!-- Extracted result -->
-    <div class="settings-section full" id="dcResultSection" style="display:none;">
-      <div class="section-title">Extracted Changes — Review before publishing</div>
-      <p class="section-desc" style="margin-bottom:16px;">Check Claude's reading below. You can edit any field before publishing. Absent LSOs are highlighted.</p>
+    <!-- ── AUTO MODE ── -->
+    <div id="dcAutoSection">
+      <div class="settings-section full" style="margin-bottom:20px;">
+        <div class="section-title">Upload Daily Changes Image</div>
+        <p class="section-desc">Upload a photo or screenshot of the daily changes sheet. It will be read automatically — then review and publish.</p>
 
-      <!-- Absent bar -->
-      <div id="dcAbsentBar" style="display:none;background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:0.83rem;">
-        <strong>Absent today:</strong> <span id="dcAbsentNames"></span>
+        <div id="dcDropZone" style="border:2px dashed var(--border);border-radius:12px;padding:36px 24px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;margin-bottom:16px;background:var(--surface2);">
+          <div style="font-size:2rem;margin-bottom:8px;">📷</div>
+          <div style="font-weight:700;margin-bottom:4px;">Drop image here or click to upload</div>
+          <div style="font-size:0.8rem;color:var(--muted);">PNG, JPG, HEIC — screenshot or photo of the changes sheet</div>
+          <input type="file" id="dcFileInput" accept="image/*" style="display:none;" />
+        </div>
+
+        <div id="dcPreviewWrap" style="display:none;margin-bottom:16px;">
+          <img id="dcPreviewImg" style="max-width:100%;max-height:300px;border-radius:10px;border:1px solid var(--border);display:block;" />
+          <button id="dcClearImg" style="margin-top:8px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.8rem;">✕ Remove image</button>
+        </div>
+
+        <div class="btn-row">
+          <button class="s-btn green" id="dcReadBtn" disabled>🤖 Read with AI</button>
+          <button class="s-btn secondary" id="dcPublishBtn" disabled>📤 Publish to viewer</button>
+          <button class="s-btn secondary" id="dcClearBtn" style="color:#ef4444;">🗑 Clear published</button>
+        </div>
+        <div id="dcStatus" style="margin-top:12px;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--muted);min-height:20px;"></div>
       </div>
 
-      <!-- Changes table -->
-      <div id="dcChangesTable" style="overflow-x:auto;"></div>
+      <!-- Extracted/editable result -->
+      <div class="settings-section full" id="dcResultSection" style="display:none;">
+        <div class="section-title">Review &amp; Edit — then Publish</div>
+        <p class="section-desc" style="margin-bottom:16px;">All fields are editable. Fix anything before publishing.</p>
+        <div id="dcAbsentBar" style="display:none;background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:0.83rem;">
+          <strong>Absent today:</strong> <span id="dcAbsentNames"></span>
+        </div>
+        <div id="dcChangesTable" style="overflow-x:auto;"></div>
+        <details style="margin-top:16px;">
+          <summary style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);cursor:pointer;user-select:none;">Show raw extracted text</summary>
+          <pre id="dcRawText" style="margin-top:10px;background:var(--soft);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'DM Mono',monospace;font-size:0.72rem;white-space:pre-wrap;line-height:1.7;max-height:300px;overflow-y:auto;"></pre>
+        </details>
+      </div>
+    </div>
 
-      <!-- Raw text toggle -->
-      <details style="margin-top:16px;">
-        <summary style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);cursor:pointer;user-select:none;">Show raw extracted text</summary>
-        <pre id="dcRawText" style="margin-top:10px;background:var(--soft);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'DM Mono',monospace;font-size:0.72rem;white-space:pre-wrap;line-height:1.7;max-height:300px;overflow-y:auto;"></pre>
-      </details>
+    <!-- ── MANUAL MODE ── -->
+    <div id="dcManualSection" style="display:none;">
+      <div class="settings-section full" style="margin-bottom:20px;">
+        <div class="section-title">Manual Entry</div>
+        <p class="section-desc" style="margin-bottom:16px;">Type in today's changes directly. Add each LSO that has a change, fill in only the periods that differ from normal. Leave blank for periods with no change.</p>
+
+        <!-- Absent field -->
+        <div class="field-group" style="margin-bottom:16px;">
+          <span class="field-label">Absent today (comma separated)</span>
+          <input class="field-input" id="dcManualAbsent" type="text" placeholder="e.g. Indi, H'Onorine" />
+        </div>
+
+        <!-- LSO rows -->
+        <div id="dcManualRows"></div>
+
+        <div class="btn-row" style="margin-top:12px;">
+          <button class="s-btn secondary" id="dcManualAddRow">+ Add LSO</button>
+          <button class="s-btn green" id="dcManualPublishBtn">📤 Publish to viewer</button>
+          <button class="s-btn secondary" id="dcManualClearBtn" style="color:#ef4444;">🗑 Clear published</button>
+        </div>
+        <div id="dcManualStatus" style="margin-top:12px;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--muted);min-height:20px;"></div>
+      </div>
     </div>
 
   </div>
@@ -1311,7 +1335,9 @@ function loadImage(file) {
     dcPreview.style.display = '';
     dcDrop.style.display    = 'none';
     dcReadBtn.disabled      = false;
-    dcSetStatus('Image loaded — click "Read with Claude" to extract changes.');
+    dcSetStatus('Image loaded — reading with AI…');
+    // Auto-trigger read immediately
+    setTimeout(() => dcReadBtn.click(), 100);
   };
   reader.readAsDataURL(file);
 }
@@ -1495,6 +1521,157 @@ document.getElementById('dcClearBtn').addEventListener('click', async () => {
 });
 
 function dcSetStatus(msg) { dcStatus.textContent = msg; }
+
+// ── Mode switching ─────────────────────────────────────────────────────────
+document.getElementById('dcModeAuto').addEventListener('click', () => {
+  document.getElementById('dcAutoSection').style.display = '';
+  document.getElementById('dcManualSection').style.display = 'none';
+  document.getElementById('dcModeAuto').style.cssText = 'flex:1;background:var(--text);color:var(--bg);';
+  document.getElementById('dcModeManual').className = 's-btn secondary'; document.getElementById('dcModeManual').style.flex = '1';
+});
+document.getElementById('dcModeManual').addEventListener('click', () => {
+  document.getElementById('dcAutoSection').style.display = 'none';
+  document.getElementById('dcManualSection').style.display = '';
+  document.getElementById('dcModeManual').style.cssText = 'flex:1;background:var(--text);color:var(--bg);';
+  document.getElementById('dcModeAuto').className = 's-btn secondary'; document.getElementById('dcModeAuto').style.flex = '1';
+  renderManualRows();
+});
+
+// ── Manual entry ───────────────────────────────────────────────────────────
+// Pre-populate with known LSO names from color names map
+function getKnownLSONames() {
+  try {
+    const names = JSON.parse(localStorage.getItem('tt-colornames') || '{}');
+    return Object.values(names).filter(Boolean);
+  } catch(e) { return []; }
+}
+
+let manualRows = []; // [{id, name, p1..p6}]
+
+function ensureManualRows() {
+  if (manualRows.length === 0) {
+    // Pre-fill with known LSOs
+    const known = getKnownLSONames();
+    if (known.length) {
+      manualRows = known.map(name => ({ id: Math.random().toString(36).slice(2), name, p1:'',p2:'',p3:'',p4:'',p5:'',p6:'' }));
+    } else {
+      manualRows = [blankRow()];
+    }
+  }
+}
+
+function blankRow() {
+  return { id: Math.random().toString(36).slice(2), name:'', p1:'',p2:'',p3:'',p4:'',p5:'',p6:'' };
+}
+
+function renderManualRows() {
+  ensureManualRows();
+  const container = document.getElementById('dcManualRows');
+  container.innerHTML = '';
+
+  const periods = ['p1','p2','p3','p4','p5','p6'];
+  const headerStyle = 'padding:6px 10px;text-align:left;border:1px solid var(--border);font-family:"DM Mono",monospace;font-size:0.62rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--soft);';
+  const cellStyle   = 'padding:4px 6px;border:1px solid var(--border);';
+
+  let html = `<table style="border-collapse:collapse;width:100%;font-size:0.82rem;margin-bottom:10px;">
+    <thead><tr>
+      <th style="${headerStyle}min-width:110px;">LSO Name</th>
+      ${periods.map(p=>`<th style="${headerStyle}">${p.toUpperCase()}</th>`).join('')}
+      <th style="${headerStyle}width:32px;"></th>
+    </tr></thead><tbody>`;
+
+  manualRows.forEach(row => {
+    html += `<tr data-rowid="${row.id}">
+      <td style="${cellStyle}"><input value="${escHtml(row.name)}" data-field="name" data-rowid="${row.id}"
+        style="width:100%;background:transparent;border:none;outline:none;font-weight:700;font-family:'Outfit',sans-serif;font-size:0.82rem;color:var(--text);min-width:100px;"
+        placeholder="LSO name" /></td>
+      ${periods.map(p => `<td style="${cellStyle}"><input value="${escHtml(row[p]||'')}" data-field="${p}" data-rowid="${row.id}"
+        style="width:100%;background:transparent;border:none;outline:none;font-family:'Outfit',sans-serif;font-size:0.78rem;color:var(--text);min-width:120px;"
+        placeholder="—" /></td>`).join('')}
+      <td style="${cellStyle}text-align:center;">
+        <button data-delrow="${row.id}" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.8rem;padding:2px 4px;">✕</button>
+      </td>
+    </tr>`;
+  });
+
+  html += '</tbody></table>';
+  container.innerHTML = html;
+
+  // Sync inputs back to manualRows
+  container.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', () => {
+      const row = manualRows.find(r => r.id === inp.dataset.rowid);
+      if (row) row[inp.dataset.field] = inp.value;
+    });
+  });
+  container.querySelectorAll('[data-delrow]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      manualRows = manualRows.filter(r => r.id !== btn.dataset.delrow);
+      renderManualRows();
+    });
+  });
+}
+
+document.getElementById('dcManualAddRow').addEventListener('click', () => {
+  manualRows.push(blankRow());
+  renderManualRows();
+  // Focus the new name input
+  const inputs = document.getElementById('dcManualRows').querySelectorAll('input[data-field="name"]');
+  if (inputs.length) inputs[inputs.length-1].focus();
+});
+
+// Publish manual
+document.getElementById('dcManualPublishBtn').addEventListener('click', async () => {
+  const url = getServer();
+  if (!url) { document.getElementById('dcManualStatus').textContent = '⚠ No server URL — go to Settings tab.'; return; }
+
+  const lsos = {};
+  manualRows.forEach(row => {
+    const name = row.name.trim();
+    if (!name) return;
+    lsos[name] = { p1: row.p1||null, p2: row.p2||null, p3: row.p3||null, p4: row.p4||null, p5: row.p5||null, p6: row.p6||null };
+  });
+
+  const absentRaw = document.getElementById('dcManualAbsent').value.trim();
+  const absent = absentRaw ? absentRaw.split(',').map(s=>s.trim()).filter(Boolean) : [];
+
+  if (!Object.keys(lsos).length && !absent.length) {
+    document.getElementById('dcManualStatus').textContent = '⚠ Nothing to publish — add at least one LSO or absent name.';
+    return;
+  }
+
+  const payload = {
+    date: new Date().toLocaleDateString('en-GB'),
+    absent,
+    lsos,
+    notes: null,
+    publishedAt: new Date().toISOString()
+  };
+
+  document.getElementById('dcManualStatus').textContent = 'Publishing…';
+  try {
+    const res = await fetch(`${url}/daily-changes`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Password': getPw() },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) document.getElementById('dcManualStatus').textContent = '✓ Published! Viewers can see today\'s changes now.';
+    else if (res.status === 401) document.getElementById('dcManualStatus').textContent = '✕ Wrong password.';
+    else document.getElementById('dcManualStatus').textContent = `✕ Server error ${res.status}`;
+  } catch(e) { document.getElementById('dcManualStatus').textContent = '✕ ' + e.message; }
+});
+
+// Clear from manual mode
+document.getElementById('dcManualClearBtn').addEventListener('click', async () => {
+  if (!confirm('Clear today\'s published changes from the viewer?')) return;
+  const url = getServer();
+  if (!url) { document.getElementById('dcManualStatus').textContent = '⚠ No server URL.'; return; }
+  try {
+    const res = await fetch(`${url}/daily-changes`, { method:'DELETE', headers:{'X-Admin-Password':getPw()} });
+    if (res.ok) document.getElementById('dcManualStatus').textContent = 'Cleared.';
+    else document.getElementById('dcManualStatus').textContent = `✕ Server error ${res.status}`;
+  } catch(e) { document.getElementById('dcManualStatus').textContent = '✕ ' + e.message; }
+});
 </script>
 </body>
 </html>
