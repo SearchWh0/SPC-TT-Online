@@ -3,49 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Timetable</title>
+<title>Timetable — Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 [data-theme="light"] {
   --bg:#f4f1ec; --surface:#ffffff; --surface2:#faf8f5; --border:#e4ddd4;
   --text:#18160f; --muted:#9e9890; --soft:#ede9e2;
-  --shadow:0 2px 12px rgba(0,0,0,0.07); --shadow-lg:0 8px 32px rgba(0,0,0,0.13);
+  --shadow:0 2px 10px rgba(0,0,0,0.06); --shadow-lg:0 8px 28px rgba(0,0,0,0.11);
   --toggle-track:#d6d0c8; --toggle-thumb:#ffffff;
-  --email-bg:#f0f7ff; --email-border:#c8ddf5; --email-btn:#2563eb;
 }
 [data-theme="dark"] {
   --bg:#111010; --surface:#1c1b1a; --surface2:#232220; --border:#2e2c29;
   --text:#f0ece4; --muted:#6b6760; --soft:#252320;
-  --shadow:0 2px 12px rgba(0,0,0,0.3); --shadow-lg:0 8px 32px rgba(0,0,0,0.45);
+  --shadow:0 2px 10px rgba(0,0,0,0.3); --shadow-lg:0 8px 28px rgba(0,0,0,0.4);
   --toggle-track:#3a3835; --toggle-thumb:#f0ece4;
-  --email-bg:#0d1a2a; --email-border:#1e3a5f; --email-btn:#3b82f6;
 }
 body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif; min-height:100vh; transition:background .25s,color .25s; }
 
-.site-header { background:var(--surface); border-bottom:1px solid var(--border); padding:12px 20px; display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:100; box-shadow:var(--shadow); transition:background .25s, border-color .25s; flex-wrap:wrap; }
-.back-btn { background:none; border:none; color:var(--text); font-size:1.4rem; cursor:pointer; padding:4px 8px 4px 0; line-height:1; display:none; transition:opacity .15s; flex-shrink:0; }
-.back-btn:hover { opacity:0.6; }
-.back-btn.visible { display:block; }
-.site-title { font-size:1.5rem; font-weight:900; color:var(--text); letter-spacing:-0.04em; line-height:1; white-space:nowrap; }
-.site-subtitle { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; margin-top:2px; }
-.header-right { margin-left:auto; display:flex; align-items:center; gap:8px; flex-wrap:nowrap; flex-shrink:0; }
-.refresh-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.75rem; padding:5px 10px; border-radius:7px; cursor:pointer; transition:border-color .2s,color .2s; white-space:nowrap; }
-.refresh-btn:hover { border-color:var(--text); color:var(--text); }
-@media (max-width:600px) {
-  .site-header { padding:10px 14px; gap:8px; }
-  .site-title { font-size:1.2rem; }
-  .header-right { gap:6px; }
-  .refresh-btn { display:none; }
-  .toggle-label { display:none; }
-  .view-tab { font-size:0.7rem; padding:5px 10px; }
-}
-
-/* ── View tabs (Timetable / Map) ── */
-.view-tabs { display:flex; gap:0; margin-left:10px; border:1px solid var(--border); border-radius:8px; overflow:hidden; flex-shrink:0; }
-.view-tab { background:none; border:none; color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.78rem; font-weight:600; padding:6px 14px; cursor:pointer; transition:background .15s,color .15s; }
-.view-tab.active { background:var(--text); color:var(--bg); }
-.view-tab:not(.active):hover { background:var(--soft); color:var(--text); }
+.site-header { background:var(--surface); border-bottom:1px solid var(--border); padding:0 32px; display:flex; align-items:stretch; gap:0; position:sticky; top:0; z-index:200; box-shadow:var(--shadow); }
+.header-left { display:flex; align-items:center; gap:14px; padding:16px 0; }
+.site-title { font-size:1.8rem; font-weight:900; color:var(--text); letter-spacing:-0.04em; line-height:1; }
+.site-badge { background:#e05151; color:#fff; font-family:'DM Mono',monospace; font-size:0.62rem; padding:3px 8px; border-radius:4px; letter-spacing:0.08em; text-transform:uppercase; }
+.tab-bar { display:flex; align-items:stretch; margin-left:32px; gap:0; }
+.tab-btn { background:none; border:none; border-bottom:3px solid transparent; color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.88rem; font-weight:600; padding:0 20px; cursor:pointer; transition:color .15s, border-color .15s; display:flex; align-items:center; gap:7px; white-space:nowrap; }
+.tab-btn:hover { color:var(--text); }
+.tab-btn.active { color:var(--text); border-bottom-color:var(--text); }
+.header-right { margin-left:auto; display:flex; align-items:center; gap:10px; padding:16px 0; }
+.site-day { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; }
 .theme-toggle { display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; }
 .toggle-label { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; }
 .toggle-track { width:36px; height:20px; border-radius:10px; background:var(--toggle-track); position:relative; transition:background .2s; flex-shrink:0; }
@@ -53,223 +38,176 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 [data-theme="dark"] .toggle-track { background:#c8f542; }
 [data-theme="dark"] .toggle-track::after { transform:translateX(16px); background:#111010; }
 
-/* ── Period strip ── */
-.period-strip { background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:73px; z-index:99; display:none; transition:background .25s,border-color .25s; }
-.period-strip.visible { display:block; }
-.period-strip-inner { max-width:1100px; margin:0 auto; padding:0 28px; height:44px; display:flex; align-items:center; gap:16px; }
-.period-strip-dot { width:7px; height:7px; border-radius:50%; background:#22a85a; flex-shrink:0; animation:pulse-dot 2s ease-in-out infinite; }
-.period-strip-dot.is-break { background:var(--muted); animation:none; }
-@keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.45;transform:scale(0.7)} }
-.period-strip-name { font-weight:700; font-size:0.88rem; letter-spacing:-0.01em; flex-shrink:0; }
-.period-strip-time { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted); flex-shrink:0; }
-.period-strip-bar-wrap { flex:1; height:4px; background:var(--soft); border-radius:2px; overflow:hidden; min-width:40px; max-width:200px; }
-.period-strip-bar { height:100%; border-radius:2px; background:#22a85a; transition:width .9s linear; }
-.period-strip-bar.is-break { background:var(--muted); }
-.period-strip-countdown { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); flex-shrink:0; min-width:64px; }
-.period-strip-sep { width:1px; height:18px; background:var(--border); flex-shrink:0; }
-.period-strip-next { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); flex-shrink:0; }
-.period-strip-next strong { color:var(--text); font-weight:600; }
-@media(max-width:520px){ .period-strip-bar-wrap,.period-strip-sep,.period-strip-next { display:none; } }
+.tab-page { display:none; }
+.tab-page.active { display:block; animation:fadeIn .2s ease both; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
 
-/* ── Tile status rows ── */
-.tile-status { border-top:1px solid var(--border); margin-top:12px; padding-top:10px; display:flex; flex-direction:column; gap:5px; }
-.tile-status-row { display:flex; align-items:center; gap:7px; }
-.tile-status-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); flex-shrink:0; width:40px; }
-.tile-status-value { font-family:'DM Mono',monospace; font-size:0.78rem; font-weight:600; color:var(--text); background:var(--soft); border:1px solid var(--border); border-radius:5px; padding:2px 8px; }
-.tile-status-value.is-break { color:var(--muted); font-weight:400; font-style:italic; }
-.tile-status-value.is-free  { color:var(--muted); font-weight:400; }
+/* ── Settings ── */
+.settings-page { max-width:1000px; margin:0 auto; padding:32px 28px 80px; }
+.settings-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+@media(max-width:680px){ .settings-grid { grid-template-columns:1fr; } }
+.settings-section { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:22px; }
+.settings-section.full { grid-column:1/-1; }
+.section-title { font-size:0.7rem; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:16px; }
+.section-desc { font-size:0.83rem; color:var(--muted); margin-bottom:16px; line-height:1.6; }
+.field-group { display:flex; flex-direction:column; gap:5px; margin-bottom:14px; }
+.field-group:last-child { margin-bottom:0; }
+.field-label { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; }
+.field-input { background:var(--surface2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'DM Mono',monospace; font-size:0.82rem; padding:9px 13px; outline:none; transition:border-color .2s; width:100%; }
+.field-input:focus { border-color:var(--text); }
+.btn-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+.s-btn { background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.82rem; font-weight:600; padding:9px 18px; border-radius:8px; cursor:pointer; transition:opacity .15s; white-space:nowrap; }
+.s-btn:hover { opacity:0.82; }
+.s-btn.secondary { background:var(--soft); color:var(--text); border:1px solid var(--border); }
+.s-btn.secondary:hover { background:var(--border); opacity:1; }
+.s-btn.danger { background:#e05151; color:#fff; }
+.s-btn.green { background:#22a85a; color:#fff; }
+.field-status { font-family:'DM Mono',monospace; font-size:0.68rem; min-height:16px; margin-top:8px; }
 
-/* ── States ── */
-.state-wrap { max-width:560px; margin:80px auto; padding:0 24px; text-align:center; }
-.state-icon { font-size:3rem; margin-bottom:20px; opacity:0.4; }
-.state-title { font-size:1.3rem; font-weight:700; margin-bottom:8px; }
-.state-sub { font-size:0.88rem; color:var(--muted); line-height:1.7; }
-.spinner { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--text); border-radius:50%; animation:spin .7s linear infinite; margin:0 auto 20px; }
-@keyframes spin { to { transform:rotate(360deg); } }
+.cycle-info { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-bottom:14px; }
+.cycle-day-num { font-size:1.6rem; font-weight:900; letter-spacing:-0.03em; line-height:1; }
+.cycle-week { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); margin-top:3px; }
+.open-sheet-btn { width:100%; background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.88rem; font-weight:700; padding:12px; border-radius:10px; cursor:pointer; transition:opacity .15s; }
+.open-sheet-btn:hover { opacity:0.82; }
 
-.server-setup { max-width:560px; margin:0 auto; padding:0 24px 24px; display:none; }
-.server-setup.visible { display:block; }
-.setup-row { display:flex; gap:10px; align-items:center; margin-top:20px; }
-.setup-input { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'DM Mono',monospace; font-size:0.82rem; padding:9px 14px; outline:none; transition:border-color .2s; }
-.setup-input:focus { border-color:var(--text); }
-.setup-btn { background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.85rem; font-weight:600; padding:10px 20px; border-radius:8px; cursor:pointer; white-space:nowrap; }
+.colour-name-list { display:flex; flex-direction:column; gap:8px; }
+.colour-name-row { display:flex; align-items:center; gap:12px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:11px 14px; flex-wrap:wrap; }
+.colour-swatch { width:32px; height:32px; border-radius:8px; flex-shrink:0; border:1px solid rgba(0,0,0,0.08); }
+.colour-hex { font-family:'DM Mono',monospace; font-size:0.66rem; color:var(--muted); flex-shrink:0; width:92px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.colour-name-input { flex:1; min-width:100px; background:transparent; border:none; border-bottom:1.5px solid var(--border); color:var(--text); font-family:'Outfit',sans-serif; font-size:0.92rem; font-weight:600; padding:3px 4px; outline:none; transition:border-color .2s; }
+.colour-name-input:focus { border-bottom-color:var(--text); }
+.colour-lso-input { flex:1; min-width:100px; background:transparent; border:none; border-bottom:1.5px dashed var(--border); color:var(--text); font-family:'DM Mono',monospace; font-size:0.78rem; padding:3px 4px; outline:none; transition:border-color .2s; }
+.colour-lso-input:focus { border-bottom-color:var(--text); }
+.colour-lso-label { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--muted); white-space:nowrap; }
+.no-colours-msg { font-size:0.84rem; color:var(--muted); font-style:italic; padding:6px 2px; }
 
-/* ── Tile View ── */
-.tile-view { display:none; }
-.tile-view.visible { display:block; }
-.tile-grid { max-width:1100px; margin:0 auto; padding:28px 28px 100px; display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:18px; }
-.tile { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:0; cursor:pointer; transition:transform .18s ease, box-shadow .18s ease, border-color .18s; overflow:hidden; box-shadow:var(--shadow); display:flex; flex-direction:column; min-height:160px; }
-.tile:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); border-color:var(--muted); }
-.tile:active { transform:translateY(-2px); }
-.tile-colour-bar { height:8px; width:100%; flex-shrink:0; }
-.tile-body { padding:20px 20px 18px; flex:1; display:flex; flex-direction:column; }
-.tile-name { font-size:1.1rem; font-weight:800; letter-spacing:-0.02em; line-height:1.2; margin-bottom:4px; }
-.tile-lso-name { font-size:0.72rem; font-family:'DM Mono',monospace; color:var(--muted); margin-bottom:10px; }
-.tile-periods { display:flex; flex-wrap:wrap; gap:5px; margin-top:auto; }
-.tile-period-chip { font-family:'DM Mono',monospace; font-size:0.65rem; font-weight:500; padding:3px 8px; border-radius:5px; background:var(--soft); color:var(--muted); border:1px solid var(--border); }
-.tile-period-chip.has-data { color:var(--text); border-color:var(--muted); }
-.tile-empty-label { font-size:0.78rem; color:var(--muted); font-style:italic; margin-top:auto; }
+/* ── Export/Import ── */
+.export-panel { background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:16px 18px; margin-top:14px; }
+.export-panel-title { font-family:'DM Mono',monospace; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:10px; }
+.export-code { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'DM Mono',monospace; font-size:0.75rem; padding:10px 12px; outline:none; resize:vertical; min-height:80px; line-height:1.5; }
 
-/* ── Compact view ── */
-.tile-grid.compact { grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:8px; padding-top:20px; }
-.tile-grid.compact .tile { min-height:0; border-radius:12px; }
-.tile-grid.compact .tile-colour-bar { height:5px; }
-.tile-grid.compact .tile-body { padding:10px 12px 10px; }
-.tile-grid.compact .tile-name { font-size:0.82rem; font-weight:700; margin-bottom:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.tile-grid.compact .tile-lso-name,
-.tile-grid.compact .tile-periods,
-.tile-grid.compact .tile-empty-label,
-.tile-grid.compact .tile-status { display:none; }
+/* ── Email Override Table ── */
+.override-table { width:100%; border-collapse:collapse; margin-bottom:14px; }
+.override-table th { font-family:'DM Mono',monospace; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--muted); padding:0 12px 10px; text-align:left; border-bottom:1px solid var(--border); }
+.override-table td { padding:6px 8px; border-bottom:1px solid var(--border); }
+.override-table tr:last-child td { border-bottom:none; }
+.override-input { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:7px; color:var(--text); font-family:'DM Mono',monospace; font-size:0.82rem; padding:7px 10px; outline:none; transition:border-color .2s; }
+.override-input:focus { border-color:var(--text); }
+.override-input.code-input { text-transform:uppercase; }
+.override-del { background:none; border:none; color:var(--muted); font-size:1.1rem; cursor:pointer; padding:4px 8px; border-radius:6px; transition:color .15s, background .15s; }
+.override-del:hover { color:#e05151; background:rgba(224,81,81,0.1); }
+.add-override-btn { background:none; border:1.5px dashed var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.82rem; font-weight:500; padding:9px 18px; border-radius:8px; cursor:pointer; width:100%; margin-bottom:14px; transition:border-color .2s, color .2s; }
+.add-override-btn:hover { border-color:var(--text); color:var(--text); }
+.auto-preview { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); padding:4px 0; }
+.auto-preview .gen { color:#22a85a; }
 
-/* ── View toggle button ── */
-.view-toggle-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'DM Mono',monospace; font-size:0.72rem; padding:6px 12px; border-radius:7px; cursor:pointer; transition:border-color .2s,color .2s; letter-spacing:0.04em; display:flex; align-items:center; gap:6px; white-space:nowrap; }
-.view-toggle-btn:hover { border-color:var(--text); color:var(--text); }
+/* ── Timetable tab ── */
+.paste-wrap { max-width:860px; margin:28px auto; padding:0 24px; }
+.paste-zone { border:2px dashed var(--border); border-radius:20px; padding:44px 48px; cursor:pointer; transition:border-color .2s,background .2s; background:var(--surface); text-align:center; }
+.paste-zone:hover { border-color:var(--text); background:var(--soft); }
+.paste-icon { font-size:2.2rem; margin-bottom:14px; }
+.paste-zone h2 { font-size:1.3rem; font-weight:700; margin-bottom:8px; }
+.paste-zone p { font-size:0.87rem; color:var(--muted); line-height:1.7; }
+.key { display:inline-block; background:var(--soft); border:1px solid var(--border); border-radius:5px; padding:1px 8px; font-family:'DM Mono',monospace; font-size:0.76rem; color:var(--text); }
+.paste-status { margin-top:10px; font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); min-height:18px; text-align:center; }
+.paste-status.err { color:#e05151; }
+.paste-status.ok { color:#22a85a; }
 
-/* ── Detail View ── */
-.detail-view { display:none; }
-.detail-view.visible { display:block; }
-.detail-inner { max-width:1000px; margin:0 auto; padding:32px 24px 100px; }
-.detail-header { display:flex; align-items:center; gap:16px; margin-bottom:32px; flex-wrap:wrap; }
-.detail-colour-bar { width:7px; height:54px; border-radius:4px; flex-shrink:0; }
-.detail-title { font-size:2rem; font-weight:900; letter-spacing:-0.04em; line-height:1.1; }
-.detail-sub { font-size:0.72rem; color:var(--muted); font-family:'DM Mono',monospace; margin-top:4px; }
-.detail-actions { margin-left:auto; display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
-.copy-btn { background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.85rem; font-weight:600; padding:11px 22px; border-radius:10px; cursor:pointer; transition:opacity .15s,transform .15s; white-space:nowrap; }
+.app-wrap { display:none; }
+.app-wrap.visible { display:block; }
+.class-nav-wrap { background:var(--surface); border-bottom:1px solid var(--border); padding:0 32px; box-shadow:var(--shadow); }
+.class-nav { display:flex; gap:6px; overflow-x:auto; padding:12px 0; scrollbar-width:none; }
+.class-nav::-webkit-scrollbar { display:none; }
+.class-btn { display:flex; align-items:center; gap:8px; padding:10px 18px; border-radius:10px; border:2px solid transparent; cursor:pointer; font-family:'Outfit',sans-serif; font-size:0.86rem; font-weight:600; white-space:nowrap; transition:all .18s ease; background:var(--soft); color:var(--text); }
+.class-btn .btn-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; border:1.5px solid rgba(0,0,0,0.1); }
+.class-btn:hover { background:var(--border); transform:translateY(-1px); }
+.class-btn.active { background:var(--text); color:var(--bg); border-color:var(--text); box-shadow:0 4px 16px rgba(0,0,0,0.2); }
+.btn-label { outline:none; background:transparent; border:none; font:inherit; color:inherit; cursor:inherit; min-width:40px; max-width:160px; pointer-events:none; border-radius:3px; padding:1px 3px; margin:-1px -3px; }
+.btn-label.editing { pointer-events:auto; cursor:text; background:rgba(255,255,255,0.15); text-decoration:underline; text-decoration-style:dashed; text-underline-offset:3px; }
+.toolbar { max-width:1000px; margin:0 auto; padding:14px 24px 0; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.status-bar { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted); }
+.clear-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.8rem; padding:7px 14px; border-radius:8px; cursor:pointer; transition:border-color .2s,color .2s; }
+.clear-btn:hover { border-color:#e05151; color:#e05151; }
+.content-area { max-width:1000px; margin:0 auto; padding:28px 24px 100px; }
+.panel { display:none; }
+.panel.active { display:block; animation:fadeIn .22s ease both; }
+.panel-header { display:flex; align-items:center; gap:16px; margin-bottom:28px; flex-wrap:wrap; }
+.panel-colour-bar { width:7px; height:54px; border-radius:4px; flex-shrink:0; }
+.panel-title { font-size:1.8rem; font-weight:800; letter-spacing:-0.03em; line-height:1.1; }
+.panel-subtitle { font-size:0.72rem; color:var(--muted); font-family:'DM Mono',monospace; margin-top:4px; }
+.panel-actions { margin-left:auto; }
+.copy-btn { background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.84rem; font-weight:600; padding:10px 20px; border-radius:10px; cursor:pointer; transition:opacity .15s,transform .15s; white-space:nowrap; }
 .copy-btn:hover { opacity:0.82; transform:translateY(-1px); }
 .copy-btn.copied { background:#22a85a; color:#fff; }
-.email-lso-btn { background:var(--email-btn); color:#fff; border:none; font-family:'Outfit',sans-serif; font-size:0.85rem; font-weight:600; padding:11px 22px; border-radius:10px; cursor:pointer; transition:opacity .15s,transform .15s; white-space:nowrap; }
-.email-lso-btn:hover { opacity:0.85; transform:translateY(-1px); }
-
-.period-grid { display:flex; flex-direction:column; gap:12px; }
-.period-row { display:grid; grid-template-columns:6px 70px 28px 1fr 1fr 1fr; align-items:stretch; background:var(--surface); border-radius:14px; overflow:hidden; box-shadow:var(--shadow); border:1px solid var(--border); min-height:64px; transition:box-shadow .15s,border-color .15s; }
+.period-grid { display:flex; flex-direction:column; gap:10px; }
+.period-row { display:grid; grid-template-columns:6px 70px 28px 1fr 1fr 1fr; align-items:stretch; background:var(--surface); border-radius:13px; overflow:hidden; box-shadow:var(--shadow); border:1px solid var(--border); min-height:62px; transition:box-shadow .15s,border-color .15s; }
 .period-row:hover { box-shadow:var(--shadow-lg); border-color:var(--muted); }
 .period-row.empty-row { opacity:0.28; }
-.period-row > div { display:flex; align-items:center; padding:18px 20px; }
+.period-row > div { display:flex; align-items:center; padding:16px 18px; }
 .period-row > div + div { border-left:1px solid var(--border); }
 .accent-bar { padding:0!important; border-left:none!important; width:6px; flex-shrink:0; }
-.cell-period { background:var(--surface2); font-family:'DM Mono',monospace; font-size:0.8rem; font-weight:500; color:var(--muted); letter-spacing:0.05em; justify-content:center; flex-shrink:0; }
-.cell-period.has-data { color:var(--text); font-weight:700; font-size:0.85rem; }
-.cell-dash { color:var(--border); justify-content:center; font-size:0.75rem; padding:18px 8px!important; flex-shrink:0; border-left:none!important; }
-.cell-data { color:var(--text); font-weight:500; font-size:0.95rem; line-height:1.5; word-break:break-word; padding:20px 24px!important; align-items:flex-start; cursor:pointer; position:relative; transition:background .15s; user-select:none; }
+.cell-period { background:var(--surface2); font-family:'DM Mono',monospace; font-size:0.78rem; font-weight:500; color:var(--muted); letter-spacing:0.05em; justify-content:center; flex-shrink:0; }
+.cell-period.has-data { color:var(--text); font-weight:700; }
+.cell-dash { color:var(--border); justify-content:center; font-size:0.75rem; padding:16px 8px!important; flex-shrink:0; border-left:none!important; }
+.cell-data { color:var(--text); font-weight:500; font-size:0.93rem; line-height:1.5; word-break:break-word; padding:18px 22px!important; align-items:flex-start; cursor:pointer; position:relative; transition:background .15s; user-select:none; }
 .cell-data:not(.empty):hover { background:var(--soft); }
-.cell-data:not(.empty):hover::after { content:'copy'; position:absolute; top:8px; right:10px; font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; opacity:0.7; }
+.cell-data:not(.empty):hover::after { content:'copy'; position:absolute; top:7px; right:9px; font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; opacity:0.7; }
 .cell-data.flash-copy { background:var(--soft); }
-.cell-data.flash-copy::after { content:'✓'; position:absolute; top:8px; right:10px; font-size:0.7rem; color:#22a85a; }
+.cell-data.flash-copy::after { content:'✓'; position:absolute; top:7px; right:9px; font-size:0.7rem; color:#22a85a; }
 .cell-data.empty { cursor:default; }
 
-/* ── LSO Email Panel ── */
-.lso-panel { margin-top:32px; background:var(--email-bg); border:1px solid var(--email-border); border-radius:16px; overflow:hidden; display:none; }
-.lso-panel.visible { display:block; }
-.lso-panel-header { padding:18px 24px; border-bottom:1px solid var(--email-border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
-.lso-panel-title { font-size:1rem; font-weight:700; display:flex; align-items:center; gap:8px; }
-.lso-panel-body { padding:20px 24px; }
-.lso-field { margin-bottom:14px; }
-.lso-label { display:block; font-size:0.72rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:5px; }
-.lso-value { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-family:'DM Mono',monospace; font-size:0.82rem; color:var(--text); line-height:1.6; white-space:pre-wrap; word-break:break-all; }
-.lso-row2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-.lso-settings { padding:0 24px 20px; display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; }
-@media(max-width:700px){ .lso-settings { grid-template-columns:1fr 1fr; } }
-.lso-input-wrap label { display:block; font-size:0.7rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:5px; }
-.lso-input { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:7px; color:var(--text); font-family:'DM Mono',monospace; font-size:0.8rem; padding:8px 12px; outline:none; transition:border-color .2s; }
-.lso-input:focus { border-color:var(--email-btn); }
-.lso-name-hint { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); margin-top:4px; }
-.lso-actions { padding:0 24px 20px; display:flex; gap:10px; flex-wrap:wrap; }
-.lso-open-btn { background:var(--email-btn); color:#fff; border:none; font-family:'Outfit',sans-serif; font-size:0.88rem; font-weight:600; padding:11px 24px; border-radius:9px; cursor:pointer; transition:opacity .15s; }
-.lso-open-btn:hover { opacity:0.85; }
-.lso-copy-body-btn { background:var(--border); color:var(--text); border:none; font-family:'Outfit',sans-serif; font-size:0.88rem; font-weight:500; padding:11px 20px; border-radius:9px; cursor:pointer; transition:opacity .15s; }
-.lso-copy-body-btn:hover { opacity:0.75; }
+/* ── Power Automate section ── */
+.pa-steps { display:flex; flex-direction:column; gap:10px; margin:14px 0; }
+.pa-step { display:flex; gap:12px; align-items:flex-start; }
+.pa-step-num { width:22px; height:22px; border-radius:50%; background:var(--text); color:var(--bg); font-size:0.7rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+.pa-step-text { font-size:0.84rem; line-height:1.6; color:var(--text); }
+.pa-step-text code { font-family:'DM Mono',monospace; font-size:0.78rem; background:var(--soft); border:1px solid var(--border); border-radius:4px; padding:1px 6px; }
+.pa-step-text strong { font-weight:700; }
+.pa-endpoint { font-family:'DM Mono',monospace; font-size:0.72rem; background:var(--soft); border:1px solid var(--border); border-radius:8px; padding:10px 14px; margin:10px 0; word-break:break-all; color:var(--text); }
+.pa-endpoint .method { color:#22a85a; font-weight:700; margin-right:8px; }
+.pa-json { font-family:'DM Mono',monospace; font-size:0.7rem; background:var(--soft); border:1px solid var(--border); border-radius:8px; padding:12px 14px; margin:10px 0; white-space:pre; overflow-x:auto; color:var(--text); line-height:1.7; }
+.pa-copy-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'DM Mono',monospace; font-size:0.68rem; padding:4px 10px; border-radius:6px; cursor:pointer; transition:border-color .15s,color .15s; }
+.pa-copy-btn:hover { border-color:var(--text); color:var(--text); }
+.pa-warning { background:#fff8e1; border:1px solid #f0c040; border-radius:8px; padding:10px 14px; font-size:0.8rem; color:#7a5800; margin:10px 0; }
+[data-theme="dark"] .pa-warning { background:#2a2000; border-color:#7a5800; color:#f0c040; }
 
-.teacher-chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
-.teacher-chip { background:var(--soft); border:1px solid var(--border); border-radius:6px; padding:3px 10px; font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--text); }
-.teacher-chip .arrow { color:var(--muted); margin:0 4px; }
-.teacher-chip .email-part { color:var(--email-btn); }
-.teacher-chip .override-badge { font-size:0.6rem; background:var(--email-btn); color:#fff; border-radius:3px; padding:1px 4px; margin-left:4px; vertical-align:middle; }
-
-.tile-view.visible { animation:fadeUp .25s ease both; }
-.detail-view.visible { animation:fadeUp .22s ease both; }
-@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-
-@media(max-width:600px) {
-  .lso-row2 { grid-template-columns:1fr; }
-  .detail-actions { margin-left:0; width:100%; }
-}
-
-/* ── Map view ── */
-.map-view { display:none; flex-direction:column; }
-.map-view.visible { display:flex; height:calc(100vh - 73px); }
-.map-body { display:flex; flex:1; min-height:0; }
-.map-outer { flex:1; overflow:hidden; padding:12px; background:var(--bg); min-height:0; display:flex; flex-direction:column; }
-.map-canvas {
-  position:relative; background:var(--surface2);
-  border:1px solid var(--border); border-radius:12px;
-  flex:1; min-height:0;
-  background-image: linear-gradient(var(--grid-line,rgba(0,0,0,.05)) 1px,transparent 1px),
-                    linear-gradient(90deg,var(--grid-line,rgba(0,0,0,.05)) 1px,transparent 1px);
-  background-size:30px 30px;
-}
-[data-theme="dark"] .map-canvas { --grid-line:rgba(255,255,255,.04); }
-.map-canvas.edit-mode { cursor:default; }
-.map-room {
-  background:var(--soft); border:1.5px solid var(--border);
-  border-radius:6px; padding:4px 8px 5px;
-  box-shadow:none; transition:border-color .15s;
-  min-width:0;
-}
-.map-room.occupied { border-color:var(--text); background:var(--surface); box-shadow:var(--shadow); }
-.map-room-code { font-family:'DM Mono',monospace; font-size:0.62rem; font-weight:600; color:var(--muted); margin-bottom:2px; display:flex; align-items:center; justify-content:space-between; }
-.map-room.occupied .map-room-code { color:var(--text); }
-.map-room-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.6rem; padding:0 0 0 3px; opacity:0; transition:opacity .15s; line-height:1; }
-.map-room:hover .map-room-del { opacity:1; }
-.map-room-del:hover { color:#ef4444; }
-.map-students { display:flex; flex-direction:column; gap:2px; }
-.map-badge { font-size:0.6rem; font-weight:700; padding:1px 5px; border-radius:4px; color:#fff; white-space:nowrap; line-height:1.5; overflow:hidden; text-overflow:ellipsis; max-width:140px; }
-.map-dc-tag { font-size:0.52rem; font-weight:700; padding:1px 4px; border-radius:3px; font-family:'DM Mono',monospace; margin-top:1px; display:inline-block; white-space:normal; }
-/* Map toolbar */
-.map-toolbar { padding:8px 16px; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-.map-tab-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.75rem; font-weight:600; padding:5px 14px; border-radius:7px; cursor:pointer; transition:all .15s; display:flex; align-items:center; gap:6px; }
-.map-tab-btn.active { background:var(--text); color:var(--bg); border-color:var(--text); }
-.map-tab-btn:not(.active):hover { border-color:var(--text); color:var(--text); }
-.map-badge-count { font-family:'DM Mono',monospace; font-size:0.6rem; padding:1px 6px; border-radius:8px; background:var(--soft); border:1px solid var(--border); }
-.map-tab-btn.active .map-badge-count { background:rgba(255,255,255,.2); border-color:transparent; }
-/* Map footer */
-.map-footer { background:var(--surface); border-top:1px solid var(--border); padding:6px 16px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); }
-.map-unplaced { display:flex; gap:5px; flex-wrap:wrap; align-items:center; }
-.map-empty { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; pointer-events:none; }
-.map-empty .icon { font-size:2.5rem; opacity:.25; }
-.map-empty p { font-size:.85rem; color:var(--muted); text-align:center; line-height:1.7; max-width:300px; }
-
-/* ── Map group zones ── */
-.map-group {
-  position:absolute; border:1.5px solid var(--border); border-radius:8px;
-  background:var(--surface); padding:0; box-shadow:var(--shadow);
-  width:220px;
-}
-.map-group-label {
-  font-family:'DM Mono',monospace; font-size:0.55rem; font-weight:700;
-  color:var(--muted); letter-spacing:0.07em; text-transform:uppercase;
-  padding:4px 7px 3px; border-bottom:1px solid var(--border);
-  cursor:default; user-select:none; border-radius:6px 6px 0 0;
-}
-.map-group-rooms {
-  padding:4px; display:grid; grid-template-columns:repeat(3,1fr); gap:3px;
-}
+/* ── Email Composer ── */
+.email-section { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:22px; margin-bottom:20px; }
+.email-preview-wrap { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:18px 22px; margin-bottom:14px; font-family:'DM Mono',monospace; font-size:0.82rem; line-height:1.9; color:var(--text); white-space:pre-wrap; min-height:160px; }
+.email-period-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
+.period-label { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:4px; }
+.email-period-input { background:var(--surface2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'Outfit',sans-serif; font-size:0.85rem; padding:8px 11px; outline:none; transition:border-color .2s; width:100%; }
+.email-period-input:focus { border-color:var(--text); }
+.email-copy-btn { background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.88rem; font-weight:700; padding:12px 28px; border-radius:10px; cursor:pointer; transition:opacity .15s,background .2s; width:100%; }
+.email-copy-btn:hover { opacity:0.82; }
+.email-copy-btn.copied { background:#22a85a; color:#fff; }
+.email-two-col { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+@media(max-width:600px) { .email-two-col { grid-template-columns:1fr; } .email-period-grid { grid-template-columns:repeat(2,1fr); } }
+.email-history-list { display:flex; flex-direction:column; gap:6px; max-height:200px; overflow-y:auto; }
+.email-history-item { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; transition:border-color .15s; }
+.email-history-item:hover { border-color:var(--text); }
+.email-history-date { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); flex-shrink:0; }
+.email-history-preview { font-size:0.78rem; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
+.email-history-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.9rem; padding:3px 6px; border-radius:5px; flex-shrink:0; }
+.email-history-del:hover { color:#e05151; background:rgba(224,81,81,0.1); }
 </style>
 </head>
 <body>
 
 <header class="site-header">
-  <button class="back-btn" id="backBtn" title="Back to timetable">←</button>
-  <div>
-    <div class="site-title" id="siteTitle">Timetable</div>
-    <div class="site-subtitle" id="siteSubtitle"></div>
+  <div class="header-left">
+    <div class="site-title">Timetable</div>
+    <div class="site-badge">Admin</div>
   </div>
+  <nav class="tab-bar">
+    <button class="tab-btn active" data-tab="timetableTab">📋 Timetable</button>
+    <button class="tab-btn" data-tab="settingsTab">⚙ Settings</button>
+    <button class="tab-btn" data-tab="emailTab">✉ Email</button>
+    <button class="tab-btn" data-tab="changesTab">📌 Daily Changes</button>
+    <button class="tab-btn" data-tab="mapTab">🗺 Map Layout</button>
+  </nav>
   <div class="header-right">
-    <button class="refresh-btn" id="refreshBtn">↻ Refresh</button>
-    <div class="view-tabs">
-      <button class="view-tab active" id="tabTimetable">📋 Timetable</button>
-      <button class="view-tab" id="tabMap">🗺 Map</button>
-    </div>
-    <button class="view-toggle-btn" id="viewToggleBtn" title="Toggle compact/expanded view">⊞ Compact</button>
+    <div class="site-day" id="todayLabel"></div>
     <div class="theme-toggle" id="themeToggle">
       <span class="toggle-label" id="toggleLabel">Light</span>
       <div class="toggle-track"></div>
@@ -277,248 +215,396 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   </div>
 </header>
 
-<div class="period-strip" id="periodStrip">
-  <div class="period-strip-inner">
-    <div class="period-strip-dot" id="stripDot"></div>
-    <div class="period-strip-name" id="stripName"></div>
-    <div class="period-strip-time" id="stripTime"></div>
-    <div class="period-strip-bar-wrap"><div class="period-strip-bar" id="stripBar"></div></div>
-    <div class="period-strip-countdown" id="stripCountdown"></div>
-    <div class="period-strip-sep"></div>
-    <div class="period-strip-next" id="stripNext"></div>
+<!-- ══ TIMETABLE TAB ══ -->
+<div class="tab-page active" id="timetableTab">
+  <div class="paste-wrap" id="pasteWrap">
+    <div class="paste-zone" id="pasteZone" tabindex="0">
+      <div class="paste-icon">📋</div>
+      <h2>Paste your timetable</h2>
+      <p>Open your Excel timetable · select all <span class="key">Ctrl+A</span> · copy <span class="key">Ctrl+C</span> · click here and press <span class="key">Ctrl+V</span></p>
+    </div>
+    <div class="paste-status" id="pasteStatus"></div>
+  </div>
+  <div class="app-wrap" id="appWrap">
+    <div class="class-nav-wrap">
+      <div class="class-nav" id="classNav"></div>
+    </div>
+    <div class="toolbar">
+      <div class="status-bar" id="statusBar"></div>
+      <button class="clear-btn" id="clearBtn">↩ Paste new timetable</button>
+    </div>
+    <div class="content-area" id="contentArea"></div>
   </div>
 </div>
 
-<!-- Daily Changes Banner -->
-<div id="dailyChangesPanel" style="display:none;">
-  <div id="dcBanner" style="
-    background:var(--surface);border-bottom:1px solid var(--border);
-    max-width:100%;overflow:hidden;
-  ">
-    <div style="max-width:1100px;margin:0 auto;padding:0 28px;">
-      <!-- Header row - always visible, click to expand -->
-      <div id="dcToggleRow" style="
-        display:flex;align-items:center;gap:12px;padding:10px 0;cursor:pointer;user-select:none;
-      ">
-        <span style="font-size:1rem;">📌</span>
-        <span style="font-weight:700;font-size:0.88rem;">Today's Changes</span>
-        <span id="dcAbsentPill" style="display:none;background:#fef3c7;border:1px solid #fcd34d;color:#92400e;font-size:0.72rem;font-weight:600;padding:2px 9px;border-radius:10px;font-family:'DM Mono',monospace;"></span>
-        <span id="dcDatePill" style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--muted);"></span>
-        <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--muted);" id="dcChevron">▼ show</span>
+<!-- ══ SETTINGS TAB ══ -->
+<div class="tab-page" id="settingsTab">
+  <div class="settings-page">
+    <div class="settings-grid">
+
+      <!-- Server -->
+      <div class="settings-section">
+        <div class="section-title">Server Connection</div>
+        <div class="field-group">
+          <span class="field-label">Render Server URL</span>
+          <input id="serverUrl" class="field-input" type="text" placeholder="https://your-app.onrender.com" />
+        </div>
+        <div class="field-group">
+          <span class="field-label">Admin Password</span>
+          <input id="adminPw" class="field-input" type="password" placeholder="your password" />
+        </div>
+        <div class="btn-row">
+          <button class="s-btn" id="saveConfigBtn">Save</button>
+          <button class="s-btn secondary" id="testServerBtn">Test connection</button>
+        </div>
+        <div class="field-status" id="serverStatus"></div>
       </div>
-      <!-- Expandable table -->
-      <div id="dcTableWrap" style="display:none;padding-bottom:14px;overflow-x:auto;">
-        <div id="dcNotes" style="display:none;font-size:0.82rem;color:var(--muted);margin-bottom:10px;font-style:italic;"></div>
-        <table id="dcTable" style="border-collapse:collapse;width:100%;font-size:0.8rem;min-width:560px;"></table>
+
+      <!-- Today's sheet -->
+      <div class="settings-section">
+        <div class="section-title">Today's Sheet</div>
+        <div class="cycle-info">
+          <div style="font-size:0.66rem;color:var(--muted);margin-bottom:3px;font-family:'DM Mono',monospace;letter-spacing:0.06em;text-transform:uppercase">Today is</div>
+          <div class="cycle-day-num" id="cycleDayLabel">—</div>
+          <div class="cycle-week" id="cycleWeekLabel"></div>
+        </div>
+        <div class="field-group">
+          <span class="field-label">SharePoint File URL</span>
+          <input id="sharepointUrl" class="field-input" type="text" placeholder="https://stpeterscollege.sharepoint.com/..." />
+        </div>
+        <button class="open-sheet-btn" id="openSheetBtn">📂 Open Today's Sheet in Excel</button>
+        <div class="field-status">Opens the right sheet — Ctrl+A → Ctrl+C → switch back and paste</div>
+      </div>
+
+      <!-- Power Automate -->
+      <div class="settings-section full" id="paSection">
+        <div class="section-title">⚡ Power Automate — Fully Automatic Daily Upload</div>
+        <p class="section-desc">Set up a Power Automate flow that runs at 7am each weekday, reads today's sheet from your Excel file, and posts it to the server automatically — no manual steps.</p>
+
+        <div class="pa-warning">
+          ⚠️ <strong>One-time setup required first:</strong> Paste your timetable at least once manually using the Timetable tab. This saves the colour → person mapping so the automated flow knows who is who.
+        </div>
+
+        <div style="font-weight:700;font-size:0.9rem;margin:16px 0 8px;">Step 1 — Your endpoint details</div>
+        <p class="section-desc" style="margin-bottom:8px">Copy these into Power Automate exactly as shown.</p>
+
+        <div style="font-size:0.75rem;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">HTTP POST URL</div>
+        <div class="pa-endpoint" id="paEndpointUrl"><span class="method">POST</span><span id="paUrlText">https://timetable-server-r6nb.onrender.com/automate</span></div>
+        <button class="pa-copy-btn" id="copyPaUrl">Copy URL</button>
+
+        <div style="font-size:0.75rem;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.06em;margin:12px 0 4px">Headers</div>
+        <div class="pa-json" id="paHeadersJson">{
+  "Content-Type": "application/json",
+  "x-admin-password": "<span id="paPasswordPlaceholder">your-password</span>"
+}</div>
+        <button class="pa-copy-btn" id="copyPaHeaders">Copy headers</button>
+
+        <div style="font-weight:700;font-size:0.9rem;margin:20px 0 8px;">Step 2 — Build the flow in Power Automate</div>
+        <div class="pa-steps">
+          <div class="pa-step"><div class="pa-step-num">1</div><div class="pa-step-text">Go to <strong>make.powerautomate.com</strong> and sign in with your school Microsoft account.</div></div>
+          <div class="pa-step"><div class="pa-step-num">2</div><div class="pa-step-text">Click <strong>Create → Scheduled cloud flow</strong>. Set it to run at <code>7:00 AM</code>, repeat every <code>1 day</code>.</div></div>
+          <div class="pa-step"><div class="pa-step-num">3</div><div class="pa-step-text">Add a <strong>Condition</strong> action. Set it to check: <code>dayOfWeek(utcNow(), 'AUS Eastern Standard Time')</code> is not equal to <code>0</code> and not equal to <code>6</code>. This skips weekends.</div></div>
+          <div class="pa-step"><div class="pa-step-num">4</div><div class="pa-step-text">In the <strong>Yes</strong> branch, add action: <strong>Excel Online (Business) → Get a row</strong>. Connect to your SharePoint file. Under Sheet Name, use an expression to calculate today's sheet — see Step 3 below.</div></div>
+          <div class="pa-step"><div class="pa-step-num">5</div><div class="pa-step-text">Add action: <strong>Excel Online (Business) → List rows present in a table</strong> — OR use <strong>Get worksheets</strong> to read the entire sheet range. Select your file and today's calculated sheet name.</div></div>
+          <div class="pa-step"><div class="pa-step-num">6</div><div class="pa-step-text">Add action: <strong>HTTP</strong>. Method: <code>POST</code>. URI: the URL above. Add the headers above. Body: use the expression from Step 4.</div></div>
+          <div class="pa-step"><div class="pa-step-num">7</div><div class="pa-step-text">Save and test the flow. Check the server responds with <code>{"ok": true}</code>.</div></div>
+        </div>
+
+        <div style="font-weight:700;font-size:0.9rem;margin:20px 0 8px;">Step 3 — Sheet name expression (Day 1–10)</div>
+        <p class="section-desc" style="margin-bottom:8px">Use this expression in Power Automate for the sheet name. It calculates the correct Day number based on the cycle start date.</p>
+        <div class="pa-json" id="paExpressionText">concat('Day ', add(mod(sub(div(sub(ticks(convertFromUtc(utcNow(),'AUS Eastern Standard Time','yyyy-MM-dd')), ticks('2026-02-23')), 864000000000), 1), 10), 1))</div>
+        <button class="pa-copy-btn" id="copyPaExpression">Copy expression</button>
+        <div class="field-status" style="margin-top:6px">⚠ This expression counts weekdays — paste it into a Power Automate "Compose" action first and verify the output matches today's Day number shown above.</div>
+
+        <div style="font-weight:700;font-size:0.9rem;margin:20px 0 8px;">Step 4 — Body expression</div>
+        <p class="section-desc" style="margin-bottom:8px">The HTTP action body should pass each row's values and the row index. Use this template and replace <code>outputs('List_rows')?['body/value']</code> with the actual output from your List rows action.</p>
+        <div class="pa-json">@{
+  "rows": outputs('List_rows')?['body/value']
+}</div>
+
+        <div class="pa-warning" style="margin-top:16px">
+          📌 <strong>Important:</strong> Power Automate's Excel connector does not return cell background colours. The server will match columns by position using the colour layout saved from your last manual paste. If you change the spreadsheet layout, do one manual paste to update the mapping.
+        </div>
+
+        <div style="font-weight:700;font-size:0.9rem;margin:20px 0 8px;">Saved column map</div>
+        <p class="section-desc" style="margin-bottom:8px">This is generated automatically when you paste the timetable. The server uses it to assign colours when Power Automate sends values-only data.</p>
+        <div class="pa-json" id="paColMapDisplay">No column map saved yet — paste a timetable first.</div>
+        <div class="btn-row" style="margin-top:8px">
+          <button class="s-btn secondary" id="clearColMapBtn">Clear column map</button>
+        </div>
+      </div>
+
+      <!-- Colour names + LSO names -->
+      <div class="settings-section full">
+        <div class="section-title">Colour → Name & LSO Name Mapping</div>
+        <p class="section-desc">Set a permanent <strong>name</strong> for each colour group, and an optional <strong>LSO name</strong> — the name used in that person's email ("Please introduce me as…"). If left blank, the global LSO name fallback is used.</p>
+        <div class="colour-name-list" id="colourNameList">
+          <div class="no-colours-msg">No colours loaded yet — paste a timetable first.</div>
+        </div>
+        <div class="btn-row">
+          <button class="s-btn green" id="saveNamesBtn">Save & push to server</button>
+          <button class="s-btn secondary" id="clearNamesBtn">Clear all names</button>
+        </div>
+        <div class="field-status" id="namesStatus"></div>
+      </div>
+
+      <!-- LSO Global defaults -->
+      <div class="settings-section">
+        <div class="section-title">LSO Email Defaults</div>
+        <p class="section-desc">Global fallback name used when no per-person name is set. Domain and CC apply to all people.</p>
+        <div class="field-group">
+          <span class="field-label">Fallback Name</span>
+          <input id="lsoGlobalName" class="field-input" type="text" placeholder="Mr. Chew" />
+        </div>
+        <div class="field-group">
+          <span class="field-label">Email Domain</span>
+          <input id="lsoGlobalDomain" class="field-input" type="text" placeholder="stpeters.vic.edu.au" />
+        </div>
+        <div class="field-group">
+          <span class="field-label">CC Address</span>
+          <input id="lsoGlobalCC" class="field-input" type="text" placeholder="cc@school.edu.au" />
+        </div>
+        <div class="btn-row">
+          <button class="s-btn" id="saveLSODefaultsBtn">Save Defaults</button>
+        </div>
+        <div class="field-status" id="lsoDefaultsStatus"></div>
+      </div>
+
+      <!-- Export / Import -->
+      <div class="settings-section">
+        <div class="section-title">Export / Import Settings</div>
+        <p class="section-desc">Export all your settings as a JSON code you can paste on another machine to restore everything — names, LSO names, email overrides, server URL, and more.</p>
+        <div class="btn-row">
+          <button class="s-btn green" id="exportSettingsBtn">📤 Export settings</button>
+          <button class="s-btn secondary" id="importSettingsBtn">📥 Import settings</button>
+        </div>
+        <div class="export-panel" id="exportPanel" style="display:none">
+          <div class="export-panel-title">Settings JSON — copy this to another machine</div>
+          <textarea class="export-code" id="exportCode" readonly></textarea>
+          <div class="btn-row" style="margin-top:10px">
+            <button class="s-btn secondary" id="copyExportBtn">📋 Copy to clipboard</button>
+            <button class="s-btn secondary" id="closeExportBtn">Close</button>
+          </div>
+        </div>
+        <div class="export-panel" id="importPanel" style="display:none">
+          <div class="export-panel-title">Paste settings JSON here</div>
+          <textarea class="export-code" id="importCode" placeholder='{"tt-colornames":{"rgb(...)":"Name"},...}'></textarea>
+          <div class="btn-row" style="margin-top:10px">
+            <button class="s-btn green" id="doImportBtn">✓ Apply & restore</button>
+            <button class="s-btn secondary" id="closeImportBtn">Cancel</button>
+          </div>
+          <div class="field-status" id="importStatus"></div>
+        </div>
+        <div class="field-status" id="exportStatus"></div>
+      </div>
+
+      <!-- Teacher Email Overrides -->
+      <div class="settings-section full">
+        <div class="section-title">Teacher Email Overrides</div>
+        <p class="section-desc">
+          Most teachers are auto-generated: last letter moves to front (e.g. <strong>WARRD → dwarr@…</strong>, <strong>KOKF → fkok@…</strong>).
+          Add overrides below for teachers whose real email doesn't match that pattern.
+          Only enter the part <em>before</em> the @ sign.
+        </p>
+        <table class="override-table" id="overrideTable">
+          <thead>
+            <tr>
+              <th style="width:140px">Teacher Code</th>
+              <th style="width:24px"></th>
+              <th>Email prefix (before @)</th>
+              <th style="width:44px"></th>
+            </tr>
+          </thead>
+          <tbody id="overrideTbody"></tbody>
+        </table>
+        <button class="add-override-btn" id="addOverrideBtn">+ Add override</button>
+        <div class="btn-row">
+          <button class="s-btn green" id="saveOverridesBtn">Save overrides</button>
+          <button class="s-btn secondary" id="clearOverridesBtn">Clear all</button>
+        </div>
+        <div class="field-status" id="overrideStatus"></div>
+      </div>
+
+      <!-- Actions -->
+      <div class="settings-section full">
+        <div class="section-title">Actions</div>
+        <div class="btn-row">
+          <button class="s-btn secondary" id="exportKeysBtn">📋 Export colour keys</button>
+          <button class="s-btn danger" id="clearServerBtn">Clear server timetable</button>
+        </div>
+        <div class="field-status" id="actionStatus"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ EMAIL TAB ══ -->
+<div class="tab-page" id="emailTab">
+  <div class="settings-page">
+    <div class="email-section">
+      <div class="section-title">Morning Email Composer</div>
+      <p class="section-desc">Fill in your period schedule below. The email preview updates live — copy it and paste into Outlook.</p>
+      <div class="email-two-col">
+        <div class="field-group">
+          <span class="field-label">Your display name (e.g. Mr. Chew)</span>
+          <input id="emailDisplayName" class="field-input" type="text" placeholder="Mr. Chew" />
+        </div>
+        <div class="field-group">
+          <span class="field-label">Date (auto-filled today)</span>
+          <input id="emailDate" class="field-input" type="text" readonly />
+        </div>
+      </div>
+      <div class="section-title" style="margin-bottom:10px">Periods</div>
+      <div class="email-period-grid">
+        <div><div class="period-label">P1</div><input class="email-period-input period-val" data-p="1" type="text" placeholder="Class / teacher" /></div>
+        <div><div class="period-label">P2</div><input class="email-period-input period-val" data-p="2" type="text" placeholder="Class / teacher" /></div>
+        <div><div class="period-label">P3</div><input class="email-period-input period-val" data-p="3" type="text" placeholder="Class / teacher" /></div>
+        <div><div class="period-label">P4</div><input class="email-period-input period-val" data-p="4" type="text" placeholder="Class / teacher" /></div>
+        <div><div class="period-label">P5</div><input class="email-period-input period-val" data-p="5" type="text" placeholder="Class / teacher" /></div>
+        <div><div class="period-label">P6</div><input class="email-period-input period-val" data-p="6" type="text" placeholder="Class / teacher" /></div>
+      </div>
+      <div class="section-title" style="margin-bottom:10px">Preview</div>
+      <div class="email-preview-wrap" id="emailPreview"></div>
+      <div class="btn-row">
+        <button class="email-copy-btn" id="emailCopyBtn" style="max-width:220px">📋 Copy email</button>
+        <button class="s-btn secondary" id="emailSaveHistoryBtn">💾 Save to history</button>
+        <button class="s-btn secondary" id="emailClearBtn">Clear</button>
+      </div>
+      <div class="field-status" id="emailStatus"></div>
+    </div>
+    <div class="email-section">
+      <div class="section-title">Email Template</div>
+      <p class="section-desc">Customise the template. Use <code style="font-family:'DM Mono',monospace;background:var(--soft);padding:1px 5px;border-radius:4px">{DATE}</code>, <code style="font-family:'DM Mono',monospace;background:var(--soft);padding:1px 5px;border-radius:4px">{NAME}</code>, and <code style="font-family:'DM Mono',monospace;background:var(--soft);padding:1px 5px;border-radius:4px">{PERIODS}</code> as placeholders.</p>
+      <div class="field-group">
+        <textarea id="emailTemplate" class="field-input" rows="10" style="resize:vertical;font-family:'DM Mono',monospace;font-size:0.8rem;line-height:1.7"></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="s-btn green" id="saveTemplateBtn">Save template</button>
+        <button class="s-btn secondary" id="resetTemplateBtn">Reset to default</button>
+      </div>
+    </div>
+    <div class="email-section">
+      <div class="section-title">Sent History <span style="font-weight:400;color:var(--muted)">(saved locally)</span></div>
+      <div class="email-history-list" id="emailHistoryList">
+        <div style="color:var(--muted);font-size:0.82rem;padding:4px 0">No saved emails yet.</div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="state-wrap" id="loadingState">
-  <div class="spinner"></div>
-  <div class="state-title">Loading timetable…</div>
-</div>
-<div class="state-wrap" id="emptyState" style="display:none">
-  <div class="state-icon">📭</div>
-  <div class="state-title">No timetable yet today</div>
-  <div class="state-sub">The admin hasn't uploaded today's timetable yet. Check back soon.</div>
-</div>
-<div class="state-wrap" id="noServerState" style="display:none">
-  <div class="state-icon">🔌</div>
-  <div class="state-title">Server not configured</div>
-  <div class="state-sub">Enter the server URL below to connect.</div>
-</div>
-<div class="server-setup" id="serverSetup">
-  <div class="setup-row">
-    <input id="serverUrlInput" class="setup-input" type="text" placeholder="https://your-app.onrender.com" />
-    <button class="setup-btn" id="connectBtn">Connect</button>
+<!-- ══ DAILY CHANGES TAB ══ -->
+<div class="tab-page" id="changesTab">
+  <div class="settings-page" style="max-width:860px;">
+
+    <!-- Mode switcher -->
+    <div style="display:flex;gap:10px;margin-bottom:20px;">
+      <button class="s-btn" id="dcModeAuto" style="flex:1;background:var(--text);color:var(--bg);">📷 Upload Image (auto-read)</button>
+      <button class="s-btn secondary" id="dcModeManual" style="flex:1;">✏️ Enter Manually</button>
+    </div>
+
+    <!-- ── AUTO MODE ── -->
+    <div id="dcAutoSection">
+      <div class="settings-section full" style="margin-bottom:20px;">
+        <div class="section-title">Upload Daily Changes Image</div>
+        <p class="section-desc">Upload a photo or screenshot of the daily changes sheet. It will be read automatically — then review and publish.</p>
+
+        <div id="dcDropZone" style="border:2px dashed var(--border);border-radius:12px;padding:36px 24px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;margin-bottom:16px;background:var(--surface2);">
+          <div style="font-size:2rem;margin-bottom:8px;">📷</div>
+          <div style="font-weight:700;margin-bottom:4px;">Drop image here or click to upload</div>
+          <div style="font-size:0.8rem;color:var(--muted);">PNG, JPG, HEIC — screenshot or photo of the changes sheet</div>
+          <input type="file" id="dcFileInput" accept="image/*" style="display:none;" />
+        </div>
+
+        <div id="dcPreviewWrap" style="display:none;margin-bottom:16px;">
+          <img id="dcPreviewImg" style="max-width:100%;max-height:300px;border-radius:10px;border:1px solid var(--border);display:block;" />
+          <button id="dcClearImg" style="margin-top:8px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.8rem;">✕ Remove image</button>
+        </div>
+
+        <div class="btn-row">
+          <button class="s-btn green" id="dcReadBtn" disabled>🤖 Read with AI</button>
+          <button class="s-btn secondary" id="dcPublishBtn" disabled>📤 Publish to viewer</button>
+          <button class="s-btn secondary" id="dcClearBtn" style="color:#ef4444;">🗑 Clear published</button>
+        </div>
+        <div id="dcStatus" style="margin-top:12px;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--muted);min-height:20px;"></div>
+      </div>
+
+      <!-- Extracted/editable result -->
+      <div class="settings-section full" id="dcResultSection" style="display:none;">
+        <div class="section-title">Review &amp; Edit — then Publish</div>
+        <p class="section-desc" style="margin-bottom:16px;">All fields are editable. Fix anything before publishing.</p>
+        <div id="dcAbsentBar" style="display:none;background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:0.83rem;">
+          <strong>Absent today:</strong> <span id="dcAbsentNames"></span>
+        </div>
+        <div id="dcChangesTable" style="overflow-x:auto;"></div>
+        <details style="margin-top:16px;">
+          <summary style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);cursor:pointer;user-select:none;">Show raw extracted text</summary>
+          <pre id="dcRawText" style="margin-top:10px;background:var(--soft);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'DM Mono',monospace;font-size:0.72rem;white-space:pre-wrap;line-height:1.7;max-height:300px;overflow-y:auto;"></pre>
+        </details>
+      </div>
+    </div>
+
+    <!-- ── MANUAL MODE ── -->
+    <div id="dcManualSection" style="display:none;">
+      <div class="settings-section full" style="margin-bottom:20px;">
+        <div class="section-title">Manual Entry</div>
+        <p class="section-desc" style="margin-bottom:16px;">Type in today's changes directly. Add each LSO that has a change, fill in only the periods that differ from normal. Leave blank for periods with no change.</p>
+
+        <!-- Absent field -->
+        <div class="field-group" style="margin-bottom:16px;">
+          <span class="field-label">Absent today (comma separated)</span>
+          <input class="field-input" id="dcManualAbsent" type="text" placeholder="e.g. Indi, H'Onorine" />
+        </div>
+
+        <!-- LSO rows -->
+        <div id="dcManualRows"></div>
+
+        <div class="btn-row" style="margin-top:12px;">
+          <button class="s-btn secondary" id="dcManualAddRow">+ Add LSO</button>
+          <button class="s-btn green" id="dcManualPublishBtn">📤 Publish to viewer</button>
+          <button class="s-btn secondary" id="dcManualClearBtn" style="color:#ef4444;">🗑 Clear published</button>
+        </div>
+        <div id="dcManualStatus" style="margin-top:12px;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--muted);min-height:20px;"></div>
+      </div>
+    </div>
+
   </div>
 </div>
 
-<div class="tile-view" id="tileView">
-  <div class="tile-grid" id="tileGrid"></div>
-</div>
-<div class="detail-view" id="detailView">
-  <div class="detail-inner" id="detailInner"></div>
-</div>
-
-<!-- ── MAP VIEW ── -->
-<div class="map-view" id="mapView">
-  <div class="map-toolbar">
-    <button class="map-tab-btn active" data-maptab="now">Now <span class="map-badge-count" id="mapNowBadge">0</span></button>
-    <button class="map-tab-btn" data-maptab="next">Next <span class="map-badge-count" id="mapNextBadge">0</span></button>
-  </div>
-  <div class="map-body">
-    <div class="map-outer" id="mapOuter">
-      <div class="map-canvas" id="mapCanvas">
-        <div class="map-empty" id="mapEmpty">
-          <div class="icon">🏫</div>
-          <p>No rooms on map yet.<br>Ask your admin to set up the map layout.</p>
+<!-- ══ MAP LAYOUT TAB ══ -->
+<div class="tab-page" id="mapTab">
+  <div class="settings-page" style="max-width:860px;">
+    <div class="settings-section full" style="margin-bottom:20px;">
+      <div class="section-title">Map Layout Editor</div>
+      <p class="section-desc" style="margin-bottom:16px;">Set up room positions for the viewer map. Import rooms from the timetable, drag groups to position, then save to server — all devices will see the same layout.</p>
+      <div class="btn-row">
+        <button class="s-btn green" id="adminMapAutoBtn">🔍 Import rooms from timetable</button>
+        <button class="s-btn" id="adminMapSaveBtn">💾 Save layout to server</button>
+        <button class="s-btn secondary" id="adminMapClearBtn" style="color:#ef4444;">🗑 Remove all rooms</button>
+      </div>
+      <div id="adminMapStatus" style="margin-top:10px;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--muted);min-height:18px;"></div>
+    </div>
+    <div class="settings-section full" style="padding:0;overflow:hidden;position:relative;">
+      <!-- Aspect ratio lock: 1080:600 = 55.56% padding-top -->
+      <div style="width:100%;padding-top:55.56%;position:relative;">
+        <div id="adminMapCanvas" style="position:absolute;inset:0;background:var(--surface2);
+          background-image:linear-gradient(rgba(0,0,0,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.05) 1px,transparent 1px);
+          background-size:30px 30px;border-radius:8px;">
+          <div id="adminMapEmpty" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;pointer-events:none;">
+            <div style="font-size:2rem;opacity:.25;">🏫</div>
+            <p style="font-size:.85rem;color:var(--muted);text-align:center;">Click <strong>Import rooms from timetable</strong> to get started.</p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="map-footer">
-    <span id="mapStatus">—</span>
-    <span id="mapUnplacedLabel" style="display:none;">⚠ Not on map:</span>
-    <div class="map-unplaced" id="mapUnplaced"></div>
+    <p style="margin-top:10px;font-size:0.78rem;color:var(--muted);">💡 Drag group headers to reposition. Click ✕ on a room to remove it. Changes only take effect after clicking Save.</p>
   </div>
 </div>
 
 <script>
-// ── School schedule ────────────────────────────────────────────────────────
-const SCHOOL_SCHEDULE = [
-  { label:'Tutor Group', start:'08:50', end:'09:00' },
-  { label:'Period 1',    start:'09:03', end:'09:53', period:1 },
-  { label:'Period 2',    start:'09:56', end:'10:46', period:2 },
-  { label:'Recess',      start:'10:46', end:'11:06', break:'Recess' },
-  { label:'Period 3',    start:'11:10', end:'12:00', period:3 },
-  { label:'Period 4',    start:'12:03', end:'12:53', period:4 },
-  { label:'Lunch',       start:'12:53', end:'13:33', break:'Lunch' },
-  { label:'Period 5',    start:'13:37', end:'14:27', period:5 },
-  { label:'Period 6',    start:'14:30', end:'15:20', period:6 },
-];
-
-function timeToMinutes(t) {
-  const [h, m] = t.split(':').map(Number);
-  return h * 60 + m;
-}
-function nowMinutes() {
-  const n = new Date();
-  return n.getHours() * 60 + n.getMinutes() + n.getSeconds() / 60;
-}
-
-// Returns { current, next } where each is a SCHOOL_SCHEDULE slot (or null)
-function getCurrentAndNext() {
-  const nm = nowMinutes();
-  let current = null, next = null;
-  for (const slot of SCHOOL_SCHEDULE) {
-    const s = timeToMinutes(slot.start), e = timeToMinutes(slot.end);
-    if (nm >= s && nm < e) current = slot;
-    else if (nm < s && !next) next = slot;
-  }
-  return { current, next };
-}
-
-// For a given person's slots, return the room value (d2) for a period number, or null
-function getRoomForPeriod(slots, periodNum) {
-  if (!periodNum || !slots[periodNum] || !slots[periodNum].length) return null;
-  return slots[periodNum][0].d2 || slots[periodNum][0].d1 || null;
-}
-
-// Returns { nowText, nextText } strings to show on the tile
-// nowText / nextText = room like "BR2", or "Recess"/"Lunch", or null (free/before school)
-function getTileStatus(slots) {
-  const { current, next } = getCurrentAndNext();
-
-  function resolveSlot(slot) {
-    if (!slot) return null;
-    if (slot.break) return slot.break;           // "Recess" or "Lunch"
-    if (slot.label === 'Tutor Group') return 'Tutor';
-    if (!slot.period) return null;
-    const room = getRoomForPeriod(slots, slot.period);
-    return room || null;                         // null = this person is free this period
-  }
-
-  return {
-    nowText:  resolveSlot(current),
-    nextText: resolveSlot(next),
-  };
-}
-
-let tileRefreshTimer = null;
-function startTileRefresh() {
-  if (tileRefreshTimer) clearInterval(tileRefreshTimer);
-  tileRefreshTimer = setInterval(() => {
-    if (currentGroupMap) renderTiles(currentGroupMap, currentNames);
-  }, 30000); // refresh tiles every 30s
-}
-
-// ── Period strip ──────────────────────────────────────────────────────────
-function formatTime12(t) {
-  const [h, m] = t.split(':').map(Number);
-  return `${h % 12 || 12}:${String(m).padStart(2,'0')}${h >= 12 ? 'pm' : 'am'}`;
-}
-
-function formatCountdown(secsRemaining) {
-  const s = Math.max(0, Math.round(secsRemaining));
-  const m = Math.floor(s / 60), r = s % 60;
-  if (m === 0) return `${r}s`;
-  return `${m}m ${String(r).padStart(2,'0')}s`;
-}
-
-function updateStrip() {
-  const strip = document.getElementById('periodStrip');
-  // Only show on tile view, weekdays during school hours
-  const tileVisible = document.getElementById('tileView').classList.contains('visible');
-  if (isWeekend || !tileVisible) { strip.classList.remove('visible'); return; }
-
-  const now2 = new Date();
-  const nmSecs = now2.getHours()*3600 + now2.getMinutes()*60 + now2.getSeconds();
-  const schoolStartSecs = timeToMinutes('08:40') * 60;
-  const schoolEndSecs   = timeToMinutes('15:30') * 60;
-  if (nmSecs < schoolStartSecs || nmSecs > schoolEndSecs) {
-    strip.classList.remove('visible'); return;
-  }
-
-  strip.classList.add('visible');
-
-  // Find current and next using seconds precision
-  let current = null, next = null;
-  for (const slot of SCHOOL_SCHEDULE) {
-    const s = timeToMinutes(slot.start) * 60;
-    const e = timeToMinutes(slot.end)   * 60;
-    if (nmSecs >= s && nmSecs < e) current = { ...slot, startSecs: s, endSecs: e };
-    else if (nmSecs < s && !next)  next    = { ...slot, startSecs: s, endSecs: e };
-  }
-
-  const dot       = document.getElementById('stripDot');
-  const nameEl    = document.getElementById('stripName');
-  const timeEl    = document.getElementById('stripTime');
-  const bar       = document.getElementById('stripBar');
-  const countdown = document.getElementById('stripCountdown');
-  const nextEl    = document.getElementById('stripNext');
-
-  if (current) {
-    const isBreak = !!current.break;
-    const remaining = current.endSecs - nmSecs;
-    const total = current.endSecs - current.startSecs;
-    const pct = Math.min(100, ((nmSecs - current.startSecs) / total) * 100);
-
-    dot.className = 'period-strip-dot' + (isBreak ? ' is-break' : '');
-    nameEl.textContent = current.label;
-    timeEl.textContent = `${formatTime12(current.start)} – ${formatTime12(current.end)}`;
-    bar.style.width = pct + '%';
-    bar.className = 'period-strip-bar' + (isBreak ? ' is-break' : '');
-    countdown.textContent = formatCountdown(remaining) + ' left';
-  } else {
-    // Between slots — show time until next
-    dot.className = 'period-strip-dot is-break';
-    nameEl.textContent = 'Between periods';
-    timeEl.textContent = '';
-    bar.style.width = '0%';
-    bar.className = 'period-strip-bar is-break';
-    const until = next ? (next.startSecs - nmSecs) : 0;
-    countdown.textContent = next ? formatCountdown(until) + ' until' : '';
-  }
-
-  if (next) {
-    nextEl.innerHTML = `Next: <strong>${next.label}</strong> ${formatTime12(next.start)}`;
-  } else {
-    nextEl.textContent = 'Last period done';
-  }
-}
-
-let stripTimer = null;
-function startStrip() {
-  updateStrip();
-  if (stripTimer) clearInterval(stripTimer);
-  stripTimer = setInterval(updateStrip, 1000);
-}
-
 // ── Cycle ──────────────────────────────────────────────────────────────────
 const CYCLE_START = new Date('2026-02-23T00:00:00');
+const DAYS_LONG = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 function getTodayDayNumber() {
   const today = new Date(); today.setHours(0,0,0,0);
   const start = new Date(CYCLE_START); start.setHours(0,0,0,0);
@@ -526,20 +612,14 @@ function getTodayDayNumber() {
   while (d <= today) { if (d.getDay()!==0&&d.getDay()!==6) count++; d.setDate(d.getDate()+1); }
   return count > 0 ? ((count-1)%10)+1 : null;
 }
-const DAYS_LONG = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
 const now = new Date();
-const dow = now.getDay();
-const isWeekend = dow===0||dow===6;
+document.getElementById('todayLabel').textContent =
+  DAYS_LONG[now.getDay()] + ' · ' + now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
 const dayNum = getTodayDayNumber();
-const siteTitle = document.getElementById('siteTitle');
-const siteSub   = document.getElementById('siteSubtitle');
-if (!isWeekend&&dayNum) {
-  siteTitle.textContent = `Timetable (Day ${dayNum})`;
-  siteSub.textContent = DAYS_LONG[dow]+' · '+now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-} else {
-  siteTitle.textContent = 'Timetable';
-  siteSub.textContent = DAYS_LONG[dow]+' · '+now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-}
+const isWeekend = now.getDay()===0||now.getDay()===6;
+document.getElementById('cycleDayLabel').textContent = (!isWeekend&&dayNum)?`Day ${dayNum}`:'Weekend';
+document.getElementById('cycleWeekLabel').textContent = (!isWeekend&&dayNum)?(dayNum<=5?'Week 1':'Week 2'):'No timetable today';
 
 // ── Theme ──────────────────────────────────────────────────────────────────
 const html = document.documentElement;
@@ -553,1102 +633,1277 @@ document.getElementById('themeToggle').addEventListener('click', () => {
   localStorage.setItem('tt-theme', next);
 });
 
-// ── Compact / Expanded toggle ──────────────────────────────────────────────
-let isCompact = localStorage.getItem('tt-compact') === 'true';
-function applyCompactMode() {
-  const grid = document.getElementById('tileGrid');
-  const btn  = document.getElementById('viewToggleBtn');
-  if (isCompact) {
-    grid.classList.add('compact');
-    btn.textContent = '⊟ Expanded';
-  } else {
-    grid.classList.remove('compact');
-    btn.textContent = '⊞ Compact';
+// ── Tabs ───────────────────────────────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === 'settingsTab') { refreshColourNameList(); renderOverrideTable(); loadLSODefaults(); }
+    if (btn.dataset.tab === 'emailTab') { setTimeout(initEmailTab, 50); }
+  });
+});
+
+// ── Server config ──────────────────────────────────────────────────────────
+const serverUrlEl = document.getElementById('serverUrl');
+const adminPwEl   = document.getElementById('adminPw');
+serverUrlEl.value = localStorage.getItem('tt-server') || '';
+adminPwEl.value   = localStorage.getItem('tt-pw') || '';
+function getServer() { return (serverUrlEl.value.trim()||localStorage.getItem('tt-server')||'').replace(/\/$/,''); }
+function getPw()     { return adminPwEl.value||localStorage.getItem('tt-pw')||''; }
+function setStatus(id, msg, type) {
+  const el = document.getElementById(id); if(!el) return;
+  el.textContent = msg;
+  el.style.color = type==='green'?'#22a85a':type==='red'?'#e05151':'var(--muted)';
+  if (type) setTimeout(()=>{ if(el.textContent===msg) el.textContent=''; }, 4000);
+}
+
+document.getElementById('saveConfigBtn').addEventListener('click', () => {
+  localStorage.setItem('tt-server', serverUrlEl.value.trim().replace(/\/$/,''));
+  localStorage.setItem('tt-pw', adminPwEl.value);
+  setStatus('serverStatus','✓ Saved','green');
+});
+
+document.getElementById('testServerBtn').addEventListener('click', async () => {
+  const url = getServer();
+  if (!url) { setStatus('serverStatus','✕ No URL set','red'); return; }
+  setStatus('serverStatus','Testing…','');
+  try {
+    const res = await fetch(`${url}/`);
+    const data = await res.json();
+    setStatus('serverStatus',`✓ Connected · today: ${data.todaySheet||'?'}`,'green');
+  } catch(e) { setStatus('serverStatus','✕ Could not reach server','red'); }
+});
+
+// ── SharePoint ─────────────────────────────────────────────────────────────
+const spUrlEl = document.getElementById('sharepointUrl');
+spUrlEl.value = localStorage.getItem('tt-sharepoint') || '';
+spUrlEl.addEventListener('change', () => localStorage.setItem('tt-sharepoint', spUrlEl.value.trim()));
+document.getElementById('openSheetBtn').addEventListener('click', () => {
+  const base = spUrlEl.value.trim()||localStorage.getItem('tt-sharepoint')||'';
+  if (!base) { alert('Enter your SharePoint file URL above first.'); return; }
+  if (!dayNum||isWeekend) { alert('Today is a weekend — no sheet to open.'); return; }
+  localStorage.setItem('tt-sharepoint', base);
+  const sep = base.includes('?')?'&':'?';
+  window.open(`${base}${sep}activeCell=%27Day%20${dayNum}%27!A1&action=default`, '_blank');
+});
+
+// ── Power Automate section ─────────────────────────────────────────────────
+function updatePASection() {
+  const url  = getServer() || 'https://timetable-server-r6nb.onrender.com';
+  const pw   = localStorage.getItem('tt-pw') || 'your-password';
+  const urlText = document.getElementById('paUrlText');
+  const pwEl    = document.getElementById('paPasswordPlaceholder');
+  if (urlText) urlText.textContent = `${url}/automate/pa`;
+  if (pwEl)    pwEl.textContent    = pw;
+
+  // Show saved column map
+  const mapEl = document.getElementById('paColMapDisplay');
+  if (mapEl) {
+    const saved = localStorage.getItem('tt-col-map');
+    if (saved) {
+      try {
+        const m = JSON.parse(saved);
+        mapEl.textContent = JSON.stringify(m, null, 2);
+      } catch(e) { mapEl.textContent = 'Invalid saved map.'; }
+    } else {
+      mapEl.textContent = 'No column map saved yet — paste a timetable first.';
+    }
   }
 }
-document.getElementById('viewToggleBtn').addEventListener('click', () => {
-  isCompact = !isCompact;
-  localStorage.setItem('tt-compact', isCompact);
-  applyCompactMode();
+updatePASection();
+
+// Update PA section whenever server config changes
+document.getElementById('saveConfigBtn').addEventListener('click', updatePASection);
+
+function copyText(text, btn, label) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = label, 1800);
+  });
+}
+
+document.getElementById('copyPaUrl').addEventListener('click', function() {
+  const url = getServer() || 'https://timetable-server-r6nb.onrender.com';
+  copyText(`${url}/automate`, this, 'Copy URL');
 });
-applyCompactMode();
 
-// ── Server ─────────────────────────────────────────────────────────────────
-function getServerUrl() { return 'https://timetable-server-r6nb.onrender.com'; }
-document.getElementById('connectBtn').addEventListener('click', () => {
-  const url = document.getElementById('serverUrlInput').value.trim().replace(/\/$/,'');
-  if (!url) return;
-  localStorage.setItem('tt-viewer-server', url);
-  loadTimetable();
+document.getElementById('copyPaHeaders').addEventListener('click', function() {
+  const pw = localStorage.getItem('tt-pw') || 'your-password';
+  const headers = JSON.stringify({ 'Content-Type': 'application/json', 'x-admin-password': pw }, null, 2);
+  copyText(headers, this, 'Copy headers');
 });
 
-// ── Helpers ────────────────────────────────────────────────────────────────
-function getLuminance(c){const n=(c||'').match(/\d+/g);return(!n||n.length<3)?999:0.299*+n[0]+0.587*+n[1]+0.114*+n[2];}
-function escapeHTML(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+document.getElementById('copyPaExpression').addEventListener('click', function() {
+  const expr = document.getElementById('paExpressionText').textContent;
+  copyText(expr, this, 'Copy expression');
+});
 
-// ── LSO Name per person ─────────────────────────────────────────────────────
-// Stored in localStorage as { [colourKey]: "Mr. Smith" }
-// The global fallback is also stored: lso-name (legacy)
+document.getElementById('clearColMapBtn').addEventListener('click', () => {
+  if (confirm('Clear the saved column map? You will need to paste manually once to rebuild it.')) {
+    localStorage.removeItem('tt-col-map');
+    updatePASection();
+  }
+});
+
+// ── LSO per-person names ───────────────────────────────────────────────────
 function getLSONames() {
   try { return JSON.parse(localStorage.getItem('tt-lso-names') || '{}'); }
   catch(e) { return {}; }
 }
-function saveLSONames(obj) {
-  localStorage.setItem('tt-lso-names', JSON.stringify(obj));
+function saveLSONames(obj) { localStorage.setItem('tt-lso-names', JSON.stringify(obj)); }
+
+// ── LSO global defaults ────────────────────────────────────────────────────
+function loadLSODefaults() {
+  document.getElementById('lsoGlobalName').value   = localStorage.getItem('lso-name') || 'Mr. Chew';
+  document.getElementById('lsoGlobalDomain').value = localStorage.getItem('lso-domain') || 'stpeters.vic.edu.au';
+  document.getElementById('lsoGlobalCC').value     = localStorage.getItem('lso-cc') || '';
 }
-function getLSONameForKey(key) {
-  const names = getLSONames();
-  // per-person name takes priority, then global fallback
-  return names[key] || localStorage.getItem('lso-name') || 'Mr. Chew';
-}
-
-// ── Email helpers ──────────────────────────────────────────────────────────
-function getToday_ddmmyy() {
-  const d = new Date();
-  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getFullYear()).slice(-2)}`;
-}
-
-function getEmailOverrides() {
-  try { return JSON.parse(localStorage.getItem('tt-email-overrides') || '{}'); }
-  catch(e) { return {}; }
-}
-
-function codeToEmailPrefix(code, overrides) {
-  const upper = code.toUpperCase().trim();
-  if (overrides[upper]) return { prefix: overrides[upper], isOverride: true };
-  const lower = upper.toLowerCase();
-  return { prefix: lower[lower.length-1] + lower.slice(0, lower.length-1), isOverride: false };
-}
-
-function buildLSOEmail(slots, lsoSettings) {
-  const { domain, yourName, cc } = lsoSettings;
-  const overrides = getEmailOverrides();
-  const dd = getToday_ddmmyy();
-  const subject = `LSO ${dd}`;
-
-  const periodLines = [];
-  const teacherMap = new Map();
-
-  for (let p = 1; p <= 6; p++) {
-    const entries = slots[p];
-    if (entries && entries.length > 0) {
-      entries.forEach(({d1, d2, d3}) => {
-        if (d1 || d2 || d3) {
-          periodLines.push(`P${p} - ${d1 || ''}   ${d2 || ''}   ${d3 || ''}`.trimEnd());
-          if (d3) {
-            const code = d3.trim().toUpperCase();
-            if (!teacherMap.has(code)) {
-              teacherMap.set(code, codeToEmailPrefix(code, overrides));
-            }
-          }
-        }
-      });
-    }
-  }
-
-  const teacherEntries = [...teacherMap.entries()];
-  const teacherEmails = teacherEntries.map(([code, {prefix}]) => `${prefix}@${domain}`);
-
-  const body = [
-    'Good morning teachers,',
-    '',
-    'Today I will be attending and supporting the students within your classes.',
-    '',
-    ...periodLines,
-    '',
-    `Please introduce me to the students as ${yourName}.`,
-    'I look forward to working with you today and providing effective support to our students.',
-    '',
-    'Kind regards,',
-    yourName
-  ].join('\n');
-
-  return { subject, body, teacherEmails, teacherEntries, cc };
-}
-
-function getLSOSettings(key) {
-  return {
-    domain:   localStorage.getItem('lso-domain') || 'stpeters.vic.edu.au',
-    yourName: getLSONameForKey(key),
-    cc:       localStorage.getItem('lso-cc') || 'kmcmellon@stpeters.vic.edu.au'
-  };
-}
-function saveLSOGlobalSettings(s) {
-  localStorage.setItem('lso-domain', s.domain);
-  localStorage.setItem('lso-cc', s.cc);
-  // yourName is saved per-person separately via saveLSONames
-}
-
-// ── State ──────────────────────────────────────────────────────────────────
-let currentGroupMap = null;
-let currentNames    = {};
-let activeDetailKey = null; // tracks which person is open
-
-function showScreen(id) {
-  ['loadingState','emptyState','noServerState','tileView','detailView'].forEach(s => {
-    const el = document.getElementById(s);
-    el.style.display = 'none'; el.classList.remove('visible');
-  });
-  document.getElementById('serverSetup').classList.toggle('visible', id==='noServerState');
-  const target = document.getElementById(id);
-  target.style.display = '';
-  requestAnimationFrame(() => target.classList.add('visible'));
-  if (id === 'tileView') { startTileRefresh(); startStrip(); }
-  else { document.getElementById('periodStrip').classList.remove('visible'); }
-}
-
-const backBtn = document.getElementById('backBtn');
-
-function goHome() {
-  activeDetailKey = null;
-  backBtn.classList.remove('visible');
-  siteTitle.textContent = dayNum&&!isWeekend?`Timetable (Day ${dayNum})`:'Timetable';
-  showScreen('tileView');
-}
-
-function openDetail(key) {
-  if (!currentGroupMap) return;
-  const grp = currentGroupMap.get(key); if (!grp) return;
-  const name = currentNames[key] || '—';
-  activeDetailKey = key;
-  siteTitle.textContent = name;
-  backBtn.classList.add('visible');
-  renderDetail(key, grp, name);
-  showScreen('detailView');
-  window.scrollTo({ top:0, behavior:'smooth' });
-}
-
-backBtn.addEventListener('click', goHome);
-
-// ── Load timetable ─────────────────────────────────────────────────────────
-async function loadTimetable() {
-  const url = getServerUrl();
-  if (!url) { showScreen('noServerState'); return; }
-  showScreen('loadingState');
-  try {
-    const res = await fetch(`${url}/timetable`);
-    if (res.status===404) { showScreen('emptyState'); return; }
-    if (!res.ok) { showScreen('emptyState'); return; }
-    const state = await res.json();
-    if (!state.map) { showScreen('emptyState'); return; }
-    const groupMap = new Map();
-    for (const [k,v] of Object.entries(state.map)) groupMap.set(k,v);
-    currentGroupMap = groupMap;
-    currentNames    = state.names || {};
-    try {
-      localStorage.setItem('tt-cached-data', JSON.stringify(state));
-      localStorage.setItem('tt-cached-time', Date.now().toString());
-    } catch(e) {}
-    renderTiles(groupMap, currentNames);
-    loadDailyChanges();
-    // If a detail was open, silently re-render it in place; otherwise go to tiles
-    if (activeDetailKey && groupMap.has(activeDetailKey)) {
-      const grp = groupMap.get(activeDetailKey);
-      const name = currentNames[activeDetailKey] || '—';
-      siteTitle.textContent = name;
-      backBtn.classList.add('visible');
-      renderDetail(activeDetailKey, grp, name);
-      showScreen('detailView');
-    } else {
-      activeDetailKey = null;
-      showScreen('tileView');
-    }
-  } catch(e) {
-    const cached = localStorage.getItem('tt-cached-data');
-    const cachedTime = parseInt(localStorage.getItem('tt-cached-time')||'0');
-    const ageHours = (Date.now()-cachedTime)/3600000;
-    if (cached && ageHours < 20) {
-      try {
-        const state = JSON.parse(cached);
-        const groupMap = new Map();
-        for (const [k,v] of Object.entries(state.map)) groupMap.set(k,v);
-        currentGroupMap = groupMap;
-        currentNames    = state.names || {};
-        renderTiles(groupMap, currentNames);
-        if (activeDetailKey && groupMap.has(activeDetailKey)) {
-          const grp = groupMap.get(activeDetailKey);
-          const name = currentNames[activeDetailKey] || '—';
-          siteTitle.textContent = name;
-          backBtn.classList.add('visible');
-          renderDetail(activeDetailKey, grp, name);
-          showScreen('detailView');
-        } else {
-          activeDetailKey = null;
-          showScreen('tileView');
-        }
-        showStaleBanner();
-        return;
-      } catch(e2) {}
-    }
-    showScreen('noServerState');
-  }
-}
-
-function showStaleBanner() {
-  if (document.getElementById('staleBanner')) return;
-  const b = document.createElement('div');
-  b.id = 'staleBanner';
-  b.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#b45309;color:#fff;padding:10px 20px;border-radius:10px;font-size:0.82rem;font-family:Outfit,sans-serif;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,0.3);';
-  b.textContent = '⚠️ Showing cached data — server unreachable';
-  document.body.appendChild(b);
-  setTimeout(() => b.remove(), 6000);
-}
-
-document.getElementById('refreshBtn').addEventListener('click', loadTimetable);
-setInterval(loadTimetable, 600000);
-
-// ── Daily Changes Panel ────────────────────────────────────────────────────
-let dcExpanded = false;
-
-document.getElementById('dcToggleRow').addEventListener('click', () => {
-  dcExpanded = !dcExpanded;
-  document.getElementById('dcTableWrap').style.display = dcExpanded ? '' : 'none';
-  document.getElementById('dcChevron').textContent = dcExpanded ? '▲ hide' : '▼ show';
+document.getElementById('saveLSODefaultsBtn').addEventListener('click', () => {
+  localStorage.setItem('lso-name',   document.getElementById('lsoGlobalName').value.trim());
+  localStorage.setItem('lso-domain', document.getElementById('lsoGlobalDomain').value.trim());
+  localStorage.setItem('lso-cc',     document.getElementById('lsoGlobalCC').value.trim());
+  setStatus('lsoDefaultsStatus', '✓ Saved', 'green');
 });
 
-async function loadDailyChanges() {
-  const url = getServerUrl();
-  if (!url) return;
-  try {
-    const res = await fetch(`${url}/daily-changes`);
-    if (!res.ok) { document.getElementById('dailyChangesPanel').style.display = 'none'; return; }
-    const data = await res.json();
-    renderDailyChanges(data);
-  } catch(e) {
-    document.getElementById('dailyChangesPanel').style.display = 'none';
-  }
-}
+// ── Colour name manager (now includes LSO name column) ──────────────────────
+function refreshColourNameList() {
+  const list = document.getElementById('colourNameList');
+  const lsoNames = getLSONames();
 
-// currentDailyChanges holds the latest fetched data so tiles can reference it
-let currentDailyChanges = null;
-
-function renderDailyChanges(data) {
-  currentDailyChanges = data;
-  const panel = document.getElementById('dailyChangesPanel');
-  if (!data || !data.lsos || !Object.keys(data.lsos).length) {
-    panel.style.display = 'none';
-    currentDailyChanges = null;
-    applyChangesToTiles();
+  if (!currentGroupMap||currentGroupMap.size===0) {
+    list.innerHTML='<div class="no-colours-msg">No colours loaded yet — paste a timetable first.</div>';
     return;
   }
-  panel.style.display = '';
+  const sorted = [...currentGroupMap.entries()].sort((a,b)=>getLuminance(a[1].bg)-getLuminance(b[1].bg));
+  list.innerHTML = '';
 
-  // Absent pill
-  const absentPill = document.getElementById('dcAbsentPill');
-  if (data.absent && data.absent.length) {
-    absentPill.style.display = '';
-    absentPill.textContent = '⚠ Absent: ' + data.absent.join(', ');
-  } else {
-    absentPill.style.display = 'none';
+  // Header row
+  const header = document.createElement('div');
+  header.style.cssText = 'display:flex;gap:12px;padding:4px 14px;';
+  header.innerHTML = `<div style="width:32px;flex-shrink:0"></div><div style="width:92px;flex-shrink:0;font-family:DM Mono,monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Colour</div><div style="flex:1;font-family:DM Mono,monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Group Name</div><div style="flex:1;font-family:DM Mono,monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">LSO Name (this person's email)</div>`;
+  list.appendChild(header);
+
+  sorted.forEach(([key,{bg,fg}], i) => {
+    const row = document.createElement('div'); row.className='colour-name-row';
+    const swatch = document.createElement('div'); swatch.className='colour-swatch';
+    swatch.style.background=bg; if(fg) swatch.style.outline=`2px solid ${fg}`;
+    const hex = document.createElement('div'); hex.className='colour-hex';
+    hex.textContent=bg; hex.title=key;
+    const nameInput = document.createElement('input'); nameInput.className='colour-name-input';
+    nameInput.type='text'; nameInput.placeholder=`Name ${i+1}`; nameInput.value=colorNames[key]||''; nameInput.dataset.key=key;
+    nameInput.addEventListener('input', () => {
+      const val=nameInput.value.trim();
+      if(val) colorNames[key]=val; else delete colorNames[key];
+      const navBtn=document.querySelector(`.class-btn[data-ckey="${CSS.escape(key)}"]`);
+      if(navBtn){const lbl=navBtn.querySelector('.btn-label');if(lbl)lbl.textContent=val||`Name ${i+1}`;const pt=document.getElementById('ptitle-'+navBtn.dataset.target);if(pt)pt.textContent=val||`Name ${i+1}`;}
+    });
+
+    const lsoSep = document.createElement('div');
+    lsoSep.className = 'colour-lso-label'; lsoSep.textContent = '✉';
+    lsoSep.style.cssText = 'color:var(--muted);font-size:0.9rem;flex-shrink:0;';
+    const lsoInput = document.createElement('input'); lsoInput.className='colour-lso-input';
+    lsoInput.type='text'; lsoInput.placeholder=`e.g. Mr. Smith (leave blank for default)`;
+    lsoInput.value = lsoNames[key] || '';
+    lsoInput.dataset.key = key;
+
+    row.appendChild(swatch); row.appendChild(hex); row.appendChild(nameInput);
+    row.appendChild(lsoSep); row.appendChild(lsoInput);
+    list.appendChild(row);
+  });
+}
+
+document.getElementById('saveNamesBtn').addEventListener('click', async () => {
+  const lsoNames = {};
+  document.querySelectorAll('.colour-name-input').forEach(inp=>{
+    const val=inp.value.trim();
+    if(val) colorNames[inp.dataset.key]=val; else delete colorNames[inp.dataset.key];
+  });
+  document.querySelectorAll('.colour-lso-input').forEach(inp=>{
+    const val=inp.value.trim();
+    if(val) lsoNames[inp.dataset.key]=val;
+  });
+  localStorage.setItem('tt-colornames',JSON.stringify(colorNames));
+  saveLSONames(lsoNames);
+  if(currentGroupMap){ await pushNames(); setStatus('namesStatus','✓ Saved & pushed to server','green'); }
+  else setStatus('namesStatus','✓ Saved locally (paste a timetable to push to server)','green');
+});
+
+document.getElementById('clearNamesBtn').addEventListener('click', () => {
+  if(!confirm('Clear all saved names?')) return;
+  Object.keys(colorNames).forEach(k=>delete colorNames[k]);
+  localStorage.removeItem('tt-colornames');
+  localStorage.removeItem('tt-lso-names');
+  document.querySelectorAll('.colour-name-input').forEach(inp=>inp.value='');
+  document.querySelectorAll('.colour-lso-input').forEach(inp=>inp.value='');
+  setStatus('namesStatus','Names cleared','');
+});
+
+// ── Export / Import ────────────────────────────────────────────────────────
+// Keys to export/import
+const EXPORT_KEYS = [
+  'tt-server','tt-pw','tt-theme','tt-colornames','tt-lso-names',
+  'tt-email-overrides','tt-sharepoint','lso-name','lso-domain','lso-cc',
+  'tt-email-template','tt-email-name'
+];
+
+document.getElementById('exportSettingsBtn').addEventListener('click', () => {
+  const exportPanel = document.getElementById('exportPanel');
+  const importPanel = document.getElementById('importPanel');
+  importPanel.style.display = 'none';
+  exportPanel.style.display = 'block';
+  const obj = {};
+  EXPORT_KEYS.forEach(k => {
+    const v = localStorage.getItem(k);
+    if (v !== null) obj[k] = v;
+  });
+  document.getElementById('exportCode').value = JSON.stringify(obj, null, 2);
+});
+
+document.getElementById('closeExportBtn').addEventListener('click', () => {
+  document.getElementById('exportPanel').style.display = 'none';
+});
+
+document.getElementById('copyExportBtn').addEventListener('click', () => {
+  const ta = document.getElementById('exportCode');
+  navigator.clipboard.writeText(ta.value).then(() => {
+    setStatus('exportStatus', '✓ Copied to clipboard', 'green');
+  });
+});
+
+document.getElementById('importSettingsBtn').addEventListener('click', () => {
+  const exportPanel = document.getElementById('exportPanel');
+  const importPanel = document.getElementById('importPanel');
+  exportPanel.style.display = 'none';
+  importPanel.style.display = 'block';
+  document.getElementById('importCode').value = '';
+  document.getElementById('importStatus').textContent = '';
+});
+
+document.getElementById('closeImportBtn').addEventListener('click', () => {
+  document.getElementById('importPanel').style.display = 'none';
+});
+
+document.getElementById('doImportBtn').addEventListener('click', () => {
+  const raw = document.getElementById('importCode').value.trim();
+  if (!raw) { setStatus('importStatus', '✕ Paste the JSON first', 'red'); return; }
+  try {
+    const obj = JSON.parse(raw);
+    let count = 0;
+    EXPORT_KEYS.forEach(k => {
+      if (obj[k] !== undefined) {
+        localStorage.setItem(k, obj[k]);
+        count++;
+      }
+    });
+    // Reload inputs
+    serverUrlEl.value = localStorage.getItem('tt-server') || '';
+    adminPwEl.value   = localStorage.getItem('tt-pw') || '';
+    spUrlEl.value     = localStorage.getItem('tt-sharepoint') || '';
+    loadLSODefaults();
+    const theme = localStorage.getItem('tt-theme') || 'light';
+    html.setAttribute('data-theme', theme);
+    document.getElementById('toggleLabel').textContent = theme==='dark'?'Dark':'Light';
+    // Reload colornames
+    try { Object.assign(colorNames, JSON.parse(localStorage.getItem('tt-colornames')||'{}')); } catch(e){}
+    renderOverrideTable();
+    refreshColourNameList();
+    setStatus('importStatus', `✓ Imported ${count} setting(s) — everything restored`, 'green');
+    document.getElementById('importPanel').style.display = 'none';
+  } catch(e) {
+    setStatus('importStatus', `✕ Invalid JSON: ${e.message}`, 'red');
+  }
+});
+
+// ── Teacher Email Overrides ────────────────────────────────────────────────
+let emailOverrides = JSON.parse(localStorage.getItem('tt-email-overrides') || '{}');
+
+function codeToEmailAuto(code) {
+  const lower = code.toLowerCase();
+  return lower[lower.length-1] + lower.slice(0, lower.length-1);
+}
+
+function renderOverrideTable() {
+  const tbody = document.getElementById('overrideTbody');
+  tbody.innerHTML = '';
+  const entries = Object.entries(emailOverrides);
+  if (entries.length === 0) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td colspan="4" style="padding:12px 8px;font-size:0.82rem;color:var(--muted);font-style:italic;">No overrides yet — add one below.</td>`;
+    tbody.appendChild(tr);
+    return;
+  }
+  entries.forEach(([code, prefix]) => addOverrideRow(tbody, code, prefix));
+}
+
+function addOverrideRow(tbody, code='', prefix='') {
+  const tr = document.createElement('tr');
+  const autoPreview = code ? codeToEmailAuto(code) : '—';
+  tr.innerHTML = `
+    <td><input class="override-input code-input" type="text" value="${escapeHTML(code)}" placeholder="e.g. DEGOJ" maxlength="20" /></td>
+    <td style="text-align:center;color:var(--muted);font-size:0.9rem;">→</td>
+    <td>
+      <input class="override-input prefix-input" type="text" value="${escapeHTML(prefix)}" placeholder="e.g. jdegoldi" />
+      <div class="auto-preview">auto would be: <span class="gen">${escapeHTML(autoPreview)}</span></div>
+    </td>
+    <td><button class="override-del" title="Remove">✕</button></td>
+  `;
+  const codeIn   = tr.querySelector('.code-input');
+  const preview  = tr.querySelector('.auto-preview .gen');
+  const delBtn   = tr.querySelector('.override-del');
+  codeIn.addEventListener('input', () => {
+    const c = codeIn.value.trim().toUpperCase();
+    codeIn.value = c;
+    preview.textContent = c ? codeToEmailAuto(c) : '—';
+  });
+  delBtn.addEventListener('click', () => {
+    tr.remove();
+    const empRow = tbody.querySelector('td[colspan]');
+    if (empRow) empRow.closest('tr').remove();
+  });
+  const placeholder = tbody.querySelector('td[colspan]');
+  if (placeholder) placeholder.closest('tr').remove();
+  tbody.appendChild(tr);
+}
+
+document.getElementById('addOverrideBtn').addEventListener('click', () => {
+  const tbody = document.getElementById('overrideTbody');
+  addOverrideRow(tbody);
+  const rows = tbody.querySelectorAll('tr');
+  const lastRow = rows[rows.length - 1];
+  if (lastRow) lastRow.querySelector('.code-input').focus();
+});
+
+document.getElementById('saveOverridesBtn').addEventListener('click', () => {
+  const tbody = document.getElementById('overrideTbody');
+  const newOverrides = {};
+  tbody.querySelectorAll('tr').forEach(tr => {
+    const code   = (tr.querySelector('.code-input')?.value || '').trim().toUpperCase();
+    const prefix = (tr.querySelector('.prefix-input')?.value || '').trim().toLowerCase();
+    if (code && prefix) newOverrides[code] = prefix;
+  });
+  emailOverrides = newOverrides;
+  localStorage.setItem('tt-email-overrides', JSON.stringify(emailOverrides));
+  setStatus('overrideStatus', `✓ Saved ${Object.keys(emailOverrides).length} override(s)`, 'green');
+  renderOverrideTable();
+});
+
+document.getElementById('clearOverridesBtn').addEventListener('click', () => {
+  if (!confirm('Clear all email overrides?')) return;
+  emailOverrides = {};
+  localStorage.removeItem('tt-email-overrides');
+  renderOverrideTable();
+  setStatus('overrideStatus', 'Overrides cleared', '');
+});
+
+renderOverrideTable();
+
+// ── Actions ────────────────────────────────────────────────────────────────
+document.getElementById('exportKeysBtn').addEventListener('click', () => {
+  if(!currentGroupMap||currentGroupMap.size===0){setStatus('actionStatus','Paste a timetable first','red');return;}
+  const keys=[...currentGroupMap.entries()].map(([k,v])=>({key:k,bg:v.bg,fg:v.fg}));
+  navigator.clipboard.writeText(JSON.stringify(keys,null,2)).then(()=>setStatus('actionStatus','✓ Copied to clipboard','green'));
+});
+
+document.getElementById('clearServerBtn').addEventListener('click', async () => {
+  if(!confirm('Clear today\'s timetable from the server?')) return;
+  const url=getServer(); if(!url){setStatus('actionStatus','No server URL set','red');return;}
+  try {
+    await fetch(`${url}/timetable`,{method:'DELETE',headers:{'X-Admin-Password':getPw()}});
+    setStatus('actionStatus','✓ Server timetable cleared','green');
+  } catch(e){setStatus('actionStatus','✕ Could not reach server','red');}
+});
+
+// ── Colour helpers ─────────────────────────────────────────────────────────
+const EXCLUDED=new Set(['#ffffe1','#ffffe0','rgb(255,255,225)','rgb(255,255,224)']);
+function isExcluded(c){return EXCLUDED.has((c||'').toLowerCase().replace(/\s/g,''));}
+function isWhiteish(r,g,b){return r>235&&g>235&&b>235;}
+function isBlackish(r,g,b){return r<20&&g<20&&b<20;}
+function hexToRgb(hex){hex=hex.replace('#','');if(hex.length===3)hex=hex.split('').map(c=>c+c).join('');if(hex.length!==6)return null;return{r:parseInt(hex.slice(0,2),16),g:parseInt(hex.slice(2,4),16),b:parseInt(hex.slice(4,6),16)};}
+const NAMED={black:'0,0,0',white:'255,255,255',red:'255,0,0',lime:'0,255,0',blue:'0,0,255',yellow:'255,255,0',cyan:'0,255,255',magenta:'255,0,255',silver:'192,192,192',gray:'128,128,128',grey:'128,128,128',maroon:'128,0,0',olive:'128,128,0',green:'0,128,0',purple:'128,0,128',teal:'0,128,128',navy:'0,0,128',orange:'255,165,0',coral:'255,127,80',salmon:'250,128,114',khaki:'240,230,140',violet:'238,130,238',indigo:'75,0,130',turquoise:'64,224,208',tan:'210,180,140',aqua:'0,255,255',fuchsia:'255,0,255'};
+function normalizeColor(s){if(!s)return null;s=s.trim().replace(/['"]/g,'');if(['auto','transparent','none','windowtext','window','inherit','initial',''].includes(s.toLowerCase()))return null;const rm=s.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);if(rm){const[r,g,b]=[+rm[1],+rm[2],+rm[3]];return isWhiteish(r,g,b)?null:`rgb(${r},${g},${b})`;}if(s.startsWith('#')){const rgb=hexToRgb(s);if(!rgb)return null;return isWhiteish(rgb.r,rgb.g,rgb.b)?null:`#${s.replace('#','').toLowerCase().slice(0,6)}`;}const entry=NAMED[s.toLowerCase()];if(entry){const[r,g,b]=entry.split(',').map(Number);return isWhiteish(r,g,b)?null:`rgb(${r},${g},${b})`;}if(['white','fff','ffffff'].includes(s.toLowerCase()))return null;return s;}
+function normalizeTextColor(s){if(!s)return null;s=s.trim().replace(/['"]/g,'');if(['auto','windowtext','window','inherit','initial',''].includes(s.toLowerCase()))return null;const rm=s.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);if(rm){const[r,g,b]=[+rm[1],+rm[2],+rm[3]];return isBlackish(r,g,b)?null:`rgb(${r},${g},${b})`;}if(s.startsWith('#')){const rgb=hexToRgb(s);if(!rgb)return null;return isBlackish(rgb.r,rgb.g,rgb.b)?null:`#${s.replace('#','').toLowerCase().slice(0,6)}`;}if(['black','000','000000'].includes(s.toLowerCase()))return null;const entry=NAMED[s.toLowerCase()];if(entry){const[r,g,b]=entry.split(',').map(Number);return isBlackish(r,g,b)?null:`rgb(${r},${g},${b})`;}return null;}
+function extractBg(style){if(!style)return null;for(const p of[/mso-highlight\s*:\s*([^;]+)/i,/background-color\s*:\s*([^;]+)/i,/background\s*:\s*([^;]+)/i]){const m=style.match(p);if(m){const val=m[1].trim();const c=normalizeColor(val.split(/\s+/)[0])||normalizeColor(val);if(c)return c;}}return null;}
+function extractFg(style){if(!style)return null;const m=style.match(/(?:^|;)\s*color\s*:\s*([^;]+)/i);return m?normalizeTextColor(m[1].trim()):null;}
+function cellColors(td,ccm,fgcm){let bg=extractBg(td.getAttribute('style')||'');if(!bg){for(const cls of(td.getAttribute('class')||'').split(/\s+/))if(ccm[cls]){bg=ccm[cls];break;}}if(!bg){const a=td.getAttribute('bgcolor');if(a)bg=normalizeColor(a);}if(!bg){const tr=td.closest('tr');if(tr){bg=extractBg(tr.getAttribute('style')||'');if(!bg){const a=tr.getAttribute('bgcolor');if(a)bg=normalizeColor(a);}if(!bg){for(const cls of(tr.getAttribute('class')||'').split(/\s+/))if(ccm[cls]){bg=ccm[cls];break;}}}}let fg=extractFg(td.getAttribute('style')||'');if(!fg){for(const cls of(td.getAttribute('class')||'').split(/\s+/))if(fgcm[cls]){fg=fgcm[cls];break;}}return{bg:bg||null,fg:fg||null};}
+function getLuminance(c){const n=(c||'').match(/\d+/g);return(!n||n.length<3)?999:0.299*+n[0]+0.587*+n[1]+0.114*+n[2];}
+function escapeHTML(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ── State ──────────────────────────────────────────────────────────────────
+const colorNames = JSON.parse(localStorage.getItem('tt-colornames')||'{}');
+let currentGroupMap = null;
+
+async function pushToServer(groupMap) {
+  const url=getServer();
+  if(!url){setMsg('⚠ No server URL — go to Settings tab.','err');return;}
+  const mapObj={};
+  groupMap.forEach((val,key)=>{mapObj[key]=JSON.parse(JSON.stringify(val));});
+  try {
+    const res=await fetch(`${url}/timetable`,{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Password':getPw()},body:JSON.stringify({map:mapObj,names:{...colorNames}})});
+    if(res.ok) document.getElementById('statusBar').textContent=`${groupMap.size} groups found · pushed to server · viewers can see it now`;
+    else if(res.status===401) setMsg('✕ Wrong password — check Settings tab.','err');
+    else setMsg(`✕ Server error ${res.status}`,'err');
+  } catch(e){setMsg('✕ Could not reach server — check Settings tab.','err');}
+}
+
+async function pushNames() {
+  const url=getServer(); if(!url||!currentGroupMap) return;
+  try { await fetch(`${url}/names`,{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Password':getPw()},body:JSON.stringify({names:{...colorNames}})}); } catch(e){}
+}
+
+function setMsg(msg,type) {
+  const el=document.getElementById('pasteStatus');
+  el.textContent=msg;
+  el.className='paste-status'+(type==='err'?' err':type==='ok'?' ok':'');
+}
+
+// ── Paste ──────────────────────────────────────────────────────────────────
+const pasteZone=document.getElementById('pasteZone');
+const pasteWrap=document.getElementById('pasteWrap');
+const appWrap=document.getElementById('appWrap');
+const classNav=document.getElementById('classNav');
+const contentArea=document.getElementById('contentArea');
+
+pasteZone.addEventListener('click',()=>pasteZone.focus());
+document.addEventListener('paste',handlePaste);
+
+document.getElementById('clearBtn').addEventListener('click',()=>{
+  appWrap.classList.remove('visible');
+  pasteWrap.style.display='';
+  classNav.innerHTML=''; contentArea.innerHTML='';
+  document.getElementById('statusBar').textContent='';
+  document.getElementById('pasteStatus').textContent='';
+  currentGroupMap=null;
+});
+
+function handlePaste(e) {
+  const h=e.clipboardData.getData('text/html');
+  if(h&&(h.includes('<td')||h.includes('<TD'))) processHTMLData(h);
+  else setMsg('No table data — copy directly from Excel (Ctrl+A, Ctrl+C).','err');
+}
+
+function processHTMLData(htmlStr) {
+  const REF_ROW=2;
+  const parser=new DOMParser();
+  const doc=parser.parseFromString(htmlStr,'text/html');
+  const ccm={},fgcm={};
+  doc.querySelectorAll('style').forEach(el=>{
+    const re=/\.([a-zA-Z0-9_-]+)\s*\{([^}]+)\}/g;let m;
+    while((m=re.exec(el.textContent))!==null){const bg=extractBg(m[2]);if(bg)ccm[m[1]]=bg;const fg=extractFg(m[2]);if(fg)fgcm[m[1]]=fg;}
+  });
+  const rows=doc.querySelectorAll('tr');
+  if(!rows.length){setMsg('No rows found.','err');return;}
+  const grid=[];
+  rows.forEach(tr=>{const row=[];tr.querySelectorAll('td,th').forEach(td=>{const colspan=parseInt(td.getAttribute('colspan')||'1',10);const text=td.textContent.trim();const{bg,fg}=cellColors(td,ccm,fgcm);for(let s=0;s<colspan;s++)row.push({text,bg,fg});});grid.push(row);});
+  const numCols=Math.max(...grid.map(r=>r.length));
+  const refRow=grid[REF_ROW]||[];
+  const periodNums=[];
+  for(let c=0;c<numCols;c++){const txt=refRow[c]?refRow[c].text:'';const n=parseInt(txt,10);periodNums[c]=(n>=1&&n<=6)?n:null;}
+  let dataStartCol=null;
+  outerLoop:for(let c=0;c<numCols;c++)for(let r=0;r<grid.length;r++){if(r===REF_ROW)continue;const cell=grid[r][c];if(cell&&cell.bg&&!isExcluded(cell.bg)){dataStartCol=c;break outerLoop;}}
+  if(dataStartCol===null){setMsg('No coloured cells found.','err');return;}
+  const groupMap=new Map();
+  for(let r=0;r<grid.length;r++){
+    if(r===REF_ROW)continue;
+    const row=grid[r];
+    for(let c=dataStartCol;c<numCols;c+=3){
+      const c0=row[c]||{text:'',bg:null,fg:null};const c1=row[c+1]||{text:'',bg:null,fg:null};const c2=row[c+2]||{text:'',bg:null,fg:null};
+      const bg=c0.bg;if(!bg||isExcluded(bg))continue;
+      const d1=c0.text,d2=c1.text,d3=c2.text;if(!d1&&!d2&&!d3)continue;
+      const fg=c0.fg||null;const key=bg+'||'+(fg||'');
+      const periodNum=periodNums[c];if(!periodNum)continue;
+      if(!groupMap.has(key))groupMap.set(key,{bg,fg,slots:{}});
+      const grp=groupMap.get(key);
+      if(!grp.slots[periodNum])grp.slots[periodNum]=[];
+      grp.slots[periodNum].push({d1,d2,d3});
+    }
+  }
+  if(groupMap.size===0){setMsg('No coloured groups found.','err');return;}
+
+  // ── Save column→colour map for Power Automate ──────────────────────────
+  // Records which column index maps to which colour key, so PA can send
+  // values-only data and the server can reconstruct colour groups by position.
+  const colMap = {}; // { colIndex: { key, bg, fg, periodNum } }
+  for(let c=dataStartCol;c<numCols;c+=3){
+    // Find the first non-excluded bg at this column across all rows
+    for(let r=0;r<grid.length;r++){
+      if(r===REF_ROW)continue;
+      const row=grid[r];
+      const c0=row[c]||{text:'',bg:null,fg:null};
+      if(c0.bg&&!isExcluded(c0.bg)){
+        const key=c0.bg+'||'+(c0.fg||'');
+        colMap[c]={key,bg:c0.bg,fg:c0.fg||null,periodNum:periodNums[c]};
+        break;
+      }
+    }
+  }
+  localStorage.setItem('tt-col-map', JSON.stringify(colMap));
+
+  // Push colMap to server so Power Automate can fetch it server-side if needed
+  const colMapUrl = getServer();
+  const colMapPw  = localStorage.getItem('tt-pw');
+  if (colMapUrl && colMapPw) {
+    fetch(`${colMapUrl}/colmap`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': colMapPw },
+      body: JSON.stringify({ colMap })
+    }).catch(() => {}); // silent — colmap push is best-effort
   }
 
-  // Date pill
-  if (data.date) document.getElementById('dcDatePill').textContent = data.date;
+  updatePASection();
 
-  // Notes
-  const notesEl = document.getElementById('dcNotes');
-  if (data.notes) { notesEl.style.display=''; notesEl.textContent = data.notes; }
-  else notesEl.style.display = 'none';
+  currentGroupMap=groupMap;
+  setMsg('Parsed — pushing to server…','');
+  pushToServer(groupMap);
+  renderApp(groupMap);
+}
+
+// ── Render ─────────────────────────────────────────────────────────────────
+function renderApp(groupMap) {
+  classNav.innerHTML=''; contentArea.innerHTML='';
+  const sorted=[...groupMap.entries()].sort((a,b)=>getLuminance(a[1].bg)-getLuminance(b[1].bg));
+  let firstId=null;
+  sorted.forEach(([key,{bg,fg,slots}],gi)=>{
+    const id='grp'+gi; if(gi===0)firstId=id;
+    const defaultName=`Name ${gi+1}`;
+    const savedName=colorNames[key]||defaultName;
+    const btn=document.createElement('button');
+    btn.className='class-btn'; btn.dataset.target=id; btn.dataset.ckey=key;
+    const dot=document.createElement('span'); dot.className='btn-dot'; dot.style.background=bg; if(fg)dot.style.borderColor=fg;
+    const label=document.createElement('span'); label.className='btn-label'; label.contentEditable='false'; label.spellcheck=false; label.textContent=savedName; label.title='Double-click to rename';
+    function startEditing(e){e.stopPropagation();label.contentEditable='true';label.classList.add('editing');label.focus();const range=document.createRange();range.selectNodeContents(label);range.collapse(false);const sel=window.getSelection();sel.removeAllRanges();sel.addRange(range);}
+    function stopEditing(){label.contentEditable='false';label.classList.remove('editing');const name=label.textContent.trim()||defaultName;label.textContent=name;if(name!==defaultName)colorNames[key]=name;else delete colorNames[key];localStorage.setItem('tt-colornames',JSON.stringify(colorNames));const pt=document.getElementById('ptitle-'+id);if(pt)pt.textContent=name;pushNames();}
+    label.addEventListener('input',()=>{const pt=document.getElementById('ptitle-'+id);if(pt)pt.textContent=label.textContent.trim()||defaultName;});
+    label.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();label.blur();}if(e.key==='Escape'){label.textContent=colorNames[key]||defaultName;label.blur();}e.stopPropagation();});
+    label.addEventListener('blur',stopEditing);
+    label.addEventListener('click',e=>{if(label.contentEditable==='true')e.stopPropagation();});
+    btn.appendChild(dot); btn.appendChild(label);
+    btn.addEventListener('click',()=>activateGroup(id));
+    btn.addEventListener('dblclick',startEditing);
+    classNav.appendChild(btn);
+    const panel=document.createElement('div'); panel.className='panel'; panel.id=id;
+    const periodRows=[1,2,3,4,5,6].map(p=>{
+      const entries=slots[p];
+      if(!entries||entries.length===0)return`<div class="period-row empty-row"><div class="accent-bar" style="background:${bg}"></div><div class="cell-period">P${p}</div><div class="cell-dash">—</div><div class="cell-data empty" style="grid-column:4/-1"></div></div>`;
+      return entries.map(({d1,d2,d3})=>`<div class="period-row"><div class="accent-bar" style="background:${bg}"></div><div class="cell-period has-data">P${p}</div><div class="cell-dash">—</div><div class="cell-data${d1?'':' empty'}" data-copy="${escapeHTML(d1||'')}">${escapeHTML(d1||'')}</div><div class="cell-data${d2?'':' empty'}" data-copy="${escapeHTML(d2||'')}">${escapeHTML(d2||'')}</div><div class="cell-data${d3?'':' empty'}" data-copy="${escapeHTML(d3||'')}">${escapeHTML(d3||'')}</div></div>`).join('');
+    }).join('');
+    panel.innerHTML=`<div class="panel-header"><div class="panel-colour-bar" style="background:${bg}"></div><div><div class="panel-title" id="ptitle-${id}">${escapeHTML(savedName)}</div><div class="panel-subtitle">${escapeHTML(bg)}${fg?' · '+escapeHTML(fg):''}</div></div><div class="panel-actions"><button class="copy-btn">Copy P1–P6</button></div></div><div class="period-grid">${periodRows}</div>`;
+    panel.querySelector('.copy-btn').addEventListener('click',function(){
+      const b=this; const grp=currentGroupMap.get(key); if(!grp)return;
+      const text=[1,2,3,4,5,6].map(p=>{const ent=grp.slots[p];if(!ent||ent.length===0)return`P${p} - \t\t`;return ent.map(({d1,d2,d3})=>`P${p} - ${d1}\t${d2}\t${d3}`).join('\n');}).join('\n');
+      navigator.clipboard.writeText(text).then(()=>flash(b)).catch(()=>{const ta=Object.assign(document.createElement('textarea'),{value:text,style:'position:fixed;opacity:0'});document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);flash(b);});
+    });
+    contentArea.appendChild(panel);
+  });
+  contentArea.addEventListener('click',e=>{
+    const cell=e.target.closest('.cell-data:not(.empty)');if(!cell)return;
+    const text=cell.dataset.copy;if(!text)return;
+    navigator.clipboard.writeText(text).then(()=>{cell.classList.add('flash-copy');setTimeout(()=>cell.classList.remove('flash-copy'),1200);}).catch(()=>{});
+  });
+  pasteWrap.style.display='none';
+  appWrap.classList.add('visible');
+  if(firstId)activateGroup(firstId);
+}
+
+function activateGroup(id){
+  document.querySelectorAll('.class-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  const btn=document.querySelector(`.class-btn[data-target="${id}"]`);
+  const panel=document.getElementById(id);
+  if(btn)btn.classList.add('active');
+  if(panel)panel.classList.add('active');
+}
+function flash(btn){const orig=btn.textContent;btn.textContent='✓ Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copied');},2000);}
+
+// ── Email Tab ──────────────────────────────────────────────────────────────
+const DEFAULT_EMAIL_TEMPLATE = `LSO {DATE}\tGood morning teachers,
+
+Today I will be attending and supporting the students within your classes.
+
+{PERIODS}
+Please introduce me to the students as {NAME}.
+
+I look forward to working with you today and providing effective support to our students.`;
+
+function getEmailTemplate() { return localStorage.getItem('tt-email-template') || DEFAULT_EMAIL_TEMPLATE; }
+
+function buildPeriodsText() {
+  const lines = [];
+  for (let p = 1; p <= 6; p++) {
+    const val = document.querySelector(`.period-val[data-p="${p}"]`)?.value.trim() || '';
+    lines.push(`P${p} - ${val}`);
+  }
+  return lines.join('\n');
+}
+
+function buildEmailPreview() {
+  const name     = document.getElementById('emailDisplayName').value.trim() || '(your name)';
+  const date     = document.getElementById('emailDate').value.trim() || '';
+  const periods  = buildPeriodsText();
+  const template = getEmailTemplate();
+  return template.replace('{DATE}', date).replace('{NAME}', name).replace('{PERIODS}', periods);
+}
+
+function updateEmailPreview() {
+  const el = document.getElementById('emailPreview');
+  if (el) el.textContent = buildEmailPreview();
+}
+
+function initEmailTab() {
+  const today = new Date();
+  document.getElementById('emailDate').value = today.toLocaleDateString('en-AU',{day:'2-digit',month:'2-digit',year:'2-digit'});
+  const savedName = localStorage.getItem('tt-email-name') || '';
+  document.getElementById('emailDisplayName').value = savedName;
+  document.getElementById('emailTemplate').value = getEmailTemplate();
+  updateEmailPreview();
+  renderEmailHistory();
+}
+
+document.getElementById('emailDisplayName').addEventListener('input', () => {
+  localStorage.setItem('tt-email-name', document.getElementById('emailDisplayName').value.trim());
+  updateEmailPreview();
+});
+document.querySelectorAll('.period-val').forEach(el => el.addEventListener('input', updateEmailPreview));
+
+document.getElementById('emailCopyBtn').addEventListener('click', () => {
+  const text = buildEmailPreview();
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('emailCopyBtn');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+  });
+});
+
+document.getElementById('emailSaveHistoryBtn').addEventListener('click', () => {
+  const text = buildEmailPreview();
+  const history = JSON.parse(localStorage.getItem('tt-email-history') || '[]');
+  history.unshift({ ts: new Date().toISOString(), text });
+  if (history.length > 20) history.splice(20);
+  localStorage.setItem('tt-email-history', JSON.stringify(history));
+  renderEmailHistory();
+  setStatus('emailStatus', '✓ Saved to history', 'green');
+});
+
+document.getElementById('emailClearBtn').addEventListener('click', () => {
+  document.querySelectorAll('.period-val').forEach(el => el.value = '');
+  updateEmailPreview();
+});
+
+document.getElementById('saveTemplateBtn').addEventListener('click', () => {
+  localStorage.setItem('tt-email-template', document.getElementById('emailTemplate').value);
+  updateEmailPreview();
+  setStatus('emailStatus', '✓ Template saved', 'green');
+});
+
+document.getElementById('resetTemplateBtn').addEventListener('click', () => {
+  if (!confirm('Reset to default template?')) return;
+  localStorage.removeItem('tt-email-template');
+  document.getElementById('emailTemplate').value = DEFAULT_EMAIL_TEMPLATE;
+  updateEmailPreview();
+});
+
+function renderEmailHistory() {
+  const el = document.getElementById('emailHistoryList');
+  const history = JSON.parse(localStorage.getItem('tt-email-history') || '[]');
+  if (!history.length) { el.innerHTML = '<div style="color:var(--muted);font-size:0.82rem;padding:4px 0">No saved emails yet.</div>'; return; }
+  el.innerHTML = '';
+  history.forEach((item, i) => {
+    const date = new Date(item.ts).toLocaleDateString('en-AU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+    const preview = item.text.replace(/\n/g,' ').slice(0,60) + '…';
+    const row = document.createElement('div');
+    row.className = 'email-history-item';
+    row.innerHTML = `<span class="email-history-date">${date}</span><span class="email-history-preview">${escapeHTML(preview)}</span><button class="email-history-del" title="Delete" onclick="event.stopPropagation()">✕</button>`;
+    row.addEventListener('click', e => {
+      if (e.target.classList.contains('email-history-del')) {
+        const h = JSON.parse(localStorage.getItem('tt-email-history') || '[]');
+        h.splice(i, 1);
+        localStorage.setItem('tt-email-history', JSON.stringify(h));
+        renderEmailHistory();
+        return;
+      }
+      document.getElementById('emailPreview').textContent = item.text;
+    });
+    el.appendChild(row);
+  });
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  if (btn.dataset.tab === 'emailTab') btn.addEventListener('click', () => setTimeout(initEmailTab, 50));
+});
+initEmailTab();
+loadLSODefaults();
+
+// ── Daily Changes ──────────────────────────────────────────────────────────
+let dcImageBase64 = null;
+let dcImageMime   = null;
+let dcExtracted   = null; // { absent:[], lsos:{ name: { p1,p2,p3,p4,p5,p6 } }, raw }
+
+const dcDrop    = document.getElementById('dcDropZone');
+const dcFile    = document.getElementById('dcFileInput');
+const dcPreview = document.getElementById('dcPreviewWrap');
+const dcImg     = document.getElementById('dcPreviewImg');
+const dcReadBtn = document.getElementById('dcReadBtn');
+const dcPubBtn  = document.getElementById('dcPublishBtn');
+const dcStatus  = document.getElementById('dcStatus');
+
+// Drop zone
+dcDrop.addEventListener('click', () => dcFile.click());
+dcDrop.addEventListener('dragover', e => { e.preventDefault(); dcDrop.style.borderColor = 'var(--text)'; });
+dcDrop.addEventListener('dragleave', () => { dcDrop.style.borderColor = 'var(--border)'; });
+dcDrop.addEventListener('drop', e => { e.preventDefault(); dcDrop.style.borderColor = 'var(--border)'; const f = e.dataTransfer.files[0]; if (f) loadImage(f); });
+dcFile.addEventListener('change', () => { if (dcFile.files[0]) loadImage(dcFile.files[0]); });
+document.getElementById('dcClearImg').addEventListener('click', clearDcImage);
+
+function loadImage(file) {
+  if (!file.type.startsWith('image/')) { dcSetStatus('⚠ Please upload an image file.'); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    dcImageBase64 = e.target.result.split(',')[1];
+    dcImageMime   = file.type;
+    dcImg.src     = e.target.result;
+    dcPreview.style.display = '';
+    dcDrop.style.display    = 'none';
+    dcReadBtn.disabled      = false;
+    dcSetStatus('Image loaded — reading with AI…');
+    // Auto-trigger read immediately
+    setTimeout(() => dcReadBtn.click(), 100);
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearDcImage() {
+  dcImageBase64 = null; dcImageMime = null;
+  dcPreview.style.display = 'none';
+  dcDrop.style.display    = '';
+  dcReadBtn.disabled      = true;
+  dcPubBtn.disabled       = true;
+  dcExtracted             = null;
+  document.getElementById('dcResultSection').style.display = 'none';
+  dcFile.value = '';
+  dcSetStatus('');
+}
+
+// Read with Claude
+dcReadBtn.addEventListener('click', async () => {
+  if (!dcImageBase64) return;
+  const url = getServer();
+  if (!url) { dcSetStatus('⚠ No server URL — go to Settings tab first.'); return; }
+
+  dcReadBtn.disabled = true;
+  dcSetStatus('🤖 Sending image to server… this may take 10–20 seconds.');
+
+  try {
+    const res = await fetch(`${url}/read-image`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Password': getPw() },
+      body: JSON.stringify({ imageBase64: dcImageBase64, imageMime: dcImageMime })
+    });
+
+    if (res.status === 503) {
+      const d = await res.json();
+      dcSetStatus('⚠ ' + (d.error || 'OPENROUTER_API_KEY not configured on server.'));
+      dcReadBtn.disabled = false;
+      return;
+    }
+    if (res.status === 401) { dcSetStatus('✕ Wrong password.'); dcReadBtn.disabled = false; return; }
+    if (!res.ok) {
+      let msg = `Server error ${res.status}`;
+      try { const d = await res.json(); if (d.error) msg = d.error; } catch(e) {}
+      dcSetStatus('✕ ' + msg); dcReadBtn.disabled = false; return;
+    }
+
+    const data = await res.json();
+    const text = data.text || '';
+
+    try {
+      const clean = text.replace(/```json|```/g,'').trim();
+      dcExtracted = JSON.parse(clean);
+      dcExtracted.raw = text;
+      renderDcResult(dcExtracted);
+      dcPubBtn.disabled = false;
+      dcSetStatus('✓ Extraction complete — review the table below, then click Publish.');
+    } catch(e) {
+      dcSetStatus('⚠ Could not parse Claude\'s response. Try again or check the raw text below.');
+      document.getElementById('dcResultSection').style.display = '';
+      document.getElementById('dcRawText').textContent = text;
+      document.getElementById('dcChangesTable').innerHTML = '';
+      document.getElementById('dcAbsentBar').style.display = 'none';
+    }
+  } catch(e) {
+    dcSetStatus('✕ Network error: ' + e.message);
+  }
+  dcReadBtn.disabled = false;
+});
+
+function renderDcResult(data) {
+  const section = document.getElementById('dcResultSection');
+  section.style.display = '';
+
+  // Absent bar
+  const absentBar = document.getElementById('dcAbsentBar');
+  if (data.absent && data.absent.length) {
+    absentBar.style.display = '';
+    document.getElementById('dcAbsentNames').textContent = data.absent.join(', ');
+  } else {
+    absentBar.style.display = 'none';
+  }
+
+  // Raw text
+  document.getElementById('dcRawText').textContent = data.raw || '';
 
   // Build table
-  const lsos = data.lsos;
+  const lsos = data.lsos || {};
   const names = Object.keys(lsos);
   const periods = ['p1','p2','p3','p4','p5','p6'];
-  const absent = new Set(data.absent || []);
 
-  const headerStyle = `padding:7px 12px;text-align:left;border:1px solid var(--border);
-    font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:.06em;
-    text-transform:uppercase;color:var(--muted);background:var(--soft);`;
-  const cellStyle = `padding:7px 12px;border:1px solid var(--border);vertical-align:top;`;
+  if (!names.length) {
+    document.getElementById('dcChangesTable').innerHTML = '<p style="color:var(--muted);font-size:.83rem;">No LSO assignments found in image.</p>';
+    return;
+  }
 
-  let html = `<thead><tr>
-    <th style="${headerStyle}">LSO</th>
-    ${periods.map(p=>`<th style="${headerStyle}">${p.toUpperCase()}</th>`).join('')}
-  </tr></thead><tbody>`;
+  let html = `<table style="border-collapse:collapse;width:100%;font-size:.8rem;">
+    <thead><tr style="background:var(--soft);">
+      <th style="padding:8px 12px;text-align:left;border:1px solid var(--border);font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);">LSO</th>
+      ${periods.map(p=>`<th style="padding:8px 12px;text-align:left;border:1px solid var(--border);font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);">${p.toUpperCase()}</th>`).join('')}
+    </tr></thead><tbody>`;
 
   names.forEach(name => {
-    const isAbsent = absent.has(name);
-    const rowBg = isAbsent ? 'background:#fef3c7;' : '';
-    html += `<tr style="${rowBg}">
-      <td style="${cellStyle}font-weight:700;">
-        ${name}${isAbsent ? ' <span style="font-size:0.68rem;color:#92400e;font-weight:400;">(absent)</span>' : ''}
-      </td>
+    const isAbsent = (data.absent||[]).includes(name);
+    const rowStyle = isAbsent ? 'background:#fef3c7;' : '';
+    html += `<tr style="${rowStyle}">
+      <td style="padding:8px 12px;border:1px solid var(--border);font-weight:700;">${name}${isAbsent?' <span style="color:#92400e;font-size:.7rem;">(absent)</span>':''}</td>
       ${periods.map(p => {
-        const val = (lsos[name] && lsos[name][p]) || '';
-        const changed = !!val;
-        return `<td style="${cellStyle}font-size:0.78rem;${changed ? 'font-weight:600;color:var(--text);' : 'color:var(--muted);'}">${val || '—'}</td>`;
+        const val = lsos[name][p] || '';
+        return `<td style="padding:6px 12px;border:1px solid var(--border);">
+          <input value="${escHtml(val)}" data-lso="${escHtml(name)}" data-period="${p}"
+            style="width:100%;background:transparent;border:none;outline:none;font-family:'Outfit',sans-serif;font-size:.78rem;color:var(--text);min-width:120px;"
+            placeholder="—" />
+        </td>`;
       }).join('')}
     </tr>`;
   });
-  html += '</tbody>';
-  document.getElementById('dcTable').innerHTML = html;
 
-  // Apply change badges to tiles
-  applyChangesToTiles();
-}
+  html += '</tbody></table>';
+  document.getElementById('dcChangesTable').innerHTML = html;
 
-// Build a lookup: lowercase LSO name → their changes data
-function getDcLookup() {
-  if (!currentDailyChanges || !currentDailyChanges.lsos) return {};
-  const lookup = {};
-  for (const [name, periods] of Object.entries(currentDailyChanges.lsos)) {
-    lookup[name.toLowerCase()] = { name, periods };
-  }
-  return lookup;
-}
-
-// After tiles are rendered, stamp a "changes today" ribbon onto matching tiles
-function applyChangesToTiles() {
-  // Remove any existing change overlays first
-  document.querySelectorAll('.dc-overlay').forEach(el => el.remove());
-  if (!currentDailyChanges) return;
-
-  const absent = new Set((currentDailyChanges.absent || []).map(n => n.toLowerCase()));
-  const lookup = getDcLookup();
-
-  document.querySelectorAll('.tile[data-name]').forEach(tile => {
-    const tileName = (tile.dataset.name || '').toLowerCase();
-    const match = lookup[tileName];
-    const isAbsent = absent.has(tileName);
-
-    if (!match && !isAbsent) return;
-
-    // Count how many periods have changes
-    const changeCount = match
-      ? Object.values(match.periods).filter(v => v).length
-      : 0;
-
-    const ribbon = document.createElement('div');
-    ribbon.className = 'dc-overlay';
-    ribbon.style.cssText = `
-      position:absolute;top:7px;right:7px;
-      font-family:'DM Mono',monospace;font-size:0.6rem;font-weight:700;
-      padding:2px 7px;border-radius:6px;letter-spacing:0.04em;
-      pointer-events:none;z-index:2;
-    `;
-    if (isAbsent) {
-      ribbon.style.background = '#fef3c7';
-      ribbon.style.color = '#92400e';
-      ribbon.style.border = '1px solid #fcd34d';
-      ribbon.textContent = 'ABSENT';
-    } else {
-      ribbon.style.background = '#dbeafe';
-      ribbon.style.color = '#1e40af';
-      ribbon.style.border = '1px solid #93c5fd';
-      ribbon.textContent = changeCount + (changeCount === 1 ? ' change' : ' changes');
-    }
-    // Tile needs position:relative — add it if missing
-    if (getComputedStyle(tile).position === 'static') tile.style.position = 'relative';
-    tile.appendChild(ribbon);
-  });
-}
-
-// Inject change rows into detail view when it's open for an LSO with changes
-function injectDcIntoDetail(name) {
-  if (!currentDailyChanges) return;
-  const lookup = getDcLookup();
-  const match = lookup[(name || '').toLowerCase()];
-  const absent = new Set((currentDailyChanges.absent || []).map(n => n.toLowerCase()));
-  const isAbsent = absent.has((name || '').toLowerCase());
-  if (!match && !isAbsent) return;
-
-  const inner = document.getElementById('detailInner');
-  if (!inner) return;
-  if (inner.querySelector('.dc-detail-block')) return;
-
-  const block = document.createElement('div');
-  block.className = 'dc-detail-block';
-  block.style.cssText = `
-    margin:16px 0 0;padding:14px 18px;
-    background:${isAbsent ? '#fef3c7' : '#eff6ff'};
-    border:1px solid ${isAbsent ? '#fcd34d' : '#93c5fd'};
-    border-radius:12px;
-  `;
-
-  let inner2 = `<div style="font-weight:700;font-size:0.82rem;margin-bottom:${isAbsent && (!match || !Object.values(match.periods||{}).some(Boolean)) ? '0' : '10px'};color:${isAbsent ? '#92400e' : '#1e40af'};">
-    📌 Today's Changes${isAbsent ? ' — <span style="color:#b45309;">ABSENT TODAY</span>' : ''}
-  </div>`;
-
-  if (match) {
-    const periods = ['p1','p2','p3','p4','p5','p6'];
-    const hasPeriods = periods.some(p => match.periods[p]);
-    if (hasPeriods) {
-      inner2 += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">`;
-      periods.forEach(p => {
-        const val = match.periods[p];
-        inner2 += `<div style="background:white;border:1px solid ${isAbsent ? '#fcd34d' : '#bfdbfe'};border-radius:8px;padding:8px 10px;">
-          <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:#6b7280;margin-bottom:3px;">${p.toUpperCase()}</div>
-          <div style="font-size:0.78rem;font-weight:${val?'600':'400'};color:${val?'#111':'#9ca3af'};">${val || '—'}</div>
-        </div>`;
-      });
-      inner2 += `</div>`;
-    }
-  }
-
-  block.innerHTML = inner2;
-
-  // Insert after the period-grid
-  const periodGrid = inner.querySelector('.period-grid');
-  if (periodGrid && periodGrid.nextSibling) {
-    inner.insertBefore(block, periodGrid.nextSibling);
-  } else if (periodGrid) {
-    inner.appendChild(block);
-  } else {
-    inner.insertBefore(block, inner.firstChild);
-  }
-}
-
-// Load daily changes on startup and every 5 minutes
-loadDailyChanges();
-setInterval(loadDailyChanges, 300000);
-
-// ── Tiles ──────────────────────────────────────────────────────────────────
-function renderTiles(groupMap, names) {
-  const grid = document.getElementById('tileGrid');
-  grid.innerHTML = '';
-  const lsoNames = getLSONames();
-  const duringSchool = !isWeekend && (() => {
-    const nm = nowMinutes();
-    return nm >= timeToMinutes('08:50') && nm <= timeToMinutes('15:30');
-  })();
-  const sorted = [...groupMap.entries()].sort((a,b)=>getLuminance(a[1].bg)-getLuminance(b[1].bg));
-  sorted.forEach(([key,{bg,fg,slots}],gi) => {
-    const name = names[key]||`Name ${gi+1}`;
-    const lsoName = lsoNames[key] || null;
-    const activePeriods = [1,2,3,4,5,6].filter(p=>slots[p]&&slots[p].length>0);
-    const tile = document.createElement('div'); tile.className='tile';
-    tile.dataset.name = name;
-    tile.addEventListener('click',()=>openDetail(key));
-    const bar = document.createElement('div'); bar.className='tile-colour-bar'; bar.style.background=bg;
-    const body = document.createElement('div'); body.className='tile-body';
-    const nameEl = document.createElement('div'); nameEl.className='tile-name'; nameEl.textContent=name;
-    const lsoEl  = document.createElement('div'); lsoEl.className='tile-lso-name';
-    lsoEl.textContent = lsoName ? `✉ ${lsoName}` : '';
-
-    body.appendChild(nameEl);
-    body.appendChild(lsoEl);
-
-    if (activePeriods.length===0) {
-      const empty = document.createElement('div'); empty.className='tile-empty-label'; empty.textContent='No periods today';
-      body.appendChild(empty);
-    } else {
-      const periods = document.createElement('div'); periods.className='tile-periods';
-      [1,2,3,4,5,6].forEach(p=>{
-        const chip=document.createElement('div');
-        chip.className='tile-period-chip'+(activePeriods.includes(p)?' has-data':'');
-        chip.textContent=`P${p}`; periods.appendChild(chip);
-      });
-      body.appendChild(periods);
-    }
-
-    // ── Current / Next status ──────────────────────────────────────────────
-    if (duringSchool) {
-      const { nowText, nextText } = getTileStatus(slots);
-      // Only show the section if at least one has something to say
-      if (nowText !== undefined || nextText !== undefined) {
-        const statusEl = document.createElement('div'); statusEl.className='tile-status';
-
-        function makeRow(label, text) {
-          const row = document.createElement('div'); row.className='tile-status-row';
-          const lbl = document.createElement('div'); lbl.className='tile-status-label'; lbl.textContent=label;
-          const val = document.createElement('div');
-          if (text === null) {
-            // person has no class in this slot (free period)
-            val.className='tile-status-value is-free'; val.textContent='free';
-          } else if (text === 'Recess' || text === 'Lunch') {
-            val.className='tile-status-value is-break'; val.textContent=text;
-          } else {
-            val.className='tile-status-value'; val.textContent=text;
-          }
-          row.appendChild(lbl); row.appendChild(val);
-          return row;
-        }
-
-        // "now" row — only show during school hours (not before school starts)
-        const { current } = getCurrentAndNext();
-        if (current) statusEl.appendChild(makeRow('now', nowText));
-        if (nextText !== undefined) statusEl.appendChild(makeRow('next', nextText));
-
-        body.appendChild(statusEl);
-      }
-    }
-
-    tile.appendChild(bar); tile.appendChild(body); grid.appendChild(tile);
-  });
-  // Stamp daily-changes badges on tiles if changes are loaded
-  applyChangesToTiles();
-}
-
-// ── Detail ─────────────────────────────────────────────────────────────────
-function renderDetail(key, grp, name) {
-  const inner = document.getElementById('detailInner');
-  const { bg, fg, slots } = grp;
-
-  const periodRows = [1,2,3,4,5,6].map(p => {
-    const entries = slots[p];
-    if (!entries||entries.length===0) return `<div class="period-row empty-row"><div class="accent-bar" style="background:${bg}"></div><div class="cell-period">P${p}</div><div class="cell-dash">—</div><div class="cell-data empty" style="grid-column:4/-1"></div></div>`;
-    return entries.map(({d1,d2,d3})=>`<div class="period-row"><div class="accent-bar" style="background:${bg}"></div><div class="cell-period has-data">P${p}</div><div class="cell-dash">—</div><div class="cell-data${d1?'':' empty'}" data-copy="${escapeHTML(d1||'')}">${escapeHTML(d1||'')}</div><div class="cell-data${d2?'':' empty'}" data-copy="${escapeHTML(d2||'')}">${escapeHTML(d2||'')}</div><div class="cell-data${d3?'':' empty'}" data-copy="${escapeHTML(d3||'')}">${escapeHTML(d3||'')}</div></div>`).join('');
-  }).join('');
-
-  const lsoSettings = getLSOSettings(key);
-  const currentLSOName = lsoSettings.yourName;
-
-  inner.innerHTML = `
-    <div class="detail-header">
-      <div class="detail-colour-bar" style="background:${bg}"></div>
-      <div>
-        <div class="detail-title">${escapeHTML(name)}</div>
-        <div class="detail-sub">${escapeHTML(bg)}${fg?' · '+escapeHTML(fg):''}</div>
-      </div>
-      <div class="detail-actions">
-        <button class="copy-btn" id="copyAllBtn">Copy P1–P6</button>
-        <button class="email-lso-btn" id="emailLSOToggle">✉ Email LSO</button>
-      </div>
-    </div>
-    <div class="period-grid">${periodRows}</div>
-
-    <div class="lso-panel" id="lsoPanel">
-      <div class="lso-panel-header">
-        <div class="lso-panel-title"><span>✉</span> LSO Email — <em style="font-weight:400;font-style:normal;color:var(--muted)">${escapeHTML(name)}</em></div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);">Name is saved per person · overrides from Admin page</div>
-      </div>
-      <div class="lso-settings">
-        <div class="lso-input-wrap">
-          <label>Your Name <span style="font-weight:400;color:var(--muted)">(for this person)</span></label>
-          <input class="lso-input" id="lsoName" type="text" value="${escapeHTML(currentLSOName)}" placeholder="Mr. Chew" />
-          <div class="lso-name-hint" id="lsoNameHint">saved for ${escapeHTML(name)}</div>
-        </div>
-        <div class="lso-input-wrap">
-          <label>Email Domain</label>
-          <input class="lso-input" id="lsoDomain" type="text" value="${escapeHTML(lsoSettings.domain)}" placeholder="stpeters.vic.edu.au" />
-        </div>
-        <div class="lso-input-wrap">
-          <label>CC</label>
-          <input class="lso-input" id="lsoCC" type="text" value="${escapeHTML(lsoSettings.cc)}" placeholder="cc@school.edu.au" />
-        </div>
-        <div class="lso-input-wrap" style="display:flex;flex-direction:column;justify-content:flex-end;">
-          <button class="lso-copy-body-btn" id="lsoSaveNameBtn" style="width:100%;margin-top:auto;">💾 Save name for ${escapeHTML(name)}</button>
-        </div>
-      </div>
-      <div class="lso-panel-body">
-        <div class="lso-row2">
-          <div class="lso-field">
-            <span class="lso-label">Subject</span>
-            <div class="lso-value" id="lsoSubject"></div>
-          </div>
-          <div class="lso-field">
-            <span class="lso-label">To (Teachers)</span>
-            <div id="lsoTeacherChips" class="teacher-chips"></div>
-          </div>
-        </div>
-        <div class="lso-field">
-          <span class="lso-label">CC</span>
-          <div class="lso-value" id="lsoCCVal"></div>
-        </div>
-        <div class="lso-field">
-          <span class="lso-label">Body Preview</span>
-          <div class="lso-value" id="lsoBodyPreview" style="font-size:0.78rem;line-height:1.8;"></div>
-        </div>
-      </div>
-      <div class="lso-actions">
-        <button class="lso-open-btn" id="lsoOpenBtn">📧 Open in Outlook</button>
-        <button class="lso-copy-body-btn" id="lsoCopyLinkBtn">🔗 Copy Outlook Link</button>
-        <button class="lso-copy-body-btn" id="lsoCopyBodyBtn">📋 Copy Body</button>
-        <button class="lso-copy-body-btn" id="lsoCopySubjectBtn">📋 Copy Subject</button>
-      </div>
-    </div>
-  `;
-
-  let lastEmail = null;
-
-  function refreshEmail() {
-    const settings = {
-      domain:   document.getElementById('lsoDomain').value.trim() || 'stpeters.vic.edu.au',
-      yourName: document.getElementById('lsoName').value.trim() || 'Mr. Chew',
-      cc:       document.getElementById('lsoCC').value.trim()
-    };
-    saveLSOGlobalSettings(settings);
-    lastEmail = buildLSOEmail(slots, settings);
-
-    document.getElementById('lsoSubject').textContent = lastEmail.subject;
-    document.getElementById('lsoCCVal').textContent = lastEmail.cc;
-    document.getElementById('lsoBodyPreview').textContent = lastEmail.body;
-
-    const chipsEl = document.getElementById('lsoTeacherChips');
-    if (lastEmail.teacherEntries.length === 0) {
-      chipsEl.innerHTML = '<span style="color:var(--muted);font-size:0.8rem;font-style:italic;">No teachers found in timetable data</span>';
-    } else {
-      chipsEl.innerHTML = lastEmail.teacherEntries.map(([code, {prefix, isOverride}], i) =>
-        `<div class="teacher-chip">
-          ${escapeHTML(code)}<span class="arrow">→</span>
-          <span class="email-part">${escapeHTML(lastEmail.teacherEmails[i])}</span>
-          ${isOverride ? '<span class="override-badge">override</span>' : ''}
-        </div>`
-      ).join('');
-    }
-  }
-
-  // Save name button — persists this person's LSO name
-  inner.querySelector('#lsoSaveNameBtn').addEventListener('click', function() {
-    const lsoNames = getLSONames();
-    const val = document.getElementById('lsoName').value.trim();
-    if (val) lsoNames[key] = val;
-    else delete lsoNames[key];
-    saveLSONames(lsoNames);
-    // Update tile
-    const hint = document.getElementById('lsoNameHint');
-    hint.textContent = `✓ saved for ${name}`;
-    hint.style.color = '#22a85a';
-    setTimeout(() => { hint.textContent = `saved for ${name}`; hint.style.color = ''; }, 2000);
-    renderTiles(currentGroupMap, currentNames);
-  });
-
-  inner.querySelector('#emailLSOToggle').addEventListener('click', function() {
-    const panel = document.getElementById('lsoPanel');
-    const isVisible = panel.classList.toggle('visible');
-    this.textContent = isVisible ? '✕ Close' : '✉ Email LSO';
-    if (isVisible) { refreshEmail(); panel.scrollIntoView({behavior:'smooth',block:'nearest'}); }
-  });
-
-  ['lsoName','lsoDomain','lsoCC'].forEach(id => {
-    inner.querySelector('#'+id).addEventListener('input', refreshEmail);
-  });
-
-  inner.querySelector('#lsoOpenBtn').addEventListener('click', () => {
-    if (!lastEmail) return;
-    const { subject, body, teacherEmails, cc } = lastEmail;
-    const mailto = `mailto:${teacherEmails.join(';')}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailto;
-  });
-
-  inner.querySelector('#lsoCopyLinkBtn').addEventListener('click', function() {
-    if (!lastEmail) return;
-    const { subject, body, teacherEmails, cc } = lastEmail;
-    const mailto = `mailto:${teacherEmails.join(';')}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    navigator.clipboard.writeText(mailto).then(() => {
-      this.textContent = '✅ Copied!';
-      setTimeout(() => this.textContent = '🔗 Copy Outlook Link', 1800);
+  // Keep dcExtracted in sync with edits
+  document.getElementById('dcChangesTable').querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', () => {
+      const lso = inp.dataset.lso, per = inp.dataset.period;
+      if (dcExtracted.lsos[lso]) dcExtracted.lsos[lso][per] = inp.value;
     });
   });
-
-  inner.querySelector('#lsoCopyBodyBtn').addEventListener('click', function() {
-    if (!lastEmail) return;
-    navigator.clipboard.writeText(lastEmail.body).then(() => {
-      this.textContent = '✅ Copied!';
-      setTimeout(() => this.textContent = '📋 Copy Body', 1800);
-    });
-  });
-
-  inner.querySelector('#lsoCopySubjectBtn').addEventListener('click', function() {
-    if (!lastEmail) return;
-    navigator.clipboard.writeText(lastEmail.subject).then(() => {
-      this.textContent = '✅ Copied!';
-      setTimeout(() => this.textContent = '📋 Copy Subject', 1800);
-    });
-  });
-
-  inner.querySelector('#copyAllBtn').addEventListener('click', function() {
-    const btn = this;
-    const text = [1,2,3,4,5,6].map(p=>{
-      const ent=slots[p];
-      if(!ent||ent.length===0)return`P${p} - \t\t`;
-      return ent.map(({d1,d2,d3})=>`P${p} - ${d1}\t${d2}\t${d3}`).join('\n');
-    }).join('\n');
-    navigator.clipboard.writeText(text).then(()=>flash(btn)).catch(()=>{
-      const ta=Object.assign(document.createElement('textarea'),{value:text,style:'position:fixed;opacity:0'});
-      document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);flash(btn);
-    });
-  });
-
-  inner.addEventListener('click', e => {
-    const cell = e.target.closest('.cell-data:not(.empty)'); if (!cell) return;
-    const text = cell.dataset.copy; if (!text) return;
-    navigator.clipboard.writeText(text).then(() => {
-      cell.classList.add('flash-copy');
-      setTimeout(()=>cell.classList.remove('flash-copy'),1200);
-    }).catch(()=>{});
-  });
-
-  // Inject today's changes panel for this LSO at the top of the detail view
-  injectDcIntoDetail(name);
 }
 
-function flash(btn){const orig=btn.textContent;btn.textContent='✓ Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copied');},2000);}
-
-// ── Top-level view tabs (Timetable / Map) ──────────────────────────────────
-let mainView = 'timetable'; // 'timetable' | 'map'
-
-document.getElementById('tabTimetable').addEventListener('click', () => switchMainView('timetable'));
-let mapLayoutLoaded = false;
-document.getElementById('tabMap').addEventListener('click', () => {
-  switchMainView('map');
-  if (!mapLayoutLoaded) {
-    mapLayoutLoaded = true;
-    loadMapLayoutFromServer();
-  } else {
-    renderMapView();
-  }
-});
-
-function switchMainView(view) {
-  mainView = view;
-  document.getElementById('tabTimetable').classList.toggle('active', view === 'timetable');
-  document.getElementById('tabMap').classList.toggle('active', view === 'map');
-  document.getElementById('mapView').classList.toggle('visible', view === 'map');
-  // Hide timetable-specific panels when on map
-  const onTimetable = view === 'timetable';
-  document.getElementById('viewToggleBtn').style.display = onTimetable ? '' : 'none';
-  if (view === 'map') {
-    // Hide all timetable screens
-    ['loadingState','emptyState','noServerState','tileView','detailView','serverSetup'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) { el.classList.remove('visible'); el.style.display = 'none'; }
-    });
-    document.getElementById('periodStrip').classList.remove('visible');
-  } else {
-    // Restore timetable — re-run showScreen for current state
-    if (currentGroupMap) {
-      showScreen(activeDetailKey && currentGroupMap.has(activeDetailKey) ? 'detailView' : 'tileView');
-    } else {
-      showScreen('loadingState');
-      loadTimetable();
-    }
-  }
+function escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// ── Map state ──────────────────────────────────────────────────────────────
-let mapRooms    = loadMapRooms();
-let mapTab      = 'now'; // 'now' | 'next'
-const mapEditMode = false; // editing is admin-only
+// Publish to server
+dcPubBtn.addEventListener('click', async () => {
+  if (!dcExtracted) return;
+  const url = getServer();
+  if (!url) { dcSetStatus('⚠ No server URL — go to Settings tab.'); return; }
 
-function loadMapRooms() {
-  try { return JSON.parse(localStorage.getItem('tt-map-rooms') || '[]'); }
-  catch(e) { return []; }
-}
-function saveMapRooms() { localStorage.setItem('tt-map-rooms', JSON.stringify(mapRooms)); }
-function mapUid() { return Math.random().toString(36).slice(2,9); }
-
-// Map period tabs
-document.querySelectorAll('[data-maptab]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('[data-maptab]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    mapTab = btn.dataset.maptab;
-    renderMapView();
+  // Collect current values from editable table
+  const lsos = {};
+  document.getElementById('dcChangesTable').querySelectorAll('input').forEach(inp => {
+    const lso = inp.dataset.lso, per = inp.dataset.period;
+    if (!lsos[lso]) lsos[lso] = {};
+    lsos[lso][per] = inp.value.trim() || null;
   });
-});
 
-// Load layout from server on map open, fall back to localStorage
-async function loadMapLayoutFromServer() {
-  const serverUrl = (localStorage.getItem('tt-server') || 'https://timetable-server-r6nb.onrender.com').replace(/\/$/, '');
+  const payload = {
+    date: dcExtracted.date || new Date().toLocaleDateString('en-GB'),
+    absent: dcExtracted.absent || [],
+    lsos,
+    notes: dcExtracted.notes || null,
+    publishedAt: new Date().toISOString()
+  };
+
+  dcSetStatus('Publishing…');
   try {
-    const res = await fetch(`${serverUrl}/map-layout`);
-    if (!res.ok) return; // No saved layout yet, keep localStorage
-    const data = await res.json();
-    if (data.rooms && Array.isArray(data.rooms)) {
-      mapRooms = data.rooms;
-      saveMapRooms();
-    }
-    if (data.groups && typeof data.groups === 'object') {
-      mapGroups = { ...data.groups, __v: MAP_LAYOUT_VERSION };
-      saveMapGroups();
-    }
-    renderMapSidebar();
-    renderMapView();
-  } catch(e) { /* silently fall back to localStorage */ }
+    const res = await fetch(`${url}/daily-changes`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Password': getPw() },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) dcSetStatus('✓ Published! LSOs can see the daily changes panel in the viewer now.');
+    else if (res.status === 401) dcSetStatus('✕ Wrong password.');
+    else dcSetStatus(`✕ Server error ${res.status}`);
+  } catch(e) { dcSetStatus('✕ Could not reach server: ' + e.message); }
+});
+
+// Clear published changes
+document.getElementById('dcClearBtn').addEventListener('click', async () => {
+  if (!confirm('Clear today\'s published changes from the viewer?')) return;
+  const url = getServer();
+  if (!url) { dcSetStatus('⚠ No server URL.'); return; }
+  try {
+    const res = await fetch(`${url}/daily-changes`, {
+      method: 'DELETE',
+      headers: { 'X-Admin-Password': getPw() }
+    });
+    if (res.ok) dcSetStatus('Cleared.');
+    else dcSetStatus(`✕ Server error ${res.status}`);
+  } catch(e) { dcSetStatus('✕ ' + e.message); }
+});
+
+function dcSetStatus(msg) { dcStatus.textContent = msg; }
+
+// ── Mode switching ─────────────────────────────────────────────────────────
+document.getElementById('dcModeAuto').addEventListener('click', () => {
+  document.getElementById('dcAutoSection').style.display = '';
+  document.getElementById('dcManualSection').style.display = 'none';
+  document.getElementById('dcModeAuto').style.cssText = 'flex:1;background:var(--text);color:var(--bg);';
+  document.getElementById('dcModeManual').className = 's-btn secondary'; document.getElementById('dcModeManual').style.flex = '1';
+});
+document.getElementById('dcModeManual').addEventListener('click', () => {
+  document.getElementById('dcAutoSection').style.display = 'none';
+  document.getElementById('dcManualSection').style.display = '';
+  document.getElementById('dcModeManual').style.cssText = 'flex:1;background:var(--text);color:var(--bg);';
+  document.getElementById('dcModeAuto').className = 's-btn secondary'; document.getElementById('dcModeAuto').style.flex = '1';
+  renderManualRows();
+});
+
+// ── Manual entry ───────────────────────────────────────────────────────────
+// Pre-populate with known LSO names from color names map
+function getKnownLSONames() {
+  try {
+    const names = JSON.parse(localStorage.getItem('tt-colornames') || '{}');
+    return Object.values(names).filter(Boolean);
+  } catch(e) { return []; }
 }
 
-// Add/remove rooms is admin-only — no listeners needed in viewer
-// Positions use % of canvas — stored as {xp, yp} and converted at render time
-// Col positions: L1=1.5%, L2=18%, MID=35%, R1=62%, R2=79%
-// Row positions: TOP=3%, MID=36%, BOT=69%
+let manualRows = []; // [{id, name, p1..p6}]
+
+function ensureManualRows() {
+  if (manualRows.length === 0) {
+    // Pre-fill with known LSOs
+    const known = getKnownLSONames();
+    if (known.length) {
+      manualRows = known.map(name => ({ id: Math.random().toString(36).slice(2), name, p1:'',p2:'',p3:'',p4:'',p5:'',p6:'' }));
+    } else {
+      manualRows = [blankRow()];
+    }
+  }
+}
+
+function blankRow() {
+  return { id: Math.random().toString(36).slice(2), name:'', p1:'',p2:'',p3:'',p4:'',p5:'',p6:'' };
+}
+
+function renderManualRows() {
+  ensureManualRows();
+  const container = document.getElementById('dcManualRows');
+  container.innerHTML = '';
+
+  const periods = ['p1','p2','p3','p4','p5','p6'];
+  const headerStyle = 'padding:6px 10px;text-align:left;border:1px solid var(--border);font-family:"DM Mono",monospace;font-size:0.62rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--soft);';
+  const cellStyle   = 'padding:4px 6px;border:1px solid var(--border);';
+
+  let html = `<table style="border-collapse:collapse;width:100%;font-size:0.82rem;margin-bottom:10px;">
+    <thead><tr>
+      <th style="${headerStyle}min-width:110px;">LSO Name</th>
+      ${periods.map(p=>`<th style="${headerStyle}">${p.toUpperCase()}</th>`).join('')}
+      <th style="${headerStyle}width:32px;"></th>
+    </tr></thead><tbody>`;
+
+  manualRows.forEach(row => {
+    html += `<tr data-rowid="${row.id}">
+      <td style="${cellStyle}"><input value="${escHtml(row.name)}" data-field="name" data-rowid="${row.id}"
+        style="width:100%;background:transparent;border:none;outline:none;font-weight:700;font-family:'Outfit',sans-serif;font-size:0.82rem;color:var(--text);min-width:100px;"
+        placeholder="LSO name" /></td>
+      ${periods.map(p => `<td style="${cellStyle}"><input value="${escHtml(row[p]||'')}" data-field="${p}" data-rowid="${row.id}"
+        style="width:100%;background:transparent;border:none;outline:none;font-family:'Outfit',sans-serif;font-size:0.78rem;color:var(--text);min-width:120px;"
+        placeholder="—" /></td>`).join('')}
+      <td style="${cellStyle}text-align:center;">
+        <button data-delrow="${row.id}" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.8rem;padding:2px 4px;">✕</button>
+      </td>
+    </tr>`;
+  });
+
+  html += '</tbody></table>';
+  container.innerHTML = html;
+
+  // Sync inputs back to manualRows
+  container.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', () => {
+      const row = manualRows.find(r => r.id === inp.dataset.rowid);
+      if (row) row[inp.dataset.field] = inp.value;
+    });
+  });
+  container.querySelectorAll('[data-delrow]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      manualRows = manualRows.filter(r => r.id !== btn.dataset.delrow);
+      renderManualRows();
+    });
+  });
+}
+
+document.getElementById('dcManualAddRow').addEventListener('click', () => {
+  manualRows.push(blankRow());
+  renderManualRows();
+  // Focus the new name input
+  const inputs = document.getElementById('dcManualRows').querySelectorAll('input[data-field="name"]');
+  if (inputs.length) inputs[inputs.length-1].focus();
+});
+
+// Publish manual
+document.getElementById('dcManualPublishBtn').addEventListener('click', async () => {
+  const url = getServer();
+  if (!url) { document.getElementById('dcManualStatus').textContent = '⚠ No server URL — go to Settings tab.'; return; }
+
+  const lsos = {};
+  manualRows.forEach(row => {
+    const name = row.name.trim();
+    if (!name) return;
+    lsos[name] = { p1: row.p1||null, p2: row.p2||null, p3: row.p3||null, p4: row.p4||null, p5: row.p5||null, p6: row.p6||null };
+  });
+
+  const absentRaw = document.getElementById('dcManualAbsent').value.trim();
+  const absent = absentRaw ? absentRaw.split(',').map(s=>s.trim()).filter(Boolean) : [];
+
+  if (!Object.keys(lsos).length && !absent.length) {
+    document.getElementById('dcManualStatus').textContent = '⚠ Nothing to publish — add at least one LSO or absent name.';
+    return;
+  }
+
+  const payload = {
+    date: new Date().toLocaleDateString('en-GB'),
+    absent,
+    lsos,
+    notes: null,
+    publishedAt: new Date().toISOString()
+  };
+
+  document.getElementById('dcManualStatus').textContent = 'Publishing…';
+  try {
+    const res = await fetch(`${url}/daily-changes`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Password': getPw() },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) document.getElementById('dcManualStatus').textContent = '✓ Published! Viewers can see today\'s changes now.';
+    else if (res.status === 401) document.getElementById('dcManualStatus').textContent = '✕ Wrong password.';
+    else document.getElementById('dcManualStatus').textContent = `✕ Server error ${res.status}`;
+  } catch(e) { document.getElementById('dcManualStatus').textContent = '✕ ' + e.message; }
+});
+
+// Clear from manual mode
+document.getElementById('dcManualClearBtn').addEventListener('click', async () => {
+  if (!confirm('Clear today\'s published changes from the viewer?')) return;
+  const url = getServer();
+  if (!url) { document.getElementById('dcManualStatus').textContent = '⚠ No server URL.'; return; }
+  try {
+    const res = await fetch(`${url}/daily-changes`, { method:'DELETE', headers:{'X-Admin-Password':getPw()} });
+    if (res.ok) document.getElementById('dcManualStatus').textContent = 'Cleared.';
+    else document.getElementById('dcManualStatus').textContent = `✕ Server error ${res.status}`;
+  } catch(e) { document.getElementById('dcManualStatus').textContent = '✕ ' + e.message; }
+});
+// ── Admin Map Layout Editor ────────────────────────────────────────────────
 const MAP_PREFIX_POSITIONS = {
-  TC: { x:  12, y:  18 },  // Top left col1
-  CL: { x: 244, y:  18 },  // Top left col2
-  HC: { x: 420, y:  18 },  // Top mid
-  BE: { x: 760, y:  18 },  // Top right
-  PA: { x:  12, y: 210 },  // Mid left col1
-  BR: { x: 244, y: 210 },  // Mid left col2
-  MC: { x: 420, y: 210 },  // Mid mid
-  DO: { x: 760, y: 210 },  // Mid right
-  FW: { x: 244, y: 400 },  // Bot (under BR)
-  TF: { x: 420, y: 400 },  // Bot mid
-  TA: { x: 760, y: 400 },  // Bot right col1
-  GL: { x: 840, y: 210 },  // Right of DO (stacked, pulled in)
+  TC: { x:  12, y:  18 }, CL: { x: 244, y:  18 }, HC: { x: 420, y:  18 }, BE: { x: 760, y:  18 },
+  PA: { x:  12, y: 210 }, BR: { x: 244, y: 210 }, MC: { x: 420, y: 210 }, DO: { x: 760, y: 210 },
+  FW: { x: 244, y: 400 }, TF: { x: 420, y: 400 }, TA: { x: 760, y: 400 }, GL: { x: 840, y: 210 },
 };
 
-function getRoomPrefix(code) {
-  return code.length >= 2 ? code.slice(0, 2).toUpperCase() : code.toUpperCase();
-}
+let adminMapRooms = [];
+let adminMapGroups = {};
 
-const MAP_LAYOUT_VERSION = 3; // bump to reset saved positions
+function adminGetPrefix(code) { return code.length >= 2 ? code.slice(0,2).toUpperCase() : code.toUpperCase(); }
 
-// mapGroups: { prefix: { xp, yp } } — percentage positions of group zones
-let mapGroups = loadMapGroups();
-function loadMapGroups() {
+function adminMapSetStatus(msg) { document.getElementById('adminMapStatus').textContent = msg; }
+
+// Load from server when tab opens
+let adminMapLoaded = false;
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  if (btn.dataset.tab === 'mapTab') {
+    btn.addEventListener('click', () => {
+      if (!adminMapLoaded) { adminMapLoaded = true; adminLoadMapFromServer(); }
+      else { adminRenderMap(); }
+    });
+  }
+});
+
+async function adminLoadMapFromServer() {
+  const url = getServer(); if (!url) return;
+  adminMapSetStatus('Loading…');
   try {
-    const saved = JSON.parse(localStorage.getItem('tt-map-groups') || 'null');
-    if (!saved || saved.__v !== MAP_LAYOUT_VERSION) return { __v: MAP_LAYOUT_VERSION };
-    return saved;
-  } catch(e) { return { __v: MAP_LAYOUT_VERSION }; }
+    const res = await fetch(`${url}/map-layout`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.rooms) adminMapRooms = data.rooms;
+      if (data.groups) adminMapGroups = data.groups;
+      adminMapSetStatus('Loaded from server.');
+    } else {
+      adminMapSetStatus('No saved layout yet — import rooms to get started.');
+    }
+  } catch(e) { adminMapSetStatus('Could not reach server.'); }
+  adminRenderMap();
 }
-function saveMapGroups() { mapGroups.__v = MAP_LAYOUT_VERSION; localStorage.setItem('tt-map-groups', JSON.stringify(mapGroups)); }
 
-// Ensure every prefix from current rooms has a group position
-function seedMapGroups() {
-  let changed = false;
-  const usedPrefixes = [...new Set(mapRooms.map(r => getRoomPrefix(r.code)))];
-  usedPrefixes.forEach(prefix => {
-    if (!mapGroups[prefix]) {
+function adminSeedGroups() {
+  const canvas = document.getElementById('adminMapCanvas');
+  const cW = canvas.offsetWidth || 800, cH = canvas.offsetHeight || 580;
+  adminMapRooms.forEach(r => {
+    const prefix = adminGetPrefix(r.code);
+    if (!adminMapGroups[prefix]) {
       const known = MAP_PREFIX_POSITIONS[prefix];
-      const count = Object.keys(mapGroups).length;
-      const px = known || { x: 20 + (count % 5) * 190, y: 20 + Math.floor(count / 5) * 190 };
-      mapGroups[prefix] = { xp: +(px.x / 1080 * 100).toFixed(2), yp: +(px.y / 600 * 100).toFixed(2) };
-      changed = true;
+      const count = Object.keys(adminMapGroups).length;
+      const px = known || { x: 20 + (count%5)*180, y: 20 + Math.floor(count/5)*180 };
+      adminMapGroups[prefix] = { xp: +(px.x/1080*100).toFixed(2), yp: +(px.y/600*100).toFixed(2) };
     }
   });
-  if (changed) saveMapGroups();
-}
-seedMapGroups();
-
-function mapAddRoom(code) {
-  if (mapRooms.find(r => r.code === code)) return;
-  mapRooms.push({ id: mapUid(), code });
-  seedMapGroups();
-  saveMapRooms(); renderMapSidebar(); renderMapView();
 }
 
-function mapRemoveRoom(id) {
-  mapRooms = mapRooms.filter(r => r.id !== id);
-  // Remove group if no rooms left in it
-  const usedPrefixes = new Set(mapRooms.map(r => getRoomPrefix(r.code)));
-  Object.keys(mapGroups).forEach(p => { if (!usedPrefixes.has(p)) delete mapGroups[p]; });
-  saveMapRooms(); saveMapGroups(); renderMapSidebar(); renderMapView();
-}
+function adminRenderMap() {
+  const canvas = document.getElementById('adminMapCanvas');
+  canvas.querySelectorAll('.adm-group').forEach(e => e.remove());
+  document.getElementById('adminMapEmpty').style.display = adminMapRooms.length ? 'none' : '';
+  if (!adminMapRooms.length) return;
 
-// Auto-import
-// Sidebar rendering is admin-only in viewer
-function renderMapSidebar() { /* no-op in viewer */ }
-
-// ── Get placements for current map tab ────────────────────────────────────
-function getMapPlacements(slot) {
-  const map = new Map();
-  if (!currentGroupMap || !slot || !slot.period) return map;
-  const p = slot.period;
-  currentGroupMap.forEach((grp, key) => {
-    const name = currentNames[key] || key;
-    const slots = grp.slots[p];
-    if (!slots || !slots.length) return;
-    const room = (slots[0].d2 || '').toUpperCase().trim();
-    if (!room) return;
-    if (!map.has(room)) map.set(room, []);
-    map.get(room).push({ name, color: grp.bg, fg: grp.fg || null });
-  });
-  return map;
-}
-
-// ── Render map ─────────────────────────────────────────────────────────────
-function renderMapView() {
-  if (mainView !== 'map') return;
-  const { cur, nxt } = getMapCurrentAndNext();
-
-  // Update badges
-  let nc = 0, nx = 0;
-  getMapPlacements(cur).forEach(a => nc += a.length);
-  getMapPlacements(nxt).forEach(a => nx += a.length);
-  document.getElementById('mapNowBadge').textContent = nc;
-  document.getElementById('mapNextBadge').textContent = nx;
-
-  const slot = mapTab === 'now' ? cur : nxt;
-  const placements = getMapPlacements(slot);
-
-  const canvas = document.getElementById('mapCanvas');
-  canvas.querySelectorAll('.map-group').forEach(el => el.remove());
-
-  // Empty state
-  document.getElementById('mapEmpty').style.display = mapRooms.length ? 'none' : '';
+  adminSeedGroups();
+  const cW = canvas.offsetWidth || 800, cH = canvas.offsetHeight || 580;
 
   // Group rooms by prefix
   const groups = {};
-  mapRooms.forEach(room => {
-    const prefix = getRoomPrefix(room.code);
-    if (!groups[prefix]) groups[prefix] = [];
-    groups[prefix].push(room);
+  adminMapRooms.forEach(r => {
+    const p = adminGetPrefix(r.code);
+    if (!groups[p]) groups[p] = [];
+    groups[p].push(r);
   });
 
-  // Canvas fills its container via CSS — no fixed size needed
-
-  const placedCodes = new Set(mapRooms.map(r => r.code.toUpperCase()));
-
-  const canvasW = canvas.offsetWidth  || 1000;
-  const canvasH = canvas.offsetHeight || 600;
-
-  // Render each group as a zone
   Object.entries(groups).sort((a,b) => a[0].localeCompare(b[0])).forEach(([prefix, rooms]) => {
-    // Use saved position (as %), then known px→% from MAP_PREFIX_POSITIONS, then auto-stack
-    if (!mapGroups[prefix]) {
-      const known = MAP_PREFIX_POSITIONS[prefix];
-      const count = Object.keys(mapGroups).length;
-      const px = known || { x: 20 + (count % 5) * 190, y: 20 + Math.floor(count / 5) * 190 };
-      // Convert px defaults to % of a reference 1080x600 canvas
-      mapGroups[prefix] = { xp: +(px.x / 1080 * 100).toFixed(2), yp: +(px.y / 600 * 100).toFixed(2) };
-      saveMapGroups();
-    }
-    const pos = mapGroups[prefix];
-    // Support both legacy px and new % format
-    const left = pos.xp !== undefined ? (pos.xp / 100 * canvasW) : pos.x;
-    const top  = pos.yp !== undefined ? (pos.yp / 100 * canvasH) : pos.y;
+    const pos = adminMapGroups[prefix];
+    const left = pos.xp !== undefined ? pos.xp/100*cW : (pos.x||0);
+    const top  = pos.yp !== undefined ? pos.yp/100*cH : (pos.y||0);
 
     const groupEl = document.createElement('div');
-    groupEl.className = 'map-group' + (mapEditMode ? ' edit-mode' : '');
-    groupEl.style.left = left + 'px';
-    groupEl.style.top  = top  + 'px';
+    groupEl.className = 'adm-group';
+    groupEl.style.cssText = `position:absolute;left:${left}px;top:${top}px;width:220px;
+      border:1.5px solid var(--border);border-radius:8px;background:var(--surface);
+      box-shadow:0 2px 8px rgba(0,0,0,.07);`;
 
-    const labelEl = document.createElement('div');
-    labelEl.className = 'map-group-label';
-    labelEl.textContent = prefix + ' Block';
-    groupEl.appendChild(labelEl);
+    const label = document.createElement('div');
+    label.style.cssText = `font-family:'DM Mono',monospace;font-size:0.58rem;font-weight:700;
+      color:var(--muted);text-transform:uppercase;letter-spacing:.07em;
+      padding:5px 8px 3px;border-bottom:1px solid var(--border);border-radius:6px 6px 0 0;
+      cursor:move;user-select:none;background:var(--soft);`;
+    label.textContent = prefix + ' Block  ✥';
+    groupEl.appendChild(label);
 
-    const roomsEl = document.createElement('div');
-    roomsEl.className = 'map-group-rooms';
+    const grid = document.createElement('div');
+    grid.style.cssText = 'padding:4px;display:grid;grid-template-columns:repeat(3,1fr);gap:3px;';
 
     rooms.sort((a,b) => a.code.localeCompare(b.code)).forEach(room => {
-      const students = placements.get(room.code.toUpperCase()) || [];
-      const roomEl = document.createElement('div');
-      roomEl.className = 'map-room' + (students.length ? ' occupied' : '');
-
-      const codeRow = document.createElement('div'); codeRow.className = 'map-room-code';
-      codeRow.appendChild(document.createTextNode(room.code));
-      if (mapEditMode) {
-        const del = document.createElement('button'); del.className = 'map-room-del'; del.textContent = '✕';
-        del.addEventListener('click', e => { e.stopPropagation(); mapRemoveRoom(room.id); });
-        codeRow.appendChild(del);
-      }
-      roomEl.appendChild(codeRow);
-
-      if (students.length) {
-        const stuDiv = document.createElement('div'); stuDiv.className = 'map-students';
-        students.forEach(s => {
-          const b = document.createElement('span'); b.className = 'map-badge';
-          b.style.background = s.color; if (s.fg) b.style.color = s.fg;
-          b.textContent = s.name;
-          if (currentDailyChanges) {
-            const dcLookup = getDcLookup();
-            const match = dcLookup[s.name.toLowerCase()];
-            const isAbsent = new Set((currentDailyChanges.absent||[]).map(n=>n.toLowerCase())).has(s.name.toLowerCase());
-            if (isAbsent) {
-              const tag = document.createElement('span'); tag.className = 'map-dc-tag';
-              tag.style.cssText = 'background:#fef3c7;color:#92400e;border:1px solid #fcd34d;';
-              tag.textContent = 'ABSENT'; b.appendChild(tag);
-            } else if (match) {
-              const p = mapTab === 'now' ? (cur && cur.period ? 'p'+cur.period : null) : (nxt && nxt.period ? 'p'+nxt.period : null);
-              const change = p && match.periods[p];
-              if (change) {
-                const tag = document.createElement('span'); tag.className = 'map-dc-tag';
-                tag.style.cssText = 'background:#dbeafe;color:#1e40af;border:1px solid #93c5fd;display:block;margin-top:2px;';
-                tag.textContent = '📌 ' + change; b.appendChild(tag);
-              }
-            }
-          }
-          stuDiv.appendChild(b);
-        });
-        roomEl.appendChild(stuDiv);
-      }
-      roomsEl.appendChild(roomEl);
+      const cell = document.createElement('div');
+      cell.style.cssText = `background:var(--soft);border:1px solid var(--border);border-radius:5px;
+        padding:3px 6px;font-family:'DM Mono',monospace;font-size:0.65rem;
+        display:flex;align-items:center;justify-content:space-between;`;
+      const del = document.createElement('button');
+      del.textContent = '✕'; del.title = 'Remove ' + room.code;
+      del.style.cssText = 'background:none;border:none;color:var(--muted);cursor:pointer;font-size:.6rem;padding:0 0 0 3px;';
+      del.addEventListener('click', e => {
+        e.stopPropagation();
+        adminMapRooms = adminMapRooms.filter(r => r.id !== room.id);
+        // Clean up empty groups
+        const used = new Set(adminMapRooms.map(r => adminGetPrefix(r.code)));
+        Object.keys(adminMapGroups).forEach(p => { if (!used.has(p)) delete adminMapGroups[p]; });
+        adminRenderMap();
+      });
+      cell.innerHTML = `<span>${room.code}</span>`;
+      cell.appendChild(del);
+      grid.appendChild(cell);
     });
 
-    groupEl.appendChild(roomsEl);
-    if (mapEditMode) makeGroupDraggable(groupEl, prefix, pos);
+    groupEl.appendChild(grid);
+    adminMakeDraggable(groupEl, prefix, pos, cW, cH);
     canvas.appendChild(groupEl);
   });
-
-  // Unplaced
-  const unplacedEl = document.getElementById('mapUnplaced');
-  const unplacedLabel = document.getElementById('mapUnplacedLabel');
-  unplacedEl.innerHTML = '';
-  const unplaced = [];
-  placements.forEach((students, code) => { if (!placedCodes.has(code)) students.forEach(s => unplaced.push({...s, code})); });
-  if (unplaced.length) {
-    unplacedLabel.style.display = '';
-    unplaced.forEach(s => {
-      const b = document.createElement('span'); b.className = 'map-badge';
-      b.style.cssText = 'background:' + s.color + ';' + (s.fg ? 'color:' + s.fg + ';' : '') + 'cursor:default;';
-      b.title = 'Room ' + s.code + ' not on map — add it in Edit Rooms';
-      b.textContent = s.name + ' (' + s.code + ')';
-      unplacedEl.appendChild(b);
-    });
-  } else { unplacedLabel.style.display = 'none'; }
-
-  document.getElementById('mapStatus').textContent =
-    slot ? ('Showing ' + slot.label + (slot.start ? ' · ' + slot.start + '–' + slot.end : '')) : 'No period active';
 }
 
-function getMapCurrentAndNext() {
-  const nm = nowMinutes();
-  let cur = null, nxt = null;
-  for (const s of SCHOOL_SCHEDULE) {
-    const a = timeToMinutes(s.start), b = timeToMinutes(s.end);
-    if (nm >= a && nm < b) cur = s;
-    else if (nm < a && !nxt) nxt = s;
-  }
-  return { cur, nxt };
-}
-
-function makeGroupDraggable(groupEl, prefix, pos) {
-  const label = groupEl.querySelector('.map-group-label');
-  const canvas = document.getElementById('mapCanvas');
+function adminMakeDraggable(groupEl, prefix, pos, cW, cH) {
+  const label = groupEl.querySelector('div');
   let sx, sy, oleft, otop;
-
-  function getPx() {
-    const cW = canvas.offsetWidth || 1000;
-    const cH = canvas.offsetHeight || 600;
-    return {
-      left: pos.xp !== undefined ? pos.xp / 100 * cW : (pos.x || 0),
-      top:  pos.yp !== undefined ? pos.yp / 100 * cH : (pos.y || 0)
-    };
-  }
-  function savePct(left, top) {
-    const cW = canvas.offsetWidth || 1000;
-    const cH = canvas.offsetHeight || 600;
-    pos.xp = +(left / cW * 100).toFixed(2);
-    pos.yp = +(top  / cH * 100).toFixed(2);
-    // Remove legacy px keys
-    delete pos.x; delete pos.y;
-    mapGroups[prefix] = pos;
-  }
-
-  function startDrag(clientX, clientY) {
-    const p = getPx();
-    sx = clientX; sy = clientY; oleft = p.left; otop = p.top;
-    groupEl.style.zIndex = 10;
-  }
-  function doDrag(clientX, clientY) {
-    const newLeft = Math.max(0, oleft + clientX - sx);
-    const newTop  = Math.max(0, otop  + clientY - sy);
-    groupEl.style.left = newLeft + 'px';
-    groupEl.style.top  = newTop  + 'px';
-    savePct(newLeft, newTop);
-  }
-  function endDrag() { groupEl.style.zIndex = ''; saveMapGroups(); }
-
+  function getLeft() { return pos.xp !== undefined ? pos.xp/100*cW : (pos.x||0); }
+  function getTop()  { return pos.yp !== undefined ? pos.yp/100*cH : (pos.y||0); }
   label.addEventListener('mousedown', e => {
-    e.preventDefault(); startDrag(e.clientX, e.clientY);
-    function move(e2) { doDrag(e2.clientX, e2.clientY); }
-    function up() { endDrag(); document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); }
+    e.preventDefault(); sx = e.clientX; sy = e.clientY; oleft = getLeft(); otop = getTop();
+    groupEl.style.zIndex = 10;
+    function move(e2) {
+      const nl = Math.max(0, oleft + e2.clientX - sx);
+      const nt = Math.max(0, otop  + e2.clientY - sy);
+      groupEl.style.left = nl + 'px'; groupEl.style.top = nt + 'px';
+      adminMapGroups[prefix] = { xp: +(nl/cW*100).toFixed(2), yp: +(nt/cH*100).toFixed(2) };
+    }
+    function up() { groupEl.style.zIndex = ''; document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); }
     document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
   });
   label.addEventListener('touchstart', e => {
-    const t = e.touches[0]; startDrag(t.clientX, t.clientY);
-    function move(e2) { const t2 = e2.touches[0]; doDrag(t2.clientX, t2.clientY); }
-    function up() { endDrag(); document.removeEventListener('touchmove', move); document.removeEventListener('touchend', up); }
+    const t = e.touches[0]; sx = t.clientX; sy = t.clientY; oleft = getLeft(); otop = getTop();
+    function move(e2) {
+      const t2 = e2.touches[0];
+      const nl = Math.max(0, oleft + t2.clientX - sx);
+      const nt = Math.max(0, otop  + t2.clientY - sy);
+      groupEl.style.left = nl + 'px'; groupEl.style.top = nt + 'px';
+      adminMapGroups[prefix] = { xp: +(nl/cW*100).toFixed(2), yp: +(nt/cH*100).toFixed(2) };
+    }
+    function up() { document.removeEventListener('touchmove', move); document.removeEventListener('touchend', up); }
     document.addEventListener('touchmove', move, { passive: true }); document.addEventListener('touchend', up);
   }, { passive: true });
 }
 
-// Init map sidebar
-renderMapSidebar();
+// Import rooms from timetable data saved on server
+document.getElementById('adminMapAutoBtn').addEventListener('click', async () => {
+  const url = getServer(); if (!url) { adminMapSetStatus('⚠ No server URL.'); return; }
+  adminMapSetStatus('Loading timetable…');
+  try {
+    const res = await fetch(`${url}/timetable`);
+    if (!res.ok) { adminMapSetStatus('✕ Could not load timetable.'); return; }
+    const data = await res.json();
+    const found = new Set();
+    if (data.map) {
+      Object.values(data.map).forEach(grp => {
+        Object.values(grp.slots || {}).forEach(slots => slots.forEach(s => { if (s.d2) found.add(s.d2.toUpperCase().trim()); }));
+      });
+    }
+    if (!found.size) { adminMapSetStatus('No room codes found in timetable.'); return; }
+    const existing = new Set(adminMapRooms.map(r => r.code));
+    const toAdd = [...found].filter(r => !existing.has(r)).sort();
+    if (!toAdd.length) { adminMapSetStatus('All timetable rooms already on map.'); adminRenderMap(); return; }
+    toAdd.forEach(code => adminMapRooms.push({ id: Math.random().toString(36).slice(2), code }));
+    adminMapSetStatus(`Added ${toAdd.length} room${toAdd.length>1?'s':''}: ${toAdd.join(', ')}`);
+    adminRenderMap();
+  } catch(e) { adminMapSetStatus('✕ ' + e.message); }
+});
 
-loadTimetable();
+// Save to server
+document.getElementById('adminMapSaveBtn').addEventListener('click', async () => {
+  const url = getServer(); if (!url) { adminMapSetStatus('⚠ No server URL.'); return; }
+  const pw = getPw(); if (!pw) { adminMapSetStatus('⚠ No password set.'); return; }
+  adminMapSetStatus('Saving…');
+  try {
+    const payload = { rooms: adminMapRooms.map(r => ({ id: r.id, code: r.code })), groups: adminMapGroups };
+    const res = await fetch(`${url}/map-layout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Password': pw },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) adminMapSetStatus('✓ Saved! All devices will now see this layout.');
+    else if (res.status === 401) adminMapSetStatus('✕ Wrong password.');
+    else adminMapSetStatus(`✕ Server error ${res.status}`);
+  } catch(e) { adminMapSetStatus('✕ ' + e.message); }
+});
+
+// Clear all
+document.getElementById('adminMapClearBtn').addEventListener('click', () => {
+  if (!confirm('Remove all rooms from the map layout?')) return;
+  adminMapRooms = []; adminMapGroups = {};
+  adminMapSetStatus('Cleared. Click Save to push to server.');
+  adminRenderMap();
+});
 </script>
-</body>
-</html>
+</body></html>
