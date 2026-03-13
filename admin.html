@@ -1372,7 +1372,7 @@ dcReadBtn.addEventListener('click', async () => {
 
     if (res.status === 503) {
       const d = await res.json();
-      dcSetStatus('⚠ ' + (d.error || 'GEMINI_API_KEY not configured on server.'));
+      dcSetStatus('⚠ ' + (d.error || 'OPENROUTER_API_KEY not configured on server.'));
       dcReadBtn.disabled = false;
       return;
     }
