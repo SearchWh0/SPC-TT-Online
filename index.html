@@ -193,7 +193,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .map-canvas {
   position:relative; background:var(--surface2);
   border:1px solid var(--border); border-radius:16px;
-  min-width:900px; min-height:540px;
+  width:1800px; height:900px;
   background-image: linear-gradient(var(--grid-line,rgba(0,0,0,.05)) 1px,transparent 1px),
                     linear-gradient(90deg,var(--grid-line,rgba(0,0,0,.05)) 1px,transparent 1px);
   background-size:40px 40px;
@@ -202,21 +202,21 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .map-canvas.edit-mode { cursor:default; }
 .map-room {
   background:var(--soft); border:1.5px solid var(--border);
-  border-radius:8px; padding:7px 9px 8px;
+  border-radius:6px; padding:4px 7px 5px;
   box-shadow:none; transition:border-color .15s;
   min-width:0;
 }
 .map-room.occupied { border-color:var(--text); background:var(--surface); box-shadow:var(--shadow); }
 .map-room.draggable { cursor:default; }
 .map-room.draggable:active { cursor:default; }
-.map-room-code { font-family:'DM Mono',monospace; font-size:0.7rem; font-weight:600; color:var(--muted); margin-bottom:4px; display:flex; align-items:center; justify-content:space-between; }
+.map-room-code { font-family:'DM Mono',monospace; font-size:0.62rem; font-weight:600; color:var(--muted); margin-bottom:2px; display:flex; align-items:center; justify-content:space-between; }
 .map-room.occupied .map-room-code { color:var(--text); }
-.map-room-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.68rem; padding:0 0 0 4px; opacity:0; transition:opacity .15s; line-height:1; }
+.map-room-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.6rem; padding:0 0 0 3px; opacity:0; transition:opacity .15s; line-height:1; }
 .map-room:hover .map-room-del { opacity:1; }
 .map-room-del:hover { color:#ef4444; }
-.map-students { display:flex; flex-direction:column; gap:3px; }
-.map-badge { font-size:0.68rem; font-weight:700; padding:2px 7px; border-radius:5px; color:#fff; white-space:nowrap; line-height:1.5; }
-.map-dc-tag { font-size:0.58rem; font-weight:700; padding:1px 5px; border-radius:4px; font-family:'DM Mono',monospace; margin-top:2px; display:inline-block; }
+.map-students { display:flex; flex-direction:column; gap:2px; }
+.map-badge { font-size:0.6rem; font-weight:700; padding:1px 5px; border-radius:4px; color:#fff; white-space:nowrap; line-height:1.5; }
+.map-dc-tag { font-size:0.52rem; font-weight:700; padding:1px 4px; border-radius:3px; font-family:'DM Mono',monospace; margin-top:1px; display:inline-block; }
 /* Map toolbar */
 .map-toolbar { padding:10px 20px; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
 .map-tab-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.75rem; font-weight:600; padding:5px 14px; border-radius:7px; cursor:pointer; transition:all .15s; display:flex; align-items:center; gap:6px; }
@@ -228,6 +228,9 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .map-edit-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.75rem; font-weight:600; padding:5px 14px; border-radius:7px; cursor:pointer; transition:all .15s; }
 .map-edit-btn.on { background:var(--text); color:var(--bg); border-color:var(--text); }
 .map-edit-btn:not(.on):hover { border-color:var(--text); color:var(--text); }
+.map-save-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.75rem; font-weight:600; padding:5px 14px; border-radius:7px; cursor:pointer; transition:all .15s; }
+.map-save-btn:hover { border-color:#22a85a; color:#22a85a; }
+.map-save-btn.saved { border-color:#22a85a; color:#22a85a; background:rgba(34,168,90,.08); }
 /* Map sidebar */
 .map-body { display:flex; }
 .map-sidebar { width:240px; flex-shrink:0; background:var(--surface); border-left:1px solid var(--border); overflow-y:auto; display:none; flex-direction:column; }
@@ -250,22 +253,21 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 
 /* ── Map group zones ── */
 .map-group {
-  position:absolute; border:1.5px solid var(--border); border-radius:12px;
-  background:var(--surface); padding:0;
-  box-shadow:var(--shadow);
-  width:320px;
+  position:absolute; border:1.5px solid var(--border); border-radius:10px;
+  background:var(--surface); padding:0; box-shadow:var(--shadow);
+  width:230px;
 }
 .map-group-label {
-  font-family:'DM Mono',monospace; font-size:0.65rem; font-weight:700;
+  font-family:'DM Mono',monospace; font-size:0.6rem; font-weight:700;
   color:var(--muted); letter-spacing:0.07em; text-transform:uppercase;
-  padding:6px 10px 4px; border-bottom:1px solid var(--border);
-  cursor:move; user-select:none; border-radius:10px 10px 0 0;
+  padding:5px 8px 3px; border-bottom:1px solid var(--border);
+  cursor:move; user-select:none; border-radius:8px 8px 0 0;
 }
-.map-group.edit-mode .map-group-label { cursor:move; }
+.map-group.edit-mode .map-group-label { background:var(--soft); }
 .map-group-rooms {
-  padding:8px; display:grid;
+  padding:6px; display:grid;
   grid-template-columns:repeat(2, 1fr);
-  gap:6px;
+  gap:4px;
 }
 </style>
 </head>
@@ -364,6 +366,8 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
     <button class="map-tab-btn" data-maptab="next">Next <span class="map-badge-count" id="mapNextBadge">0</span></button>
     <div class="map-sep"></div>
     <button class="map-edit-btn" id="mapEditBtn">✏ Edit Rooms</button>
+    <button class="map-save-btn" id="mapSaveBtn" style="display:none;">💾 Save Layout</button>
+    <span id="mapSaveStatus" style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);"></span>
   </div>
   <div class="map-body">
     <div class="map-outer" id="mapOuter">
@@ -1310,9 +1314,15 @@ function flash(btn){const orig=btn.textContent;btn.textContent='✓ Copied!';btn
 let mainView = 'timetable'; // 'timetable' | 'map'
 
 document.getElementById('tabTimetable').addEventListener('click', () => switchMainView('timetable'));
+let mapLayoutLoaded = false;
 document.getElementById('tabMap').addEventListener('click', () => {
   switchMainView('map');
-  renderMapView();
+  if (!mapLayoutLoaded) {
+    mapLayoutLoaded = true;
+    loadMapLayoutFromServer();
+  } else {
+    renderMapView();
+  }
 });
 
 function switchMainView(view) {
@@ -1368,8 +1378,62 @@ document.getElementById('mapEditBtn').addEventListener('click', () => {
   mapEditMode = !mapEditMode;
   document.getElementById('mapEditBtn').classList.toggle('on', mapEditMode);
   document.getElementById('mapSidebar').classList.toggle('open', mapEditMode);
+  document.getElementById('mapSaveBtn').style.display = mapEditMode ? '' : 'none';
+  document.getElementById('mapSaveStatus').textContent = '';
   renderMapView();
 });
+
+// Save layout to server (shared across all devices)
+document.getElementById('mapSaveBtn').addEventListener('click', async () => {
+  const serverUrl = (localStorage.getItem('tt-server') || 'https://timetable-server-r6nb.onrender.com').replace(/\/$/, '');
+  const pw = localStorage.getItem('tt-pw') || '';
+  if (!pw) {
+    document.getElementById('mapSaveStatus').textContent = '⚠ No password — open Admin to set it';
+    return;
+  }
+  const btn = document.getElementById('mapSaveBtn');
+  const status = document.getElementById('mapSaveStatus');
+  btn.textContent = 'Saving…'; btn.disabled = true;
+  try {
+    const payload = { rooms: mapRooms.map(r => ({ id: r.id, code: r.code })), groups: mapGroups };
+    const res = await fetch(`${serverUrl}/map-layout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Password': pw },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      btn.textContent = '✓ Saved'; btn.classList.add('saved');
+      status.textContent = 'All devices will now see this layout';
+      setTimeout(() => { btn.textContent = '💾 Save Layout'; btn.classList.remove('saved'); btn.disabled = false; }, 3000);
+    } else if (res.status === 401) {
+      status.textContent = '✕ Wrong password'; btn.textContent = '💾 Save Layout'; btn.disabled = false;
+    } else {
+      status.textContent = `✕ Server error ${res.status}`; btn.textContent = '💾 Save Layout'; btn.disabled = false;
+    }
+  } catch(e) {
+    status.textContent = '✕ ' + e.message; btn.textContent = '💾 Save Layout'; btn.disabled = false;
+  }
+});
+
+// Load layout from server on map open, fall back to localStorage
+async function loadMapLayoutFromServer() {
+  const serverUrl = (localStorage.getItem('tt-server') || 'https://timetable-server-r6nb.onrender.com').replace(/\/$/, '');
+  try {
+    const res = await fetch(`${serverUrl}/map-layout`);
+    if (!res.ok) return; // No saved layout yet, keep localStorage
+    const data = await res.json();
+    if (data.rooms && Array.isArray(data.rooms)) {
+      mapRooms = data.rooms;
+      saveMapRooms();
+    }
+    if (data.groups && typeof data.groups === 'object') {
+      mapGroups = data.groups;
+      saveMapGroups();
+    }
+    renderMapSidebar();
+    renderMapView();
+  } catch(e) { /* silently fall back to localStorage */ }
+}
 
 // Add room
 document.getElementById('mapAddRoomBtn').addEventListener('click', mapAddFromInput);
@@ -1381,21 +1445,21 @@ function mapAddFromInput() {
   mapAddRoom(code);
   document.getElementById('mapNewCode').value = '';
 }
-// Known prefix → approximate canvas position (x, y) based on school layout
-// Canvas is ~1200x700. Layout: left=0, middle=400, right=800. top=0, mid=250, bottom=500
+// Known prefix → approximate canvas position based on school layout
+// Canvas is 1800x900. Left col ~40, mid col ~640, right col ~1260
 const MAP_PREFIX_POSITIONS = {
-  TC: { x:  40, y:  30 },  // Top left x2
-  CL: { x: 200, y:  30 },  // Top left
-  PA: { x:  40, y: 240 },  // Middle left x2
-  BR: { x: 200, y: 240 },  // Middle left
-  FW: { x:  40, y: 460 },  // Bottom left
-  HC: { x: 450, y:  30 },  // Middle top
-  MC: { x: 450, y: 240 },  // Middle middle
-  TF: { x: 450, y: 460 },  // Middle bottom
-  BE: { x: 840, y:  30 },  // Top right
-  DO: { x: 840, y: 240 },  // Middle right
-  GL: { x: 980, y: 240 },  // Middle right x2
-  TA: { x: 840, y: 460 },  // Bottom right
+  TC: { x:  40, y:  40 },   // Top left
+  CL: { x: 310, y:  40 },   // Top left
+  HC: { x: 640, y:  40 },   // Top middle
+  BE: { x: 1260, y:  40 },  // Top right
+  PA: { x:  40, y: 340 },   // Mid left
+  BR: { x: 310, y: 340 },   // Mid left
+  MC: { x: 640, y: 340 },   // Mid middle
+  DO: { x: 1260, y: 340 },  // Mid right
+  GL: { x: 1530, y: 340 },  // Mid right
+  FW: { x:  40, y: 640 },   // Bottom left
+  TF: { x: 640, y: 640 },   // Bottom middle
+  TA: { x: 1260, y: 640 },  // Bottom right
 };
 
 function getRoomPrefix(code) {
@@ -1528,14 +1592,8 @@ function renderMapView() {
     groups[prefix].push(room);
   });
 
-  // Canvas size — based on group positions
-  let maxX = 800, maxY = 540;
-  Object.keys(groups).forEach(prefix => {
-    const pos = mapGroups[prefix] || MAP_PREFIX_POSITIONS[prefix] || { x: 40, y: 40 };
-    maxX = Math.max(maxX, pos.x + 280);
-    maxY = Math.max(maxY, pos.y + 200);
-  });
-  canvas.style.width = maxX + 'px'; canvas.style.height = maxY + 'px';
+  // Canvas is fixed 1800x900 — just ensure it's set
+  canvas.style.width = '1800px'; canvas.style.height = '900px';
 
   const placedCodes = new Set(mapRooms.map(r => r.code.toUpperCase()));
 
