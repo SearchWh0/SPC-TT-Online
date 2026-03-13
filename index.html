@@ -189,14 +189,14 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 /* ── Map view ── */
 .map-view { display:none; }
 .map-view.visible { display:block; }
-.map-outer { overflow:auto; padding:20px; background:var(--bg); min-height:calc(100vh - 140px); }
+.map-outer { overflow:hidden; padding:12px; background:var(--bg); height:calc(100vh - 130px); display:flex; align-items:stretch; }
 .map-canvas {
   position:relative; background:var(--surface2);
-  border:1px solid var(--border); border-radius:16px;
-  width:1800px; height:900px;
+  border:1px solid var(--border); border-radius:12px;
+  width:100%; height:100%;
   background-image: linear-gradient(var(--grid-line,rgba(0,0,0,.05)) 1px,transparent 1px),
                     linear-gradient(90deg,var(--grid-line,rgba(0,0,0,.05)) 1px,transparent 1px);
-  background-size:40px 40px;
+  background-size:30px 30px;
 }
 [data-theme="dark"] .map-canvas { --grid-line:rgba(255,255,255,.04); }
 .map-canvas.edit-mode { cursor:default; }
@@ -253,21 +253,21 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 
 /* ── Map group zones ── */
 .map-group {
-  position:absolute; border:1.5px solid var(--border); border-radius:10px;
+  position:absolute; border:1.5px solid var(--border); border-radius:8px;
   background:var(--surface); padding:0; box-shadow:var(--shadow);
-  width:230px;
+  width:175px;
 }
 .map-group-label {
-  font-family:'DM Mono',monospace; font-size:0.6rem; font-weight:700;
+  font-family:'DM Mono',monospace; font-size:0.55rem; font-weight:700;
   color:var(--muted); letter-spacing:0.07em; text-transform:uppercase;
-  padding:5px 8px 3px; border-bottom:1px solid var(--border);
-  cursor:move; user-select:none; border-radius:8px 8px 0 0;
+  padding:4px 7px 3px; border-bottom:1px solid var(--border);
+  cursor:move; user-select:none; border-radius:6px 6px 0 0;
 }
 .map-group.edit-mode .map-group-label { background:var(--soft); }
 .map-group-rooms {
-  padding:6px; display:grid;
+  padding:4px; display:grid;
   grid-template-columns:repeat(2, 1fr);
-  gap:4px;
+  gap:3px;
 }
 </style>
 </head>
@@ -1445,21 +1445,22 @@ function mapAddFromInput() {
   mapAddRoom(code);
   document.getElementById('mapNewCode').value = '';
 }
-// Known prefix → approximate canvas position based on school layout
-// Canvas is 1800x900. Left col ~40, mid col ~640, right col ~1260
+// Positions use % of canvas — stored as {xp, yp} and converted at render time
+// Col positions: L1=1.5%, L2=18%, MID=35%, R1=62%, R2=79%
+// Row positions: TOP=3%, MID=36%, BOT=69%
 const MAP_PREFIX_POSITIONS = {
-  TC: { x:  40, y:  40 },   // Top left
-  CL: { x: 310, y:  40 },   // Top left
-  HC: { x: 640, y:  40 },   // Top middle
-  BE: { x: 1260, y:  40 },  // Top right
-  PA: { x:  40, y: 340 },   // Mid left
-  BR: { x: 310, y: 340 },   // Mid left
-  MC: { x: 640, y: 340 },   // Mid middle
-  DO: { x: 1260, y: 340 },  // Mid right
-  GL: { x: 1530, y: 340 },  // Mid right
-  FW: { x:  40, y: 640 },   // Bottom left
-  TF: { x: 640, y: 640 },   // Bottom middle
-  TA: { x: 1260, y: 640 },  // Bottom right
+  TC: { x:  16, y:  20 },  // Top left col1
+  CL: { x: 200, y:  20 },  // Top left col2
+  HC: { x: 390, y:  20 },  // Top mid
+  BE: { x: 700, y:  20 },  // Top right
+  PA: { x:  16, y: 210 },  // Mid left col1
+  BR: { x: 200, y: 210 },  // Mid left col2
+  MC: { x: 390, y: 210 },  // Mid mid
+  DO: { x: 700, y: 210 },  // Mid right col1
+  GL: { x: 880, y: 400 },  // Bot right col2 (right of TA)
+  FW: { x: 200, y: 400 },  // Bot left col2 (under BR)
+  TF: { x: 390, y: 400 },  // Bot mid
+  TA: { x: 700, y: 400 },  // Bot right col1
 };
 
 function getRoomPrefix(code) {
@@ -1479,13 +1480,10 @@ function seedMapGroups() {
   const usedPrefixes = [...new Set(mapRooms.map(r => getRoomPrefix(r.code)))];
   usedPrefixes.forEach(prefix => {
     if (!mapGroups[prefix]) {
-      const pos = MAP_PREFIX_POSITIONS[prefix];
-      if (pos) {
-        mapGroups[prefix] = { x: pos.x, y: pos.y };
-      } else {
-        const count = Object.keys(mapGroups).length;
-        mapGroups[prefix] = { x: 40 + (count % 5) * 220, y: 40 + Math.floor(count / 5) * 200 };
-      }
+      const known = MAP_PREFIX_POSITIONS[prefix];
+      const count = Object.keys(mapGroups).length;
+      const px = known || { x: 20 + (count % 5) * 190, y: 20 + Math.floor(count / 5) * 190 };
+      mapGroups[prefix] = { xp: +(px.x / 1080 * 100).toFixed(2), yp: +(px.y / 600 * 100).toFixed(2) };
       changed = true;
     }
   });
@@ -1592,26 +1590,33 @@ function renderMapView() {
     groups[prefix].push(room);
   });
 
-  // Canvas is fixed 1800x900 — just ensure it's set
-  canvas.style.width = '1800px'; canvas.style.height = '900px';
+  // Canvas fills its container via CSS — no fixed size needed
 
   const placedCodes = new Set(mapRooms.map(r => r.code.toUpperCase()));
 
+  const canvasW = canvas.offsetWidth  || 1000;
+  const canvasH = canvas.offsetHeight || 600;
+
   // Render each group as a zone
   Object.entries(groups).sort((a,b) => a[0].localeCompare(b[0])).forEach(([prefix, rooms]) => {
-    // Use saved position, then known position, then auto-stack
+    // Use saved position (as %), then known px→% from MAP_PREFIX_POSITIONS, then auto-stack
     if (!mapGroups[prefix]) {
       const known = MAP_PREFIX_POSITIONS[prefix];
       const count = Object.keys(mapGroups).length;
-      mapGroups[prefix] = known || { x: 40 + (count % 5) * 220, y: 40 + Math.floor(count / 5) * 200 };
+      const px = known || { x: 20 + (count % 5) * 190, y: 20 + Math.floor(count / 5) * 190 };
+      // Convert px defaults to % of a reference 1080x600 canvas
+      mapGroups[prefix] = { xp: +(px.x / 1080 * 100).toFixed(2), yp: +(px.y / 600 * 100).toFixed(2) };
       saveMapGroups();
     }
     const pos = mapGroups[prefix];
+    // Support both legacy px and new % format
+    const left = pos.xp !== undefined ? (pos.xp / 100 * canvasW) : pos.x;
+    const top  = pos.yp !== undefined ? (pos.yp / 100 * canvasH) : pos.y;
 
     const groupEl = document.createElement('div');
     groupEl.className = 'map-group' + (mapEditMode ? ' edit-mode' : '');
-    groupEl.style.left = pos.x + 'px';
-    groupEl.style.top  = pos.y + 'px';
+    groupEl.style.left = left + 'px';
+    groupEl.style.top  = top  + 'px';
 
     const labelEl = document.createElement('div');
     labelEl.className = 'map-group-label';
@@ -1703,20 +1708,40 @@ function getMapCurrentAndNext() {
   return { cur, nxt };
 }
 
-// Drag entire group zone by its label header
 function makeGroupDraggable(groupEl, prefix, pos) {
   const label = groupEl.querySelector('.map-group-label');
-  let sx, sy, ox, oy;
+  const canvas = document.getElementById('mapCanvas');
+  let sx, sy, oleft, otop;
+
+  function getPx() {
+    const cW = canvas.offsetWidth || 1000;
+    const cH = canvas.offsetHeight || 600;
+    return {
+      left: pos.xp !== undefined ? pos.xp / 100 * cW : (pos.x || 0),
+      top:  pos.yp !== undefined ? pos.yp / 100 * cH : (pos.y || 0)
+    };
+  }
+  function savePct(left, top) {
+    const cW = canvas.offsetWidth || 1000;
+    const cH = canvas.offsetHeight || 600;
+    pos.xp = +(left / cW * 100).toFixed(2);
+    pos.yp = +(top  / cH * 100).toFixed(2);
+    // Remove legacy px keys
+    delete pos.x; delete pos.y;
+    mapGroups[prefix] = pos;
+  }
+
   function startDrag(clientX, clientY) {
-    sx = clientX; sy = clientY; ox = pos.x; oy = pos.y;
+    const p = getPx();
+    sx = clientX; sy = clientY; oleft = p.left; otop = p.top;
     groupEl.style.zIndex = 10;
   }
   function doDrag(clientX, clientY) {
-    pos.x = Math.max(0, ox + clientX - sx);
-    pos.y = Math.max(0, oy + clientY - sy);
-    groupEl.style.left = pos.x + 'px';
-    groupEl.style.top  = pos.y + 'px';
-    mapGroups[prefix] = { x: pos.x, y: pos.y };
+    const newLeft = Math.max(0, oleft + clientX - sx);
+    const newTop  = Math.max(0, otop  + clientY - sy);
+    groupEl.style.left = newLeft + 'px';
+    groupEl.style.top  = newTop  + 'px';
+    savePct(newLeft, newTop);
   }
   function endDrag() { groupEl.style.zIndex = ''; saveMapGroups(); }
 
