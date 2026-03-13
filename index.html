@@ -1307,27 +1307,30 @@ document.getElementById('tabMap').addEventListener('click', () => {
   switchMainView('map');
   if (!mapLayoutLoaded) {
     mapLayoutLoaded = true;
-    requestAnimationFrame(() => { scaleMobileMap(); loadMapLayoutFromServer(); });
+    loadMapLayoutFromServer(); // renders then scales inside
   } else {
-    requestAnimationFrame(() => { scaleMobileMap(); renderMapView(); });
+    requestAnimationFrame(() => { renderMapView(); scaleMobileMap(); });
   }
 });
 
 // Scale the map canvas to fit mobile screens
 function scaleMobileMap() {
-  if (window.innerWidth >= 769) return; // desktop — no scaling
+  if (window.innerWidth >= 769) return;
   const canvas = document.getElementById('mapCanvas');
   const outer  = document.getElementById('mapOuter');
   if (!canvas || !outer) return;
   const CANVAS_W = 1100, CANVAS_H = 660;
-  const availW = outer.clientWidth  - 16; // minus padding
-  const availH = window.innerHeight - 140; // minus header + toolbar + footer
-  const scale  = Math.min(availW / CANVAS_W, availH / CANVAS_H, 1);
-  canvas.style.transform = `scale(${scale})`;
+  // Force fixed size first so offsetWidth is reliable
   canvas.style.width  = CANVAS_W + 'px';
   canvas.style.height = CANVAS_H + 'px';
-  // Shrink outer to match scaled height so page doesn't have extra space
-  outer.style.height  = Math.ceil(CANVAS_H * scale + 16) + 'px';
+  canvas.style.transform = 'none';
+  const availW = window.innerWidth  - 16;
+  const availH = window.innerHeight - 140;
+  const scale  = Math.min(availW / CANVAS_W, availH / CANVAS_H, 1);
+  canvas.style.transform      = `scale(${scale})`;
+  canvas.style.transformOrigin = 'top left';
+  outer.style.width  = Math.ceil(CANVAS_W * scale) + 'px';
+  outer.style.height = Math.ceil(CANVAS_H * scale) + 'px';
 }
 
 window.addEventListener('resize', () => {
@@ -1520,28 +1523,32 @@ function renderMapView() {
     groups[prefix].push(room);
   });
 
-  // Canvas fills its container via CSS — no fixed size needed
+  // Always use fixed reference dimensions — groups are positioned as % of these
+  const CANVAS_REF_W = 1100, CANVAS_REF_H = 660;
+  const canvasW = CANVAS_REF_W;
+  const canvasH = CANVAS_REF_H;
+
+  // On desktop the canvas fills its flex container; on mobile we set it explicitly
+  if (window.innerWidth < 769) {
+    canvas.style.width  = CANVAS_REF_W + 'px';
+    canvas.style.height = CANVAS_REF_H + 'px';
+  }
 
   const placedCodes = new Set(mapRooms.map(r => r.code.toUpperCase()));
-
-  const canvasW = canvas.offsetWidth  || 1000;
-  const canvasH = canvas.offsetHeight || 600;
 
   // Render each group as a zone
   Object.entries(groups).sort((a,b) => a[0].localeCompare(b[0])).forEach(([prefix, rooms]) => {
     // Use saved position (as %), then known px→% from MAP_PREFIX_POSITIONS, then auto-stack
     if (!mapGroups[prefix]) {
       const known = MAP_PREFIX_POSITIONS[prefix];
-      const count = Object.keys(mapGroups).length;
+      const count = Object.keys(mapGroups).filter(k => k !== '__v').length;
       const px = known || { x: 20 + (count % 5) * 190, y: 20 + Math.floor(count / 5) * 190 };
-      // Convert px defaults to % of a reference 1080x600 canvas
-      mapGroups[prefix] = { xp: +(px.x / 1080 * 100).toFixed(2), yp: +(px.y / 600 * 100).toFixed(2) };
+      mapGroups[prefix] = { xp: +(px.x / CANVAS_REF_W * 100).toFixed(2), yp: +(px.y / CANVAS_REF_H * 100).toFixed(2) };
       saveMapGroups();
     }
     const pos = mapGroups[prefix];
-    // Support both legacy px and new % format
-    const left = pos.xp !== undefined ? (pos.xp / 100 * canvasW) : pos.x;
-    const top  = pos.yp !== undefined ? (pos.yp / 100 * canvasH) : pos.y;
+    const left = pos.xp !== undefined ? (pos.xp / 100 * CANVAS_REF_W) : (pos.x || 0);
+    const top  = pos.yp !== undefined ? (pos.yp / 100 * CANVAS_REF_H) : (pos.y || 0);
 
     const groupEl = document.createElement('div');
     groupEl.className = 'map-group' + (mapEditMode ? ' edit-mode' : '');
@@ -1640,23 +1647,18 @@ function getMapCurrentAndNext() {
 
 function makeGroupDraggable(groupEl, prefix, pos) {
   const label = groupEl.querySelector('.map-group-label');
-  const canvas = document.getElementById('mapCanvas');
   let sx, sy, oleft, otop;
+  const REF_W = 1100, REF_H = 660;
 
   function getPx() {
-    const cW = canvas.offsetWidth || 1000;
-    const cH = canvas.offsetHeight || 600;
     return {
-      left: pos.xp !== undefined ? pos.xp / 100 * cW : (pos.x || 0),
-      top:  pos.yp !== undefined ? pos.yp / 100 * cH : (pos.y || 0)
+      left: pos.xp !== undefined ? pos.xp / 100 * REF_W : (pos.x || 0),
+      top:  pos.yp !== undefined ? pos.yp / 100 * REF_H : (pos.y || 0)
     };
   }
   function savePct(left, top) {
-    const cW = canvas.offsetWidth || 1000;
-    const cH = canvas.offsetHeight || 600;
-    pos.xp = +(left / cW * 100).toFixed(2);
-    pos.yp = +(top  / cH * 100).toFixed(2);
-    // Remove legacy px keys
+    pos.xp = +(left / REF_W * 100).toFixed(2);
+    pos.yp = +(top  / REF_H * 100).toFixed(2);
     delete pos.x; delete pos.y;
     mapGroups[prefix] = pos;
   }
