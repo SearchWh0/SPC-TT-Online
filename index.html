@@ -242,7 +242,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .map-group {
   position:absolute; border:1.5px solid var(--border); border-radius:8px;
   background:var(--surface); padding:0; box-shadow:var(--shadow);
-  width:160px;
+  width:220px;
 }
 .map-group-label {
   font-family:'DM Mono',monospace; font-size:0.55rem; font-weight:700;
@@ -251,7 +251,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   cursor:default; user-select:none; border-radius:6px 6px 0 0;
 }
 .map-group-rooms {
-  padding:4px; display:flex; flex-direction:column; gap:3px;
+  padding:4px; display:grid; grid-template-columns:repeat(3,1fr); gap:3px;
 }
 </style>
 </head>
@@ -1350,7 +1350,7 @@ async function loadMapLayoutFromServer() {
       saveMapRooms();
     }
     if (data.groups && typeof data.groups === 'object') {
-      mapGroups = data.groups;
+      mapGroups = { ...data.groups, __v: MAP_LAYOUT_VERSION };
       saveMapGroups();
     }
     renderMapSidebar();
@@ -1363,30 +1363,36 @@ async function loadMapLayoutFromServer() {
 // Col positions: L1=1.5%, L2=18%, MID=35%, R1=62%, R2=79%
 // Row positions: TOP=3%, MID=36%, BOT=69%
 const MAP_PREFIX_POSITIONS = {
-  TC: { x:  16, y:  20 },  // Top left col1
-  CL: { x: 200, y:  20 },  // Top left col2
-  HC: { x: 390, y:  20 },  // Top mid
-  BE: { x: 700, y:  20 },  // Top right
-  PA: { x:  16, y: 210 },  // Mid left col1
-  BR: { x: 200, y: 210 },  // Mid left col2
-  MC: { x: 390, y: 210 },  // Mid mid
-  DO: { x: 700, y: 210 },  // Mid right col1
-  GL: { x: 880, y: 400 },  // Bot right col2 (right of TA)
-  FW: { x: 200, y: 400 },  // Bot left col2 (under BR)
-  TF: { x: 390, y: 400 },  // Bot mid
-  TA: { x: 700, y: 400 },  // Bot right col1
+  TC: { x:  12, y:  18 },  // Top left col1
+  CL: { x: 244, y:  18 },  // Top left col2
+  HC: { x: 420, y:  18 },  // Top mid
+  BE: { x: 760, y:  18 },  // Top right
+  PA: { x:  12, y: 210 },  // Mid left col1
+  BR: { x: 244, y: 210 },  // Mid left col2
+  MC: { x: 420, y: 210 },  // Mid mid
+  DO: { x: 760, y: 210 },  // Mid right
+  FW: { x: 244, y: 400 },  // Bot (under BR)
+  TF: { x: 420, y: 400 },  // Bot mid
+  TA: { x: 760, y: 400 },  // Bot right col1
+  GL: { x: 840, y: 210 },  // Right of DO (stacked, pulled in)
 };
 
 function getRoomPrefix(code) {
   return code.length >= 2 ? code.slice(0, 2).toUpperCase() : code.toUpperCase();
 }
 
-// mapGroups: { prefix: { x, y } } — positions of group zones (draggable)
+const MAP_LAYOUT_VERSION = 3; // bump to reset saved positions
+
+// mapGroups: { prefix: { xp, yp } } — percentage positions of group zones
 let mapGroups = loadMapGroups();
 function loadMapGroups() {
-  try { return JSON.parse(localStorage.getItem('tt-map-groups') || 'null') || {}; } catch(e) { return {}; }
+  try {
+    const saved = JSON.parse(localStorage.getItem('tt-map-groups') || 'null');
+    if (!saved || saved.__v !== MAP_LAYOUT_VERSION) return { __v: MAP_LAYOUT_VERSION };
+    return saved;
+  } catch(e) { return { __v: MAP_LAYOUT_VERSION }; }
 }
-function saveMapGroups() { localStorage.setItem('tt-map-groups', JSON.stringify(mapGroups)); }
+function saveMapGroups() { mapGroups.__v = MAP_LAYOUT_VERSION; localStorage.setItem('tt-map-groups', JSON.stringify(mapGroups)); }
 
 // Ensure every prefix from current rooms has a group position
 function seedMapGroups() {
