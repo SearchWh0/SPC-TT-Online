@@ -209,6 +209,13 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 }
 [data-theme="dark"] .map-canvas { --grid-line:rgba(255,255,255,.04); }
 .map-canvas.edit-mode { cursor:default; }
+
+@media (max-width: 768px) {
+  .map-view.visible { height:auto; }
+  .map-body { flex-direction:column; }
+  .map-outer { overflow:auto; -webkit-overflow-scrolling:touch; padding:10px; }
+  .map-canvas { flex:none; width:1100px; height:640px; border-radius:8px; }
+}
 .map-room {
   background:var(--soft); border:1.5px solid var(--border);
   border-radius:6px; padding:4px 8px 5px;
