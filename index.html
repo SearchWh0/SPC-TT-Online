@@ -32,6 +32,12 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .header-right { margin-left:auto; display:flex; align-items:center; gap:14px; }
 .refresh-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.78rem; padding:6px 14px; border-radius:7px; cursor:pointer; transition:border-color .2s,color .2s; }
 .refresh-btn:hover { border-color:var(--text); color:var(--text); }
+
+/* ── View tabs (Timetable / Map) ── */
+.view-tabs { display:flex; gap:0; margin-left:10px; border:1px solid var(--border); border-radius:8px; overflow:hidden; flex-shrink:0; }
+.view-tab { background:none; border:none; color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.78rem; font-weight:600; padding:6px 14px; cursor:pointer; transition:background .15s,color .15s; }
+.view-tab.active { background:var(--text); color:var(--bg); }
+.view-tab:not(.active):hover { background:var(--soft); color:var(--text); }
 .theme-toggle { display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; }
 .toggle-label { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; }
 .toggle-track { width:36px; height:20px; border-radius:10px; background:var(--toggle-track); position:relative; transition:background .2s; flex-shrink:0; }
@@ -179,6 +185,68 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   .lso-row2 { grid-template-columns:1fr; }
   .detail-actions { margin-left:0; width:100%; }
 }
+
+/* ── Map view ── */
+.map-view { display:none; }
+.map-view.visible { display:block; }
+.map-outer { overflow:auto; padding:20px; background:var(--bg); min-height:calc(100vh - 140px); }
+.map-canvas {
+  position:relative; background:var(--surface2);
+  border:1px solid var(--border); border-radius:16px;
+  min-width:900px; min-height:540px;
+  background-image: linear-gradient(var(--grid-line,rgba(0,0,0,.05)) 1px,transparent 1px),
+                    linear-gradient(90deg,var(--grid-line,rgba(0,0,0,.05)) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+[data-theme="dark"] .map-canvas { --grid-line:rgba(255,255,255,.04); }
+.map-canvas.edit-mode { cursor:default; }
+.map-room {
+  position:absolute; background:var(--surface); border:1.5px solid var(--border);
+  border-radius:10px; padding:7px 10px 8px; min-width:82px;
+  box-shadow:var(--shadow); transition:border-color .15s,box-shadow .15s;
+  user-select:none;
+}
+.map-room.occupied { border-color:var(--text); }
+.map-room.draggable { cursor:grab; }
+.map-room.draggable:active { cursor:grabbing; box-shadow:var(--shadow-lg); z-index:10; }
+.map-room-code { font-family:'DM Mono',monospace; font-size:0.7rem; font-weight:600; color:var(--muted); margin-bottom:4px; display:flex; align-items:center; justify-content:space-between; }
+.map-room.occupied .map-room-code { color:var(--text); }
+.map-room-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.68rem; padding:0 0 0 4px; opacity:0; transition:opacity .15s; line-height:1; }
+.map-room:hover .map-room-del { opacity:1; }
+.map-room-del:hover { color:#ef4444; }
+.map-students { display:flex; flex-direction:column; gap:3px; }
+.map-badge { font-size:0.68rem; font-weight:700; padding:2px 7px; border-radius:5px; color:#fff; white-space:nowrap; line-height:1.5; }
+.map-dc-tag { font-size:0.58rem; font-weight:700; padding:1px 5px; border-radius:4px; font-family:'DM Mono',monospace; margin-top:2px; display:inline-block; }
+/* Map toolbar */
+.map-toolbar { padding:10px 20px; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.map-tab-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.75rem; font-weight:600; padding:5px 14px; border-radius:7px; cursor:pointer; transition:all .15s; display:flex; align-items:center; gap:6px; }
+.map-tab-btn.active { background:var(--text); color:var(--bg); border-color:var(--text); }
+.map-tab-btn:not(.active):hover { border-color:var(--text); color:var(--text); }
+.map-badge-count { font-family:'DM Mono',monospace; font-size:0.6rem; padding:1px 6px; border-radius:8px; background:var(--soft); border:1px solid var(--border); }
+.map-tab-btn.active .map-badge-count { background:rgba(255,255,255,.2); border-color:transparent; }
+.map-sep { width:1px; height:20px; background:var(--border); flex-shrink:0; }
+.map-edit-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.75rem; font-weight:600; padding:5px 14px; border-radius:7px; cursor:pointer; transition:all .15s; }
+.map-edit-btn.on { background:var(--text); color:var(--bg); border-color:var(--text); }
+.map-edit-btn:not(.on):hover { border-color:var(--text); color:var(--text); }
+/* Map sidebar */
+.map-body { display:flex; }
+.map-sidebar { width:240px; flex-shrink:0; background:var(--surface); border-left:1px solid var(--border); overflow-y:auto; display:none; flex-direction:column; }
+.map-sidebar.open { display:flex; }
+.msb { padding:14px 16px; border-bottom:1px solid var(--border); }
+.msb-title { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px; }
+.msb-input { width:100%; background:var(--soft); border:1px solid var(--border); border-radius:7px; color:var(--text); font-family:'DM Mono',monospace; font-size:0.78rem; padding:7px 10px; outline:none; margin-bottom:7px; }
+.msb-input:focus { border-color:var(--text); }
+.msb-btn { width:100%; background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.78rem; font-weight:700; padding:8px; border-radius:7px; cursor:pointer; margin-bottom:6px; transition:opacity .15s; }
+.msb-btn:hover { opacity:.82; }
+.msb-btn.ghost { background:var(--soft); color:var(--text); border:1px solid var(--border); }
+.map-chip { display:inline-flex; align-items:center; gap:4px; background:var(--soft); border:1px solid var(--border); border-radius:6px; padding:2px 8px; font-family:'DM Mono',monospace; font-size:0.68rem; margin:2px; cursor:pointer; }
+.map-chip:hover { border-color:var(--muted); }
+/* Map footer */
+.map-footer { background:var(--surface); border-top:1px solid var(--border); padding:7px 20px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); }
+.map-unplaced { display:flex; gap:5px; flex-wrap:wrap; align-items:center; }
+.map-empty { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; pointer-events:none; }
+.map-empty .icon { font-size:2.5rem; opacity:.25; }
+.map-empty p { font-size:.85rem; color:var(--muted); text-align:center; line-height:1.7; max-width:300px; }
 </style>
 </head>
 <body>
@@ -191,6 +259,10 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   </div>
   <div class="header-right">
     <button class="refresh-btn" id="refreshBtn">↻ Refresh</button>
+    <div class="view-tabs">
+      <button class="view-tab active" id="tabTimetable">📋 Timetable</button>
+      <button class="view-tab" id="tabMap">🗺 Map</button>
+    </div>
     <button class="view-toggle-btn" id="viewToggleBtn" title="Toggle compact/expanded view">⊞ Compact</button>
     <div class="theme-toggle" id="themeToggle">
       <span class="toggle-label" id="toggleLabel">Light</span>
@@ -263,6 +335,46 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 </div>
 <div class="detail-view" id="detailView">
   <div class="detail-inner" id="detailInner"></div>
+</div>
+
+<!-- ── MAP VIEW ── -->
+<div class="map-view" id="mapView">
+  <div class="map-toolbar">
+    <button class="map-tab-btn active" data-maptab="now">Now <span class="map-badge-count" id="mapNowBadge">0</span></button>
+    <button class="map-tab-btn" data-maptab="next">Next <span class="map-badge-count" id="mapNextBadge">0</span></button>
+    <div class="map-sep"></div>
+    <button class="map-edit-btn" id="mapEditBtn">✏ Edit Rooms</button>
+  </div>
+  <div class="map-body">
+    <div class="map-outer" id="mapOuter">
+      <div class="map-canvas" id="mapCanvas">
+        <div class="map-empty" id="mapEmpty">
+          <div class="icon">🏫</div>
+          <p>No rooms placed yet.<br>Click <strong>✏ Edit Rooms</strong> to add rooms and drag them into position.</p>
+        </div>
+      </div>
+    </div>
+    <div class="map-sidebar" id="mapSidebar">
+      <div class="msb">
+        <div class="msb-title">Add Room</div>
+        <input class="msb-input" id="mapNewCode" placeholder="Room code e.g. BR2" />
+        <button class="msb-btn" id="mapAddRoomBtn">+ Add Room</button>
+        <button class="msb-btn ghost" id="mapAutoBtn">🔍 Import from timetable</button>
+      </div>
+      <div class="msb" style="flex:1;">
+        <div class="msb-title">Placed Rooms (<span id="mapRoomCount">0</span>)</div>
+        <div id="mapChips"></div>
+      </div>
+      <div class="msb">
+        <button class="msb-btn ghost" id="mapClearAllBtn" style="color:#ef4444;border-color:#fca5a5;">🗑 Remove all rooms</button>
+      </div>
+    </div>
+  </div>
+  <div class="map-footer">
+    <span id="mapStatus">—</span>
+    <span id="mapUnplacedLabel" style="display:none;">⚠ Not on map:</span>
+    <div class="map-unplaced" id="mapUnplaced"></div>
+  </div>
 </div>
 
 <script>
@@ -1173,6 +1285,286 @@ function renderDetail(key, grp, name) {
 }
 
 function flash(btn){const orig=btn.textContent;btn.textContent='✓ Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copied');},2000);}
+
+// ── Top-level view tabs (Timetable / Map) ──────────────────────────────────
+let mainView = 'timetable'; // 'timetable' | 'map'
+
+document.getElementById('tabTimetable').addEventListener('click', () => switchMainView('timetable'));
+document.getElementById('tabMap').addEventListener('click', () => {
+  switchMainView('map');
+  renderMapView();
+});
+
+function switchMainView(view) {
+  mainView = view;
+  document.getElementById('tabTimetable').classList.toggle('active', view === 'timetable');
+  document.getElementById('tabMap').classList.toggle('active', view === 'map');
+  document.getElementById('mapView').classList.toggle('visible', view === 'map');
+  // Hide timetable-specific panels when on map
+  const onTimetable = view === 'timetable';
+  document.getElementById('viewToggleBtn').style.display = onTimetable ? '' : 'none';
+  if (view === 'map') {
+    // Hide all timetable screens
+    ['loadingState','emptyState','noServerState','tileView','detailView','serverSetup'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.classList.remove('visible'); el.style.display = 'none'; }
+    });
+    document.getElementById('periodStrip').classList.remove('visible');
+  } else {
+    // Restore timetable — re-run showScreen for current state
+    if (currentGroupMap) {
+      showScreen(activeDetailKey && currentGroupMap.has(activeDetailKey) ? 'detailView' : 'tileView');
+    } else {
+      showScreen('loadingState');
+      loadTimetable();
+    }
+  }
+}
+
+// ── Map state ──────────────────────────────────────────────────────────────
+let mapRooms    = loadMapRooms();
+let mapTab      = 'now'; // 'now' | 'next'
+let mapEditMode = false;
+
+function loadMapRooms() {
+  try { return JSON.parse(localStorage.getItem('tt-map-rooms') || '[]'); }
+  catch(e) { return []; }
+}
+function saveMapRooms() { localStorage.setItem('tt-map-rooms', JSON.stringify(mapRooms)); }
+function mapUid() { return Math.random().toString(36).slice(2,9); }
+
+// Map period tabs
+document.querySelectorAll('[data-maptab]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-maptab]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    mapTab = btn.dataset.maptab;
+    renderMapView();
+  });
+});
+
+// Edit toggle
+document.getElementById('mapEditBtn').addEventListener('click', () => {
+  mapEditMode = !mapEditMode;
+  document.getElementById('mapEditBtn').classList.toggle('on', mapEditMode);
+  document.getElementById('mapSidebar').classList.toggle('open', mapEditMode);
+  renderMapView();
+});
+
+// Add room
+document.getElementById('mapAddRoomBtn').addEventListener('click', mapAddFromInput);
+document.getElementById('mapNewCode').addEventListener('keydown', e => { if (e.key === 'Enter') mapAddFromInput(); });
+function mapAddFromInput() {
+  const code = document.getElementById('mapNewCode').value.trim().toUpperCase();
+  if (!code) return;
+  if (mapRooms.find(r => r.code === code)) { alert('Room ' + code + ' already exists.'); return; }
+  mapAddRoom(code);
+  document.getElementById('mapNewCode').value = '';
+}
+function mapAddRoom(code) {
+  const idx = mapRooms.length, cols = 8;
+  mapRooms.push({ id: mapUid(), code, x: 20 + (idx % cols) * 140, y: 20 + Math.floor(idx / cols) * 100 });
+  saveMapRooms(); renderMapSidebar(); renderMapView();
+}
+function mapRemoveRoom(id) {
+  mapRooms = mapRooms.filter(r => r.id !== id);
+  saveMapRooms(); renderMapSidebar(); renderMapView();
+}
+
+// Auto-import
+document.getElementById('mapAutoBtn').addEventListener('click', () => {
+  if (!currentGroupMap) { alert('Load the timetable first — click ↻ Refresh.'); return; }
+  const found = new Set();
+  currentGroupMap.forEach(grp => {
+    Object.values(grp.slots).forEach(slots => slots.forEach(s => { if (s.d2) found.add(s.d2.toUpperCase().trim()); }));
+  });
+  if (!found.size) { alert('No room codes found in timetable data.'); return; }
+  const existing = new Set(mapRooms.map(r => r.code));
+  const toAdd = [...found].filter(r => !existing.has(r)).sort();
+  if (!toAdd.length) { alert('All rooms are already on the map.'); return; }
+  toAdd.forEach(code => {
+    const idx = mapRooms.length, cols = 8;
+    mapRooms.push({ id: mapUid(), code, x: 20 + (idx % cols) * 140, y: 20 + Math.floor(idx / cols) * 100 });
+  });
+  saveMapRooms(); renderMapSidebar(); renderMapView();
+  alert('Added ' + toAdd.length + ' rooms: ' + toAdd.join(', ') + '\n\nDrag them into position.');
+});
+
+// Clear all
+document.getElementById('mapClearAllBtn').addEventListener('click', () => {
+  if (!confirm('Remove all rooms from the map?')) return;
+  mapRooms = []; saveMapRooms(); renderMapSidebar(); renderMapView();
+});
+
+// Sidebar chips
+function renderMapSidebar() {
+  const chips = document.getElementById('mapChips');
+  chips.innerHTML = '';
+  document.getElementById('mapRoomCount').textContent = mapRooms.length;
+  [...mapRooms].sort((a,b) => a.code.localeCompare(b.code)).forEach(room => {
+    const chip = document.createElement('span');
+    chip.className = 'map-chip';
+    chip.innerHTML = room.code + ' <span style="color:var(--muted);font-size:.65rem;">✕</span>';
+    chip.querySelector('span').addEventListener('click', e => { e.stopPropagation(); mapRemoveRoom(room.id); });
+    chips.appendChild(chip);
+  });
+}
+
+// ── Get placements for current map tab ────────────────────────────────────
+function getMapPlacements(slot) {
+  const map = new Map();
+  if (!currentGroupMap || !slot || !slot.period) return map;
+  const p = slot.period;
+  currentGroupMap.forEach((grp, key) => {
+    const name = currentNames[key] || key;
+    const slots = grp.slots[p];
+    if (!slots || !slots.length) return;
+    const room = (slots[0].d2 || '').toUpperCase().trim();
+    if (!room) return;
+    if (!map.has(room)) map.set(room, []);
+    map.get(room).push({ name, color: grp.bg, fg: grp.fg || null });
+  });
+  return map;
+}
+
+// ── Render map ─────────────────────────────────────────────────────────────
+function renderMapView() {
+  if (mainView !== 'map') return;
+  const { cur, nxt } = getMapCurrentAndNext();
+
+  // Update badges
+  let nc = 0, nx = 0;
+  getMapPlacements(cur).forEach(a => nc += a.length);
+  getMapPlacements(nxt).forEach(a => nx += a.length);
+  document.getElementById('mapNowBadge').textContent = nc;
+  document.getElementById('mapNextBadge').textContent = nx;
+
+  const slot = mapTab === 'now' ? cur : nxt;
+  const placements = getMapPlacements(slot);
+
+  const canvas = document.getElementById('mapCanvas');
+  canvas.querySelectorAll('.map-room').forEach(el => el.remove());
+
+  // Empty state
+  document.getElementById('mapEmpty').style.display = mapRooms.length ? 'none' : '';
+
+  // Canvas size
+  let maxX = 700, maxY = 500;
+  mapRooms.forEach(r => { maxX = Math.max(maxX, r.x + 160); maxY = Math.max(maxY, r.y + 120); });
+  canvas.style.width = maxX + 'px'; canvas.style.height = maxY + 'px';
+
+  const placedCodes = new Set(mapRooms.map(r => r.code.toUpperCase()));
+
+  mapRooms.forEach(room => {
+    const students = placements.get(room.code.toUpperCase()) || [];
+    const el = document.createElement('div');
+    el.className = 'map-room' + (students.length ? ' occupied' : '') + (mapEditMode ? ' draggable' : '');
+    el.style.left = room.x + 'px'; el.style.top = room.y + 'px';
+    el.dataset.id = room.id;
+
+    const codeRow = document.createElement('div'); codeRow.className = 'map-room-code';
+    codeRow.appendChild(document.createTextNode(room.code));
+    if (mapEditMode) {
+      const del = document.createElement('button'); del.className = 'map-room-del'; del.textContent = '✕';
+      del.addEventListener('click', e => { e.stopPropagation(); mapRemoveRoom(room.id); });
+      codeRow.appendChild(del);
+    }
+    el.appendChild(codeRow);
+
+    if (students.length) {
+      const stuDiv = document.createElement('div'); stuDiv.className = 'map-students';
+      students.forEach(s => {
+        const b = document.createElement('span'); b.className = 'map-badge';
+        b.style.background = s.color; if (s.fg) b.style.color = s.fg;
+        b.textContent = s.name;
+        // Check if this LSO has daily changes
+        if (currentDailyChanges) {
+          const dcLookup = getDcLookup();
+          const match = dcLookup[s.name.toLowerCase()];
+          const isAbsent = new Set((currentDailyChanges.absent||[]).map(n=>n.toLowerCase())).has(s.name.toLowerCase());
+          if (isAbsent) {
+            const tag = document.createElement('span'); tag.className = 'map-dc-tag';
+            tag.style.cssText = 'background:#fef3c7;color:#92400e;border:1px solid #fcd34d;';
+            tag.textContent = 'ABSENT'; b.appendChild(tag);
+          } else if (match) {
+            const p = mapTab === 'now' ? (cur && cur.period ? 'p' + cur.period : null) : (nxt && nxt.period ? 'p' + nxt.period : null);
+            const change = p && match.periods[p];
+            if (change) {
+              const tag = document.createElement('span'); tag.className = 'map-dc-tag';
+              tag.style.cssText = 'background:#dbeafe;color:#1e40af;border:1px solid #93c5fd;display:block;margin-top:2px;';
+              tag.textContent = '📌 ' + change; b.appendChild(tag);
+            }
+          }
+        }
+        stuDiv.appendChild(b);
+      });
+      el.appendChild(stuDiv);
+    }
+
+    if (mapEditMode) makeMapDraggable(el, room);
+    canvas.appendChild(el);
+  });
+
+  // Unplaced
+  const unplacedEl = document.getElementById('mapUnplaced');
+  const unplacedLabel = document.getElementById('mapUnplacedLabel');
+  unplacedEl.innerHTML = '';
+  const unplaced = [];
+  placements.forEach((students, code) => { if (!placedCodes.has(code)) students.forEach(s => unplaced.push({...s, code})); });
+  if (unplaced.length) {
+    unplacedLabel.style.display = '';
+    unplaced.forEach(s => {
+      const b = document.createElement('span'); b.className = 'map-badge';
+      b.style.cssText = 'background:' + s.color + ';' + (s.fg ? 'color:' + s.fg + ';' : '') + 'cursor:default;';
+      b.title = 'Room ' + s.code + ' not on map — add it in Edit Rooms';
+      b.textContent = s.name + ' (' + s.code + ')';
+      unplacedEl.appendChild(b);
+    });
+  } else { unplacedLabel.style.display = 'none'; }
+
+  document.getElementById('mapStatus').textContent =
+    slot ? ('Showing ' + slot.label + (slot.start ? ' · ' + slot.start + '–' + slot.end : '')) : 'No period active';
+}
+
+function getMapCurrentAndNext() {
+  const nm = nowMinutes();
+  let cur = null, nxt = null;
+  for (const s of SCHOOL_SCHEDULE) {
+    const a = timeToMinutes(s.start), b = timeToMinutes(s.end);
+    if (nm >= a && nm < b) cur = s;
+    else if (nm < a && !nxt) nxt = s;
+  }
+  return { cur, nxt };
+}
+
+function makeMapDraggable(el, room) {
+  let sx, sy, ox, oy;
+  el.addEventListener('mousedown', e => {
+    if (e.target.classList.contains('map-room-del')) return;
+    e.preventDefault();
+    sx = e.clientX; sy = e.clientY; ox = room.x; oy = room.y; el.style.zIndex = 10;
+    function move(e2) {
+      room.x = Math.max(0, ox + e2.clientX - sx);
+      room.y = Math.max(0, oy + e2.clientY - sy);
+      el.style.left = room.x + 'px'; el.style.top = room.y + 'px';
+    }
+    function up() {
+      el.style.zIndex = ''; saveMapRooms(); renderMapSidebar();
+      document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up);
+    }
+    document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
+  });
+  el.addEventListener('touchstart', e => {
+    if (e.target.classList.contains('map-room-del')) return;
+    const t = e.touches[0]; sx = t.clientX; sy = t.clientY; ox = room.x; oy = room.y; el.style.zIndex = 10;
+    function tmove(e2) { const t2 = e2.touches[0]; room.x = Math.max(0, ox + t2.clientX - sx); room.y = Math.max(0, oy + t2.clientY - sy); el.style.left = room.x + 'px'; el.style.top = room.y + 'px'; }
+    function tup() { el.style.zIndex = ''; saveMapRooms(); document.removeEventListener('touchmove', tmove); document.removeEventListener('touchend', tup); }
+    document.addEventListener('touchmove', tmove, { passive: true }); document.addEventListener('touchend', tup);
+  }, { passive: true });
+}
+
+// Init map sidebar
+renderMapSidebar();
 
 loadTimetable();
 </script>
