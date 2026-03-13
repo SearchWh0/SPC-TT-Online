@@ -23,15 +23,23 @@
 }
 body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif; min-height:100vh; transition:background .25s,color .25s; }
 
-.site-header { background:var(--surface); border-bottom:1px solid var(--border); padding:20px 32px; display:flex; align-items:center; gap:16px; position:sticky; top:0; z-index:100; box-shadow:var(--shadow); transition:background .25s, border-color .25s; }
-.back-btn { background:none; border:none; color:var(--text); font-size:1.4rem; cursor:pointer; padding:4px 8px 4px 0; line-height:1; display:none; transition:opacity .15s; }
+.site-header { background:var(--surface); border-bottom:1px solid var(--border); padding:12px 20px; display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:100; box-shadow:var(--shadow); transition:background .25s, border-color .25s; flex-wrap:wrap; }
+.back-btn { background:none; border:none; color:var(--text); font-size:1.4rem; cursor:pointer; padding:4px 8px 4px 0; line-height:1; display:none; transition:opacity .15s; flex-shrink:0; }
 .back-btn:hover { opacity:0.6; }
 .back-btn.visible { display:block; }
-.site-title { font-size:1.9rem; font-weight:900; color:var(--text); letter-spacing:-0.04em; line-height:1; }
-.site-subtitle { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; margin-top:3px; }
-.header-right { margin-left:auto; display:flex; align-items:center; gap:14px; }
-.refresh-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.78rem; padding:6px 14px; border-radius:7px; cursor:pointer; transition:border-color .2s,color .2s; }
+.site-title { font-size:1.5rem; font-weight:900; color:var(--text); letter-spacing:-0.04em; line-height:1; white-space:nowrap; }
+.site-subtitle { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; margin-top:2px; }
+.header-right { margin-left:auto; display:flex; align-items:center; gap:8px; flex-wrap:nowrap; flex-shrink:0; }
+.refresh-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.75rem; padding:5px 10px; border-radius:7px; cursor:pointer; transition:border-color .2s,color .2s; white-space:nowrap; }
 .refresh-btn:hover { border-color:var(--text); color:var(--text); }
+@media (max-width:600px) {
+  .site-header { padding:10px 14px; gap:8px; }
+  .site-title { font-size:1.2rem; }
+  .header-right { gap:6px; }
+  .refresh-btn { display:none; }
+  .toggle-label { display:none; }
+  .view-tab { font-size:0.7rem; padding:5px 10px; }
+}
 
 /* ── View tabs (Timetable / Map) ── */
 .view-tabs { display:flex; gap:0; margin-left:10px; border:1px solid var(--border); border-radius:8px; overflow:hidden; flex-shrink:0; }
@@ -203,49 +211,28 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .map-canvas.edit-mode { cursor:default; }
 .map-room {
   background:var(--soft); border:1.5px solid var(--border);
-  border-radius:6px; padding:4px 7px 5px;
+  border-radius:6px; padding:4px 8px 5px;
   box-shadow:none; transition:border-color .15s;
   min-width:0;
 }
 .map-room.occupied { border-color:var(--text); background:var(--surface); box-shadow:var(--shadow); }
-.map-room.draggable { cursor:default; }
-.map-room.draggable:active { cursor:default; }
 .map-room-code { font-family:'DM Mono',monospace; font-size:0.62rem; font-weight:600; color:var(--muted); margin-bottom:2px; display:flex; align-items:center; justify-content:space-between; }
 .map-room.occupied .map-room-code { color:var(--text); }
 .map-room-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.6rem; padding:0 0 0 3px; opacity:0; transition:opacity .15s; line-height:1; }
 .map-room:hover .map-room-del { opacity:1; }
 .map-room-del:hover { color:#ef4444; }
 .map-students { display:flex; flex-direction:column; gap:2px; }
-.map-badge { font-size:0.6rem; font-weight:700; padding:1px 5px; border-radius:4px; color:#fff; white-space:nowrap; line-height:1.5; }
-.map-dc-tag { font-size:0.52rem; font-weight:700; padding:1px 4px; border-radius:3px; font-family:'DM Mono',monospace; margin-top:1px; display:inline-block; }
+.map-badge { font-size:0.6rem; font-weight:700; padding:1px 5px; border-radius:4px; color:#fff; white-space:nowrap; line-height:1.5; overflow:hidden; text-overflow:ellipsis; max-width:140px; }
+.map-dc-tag { font-size:0.52rem; font-weight:700; padding:1px 4px; border-radius:3px; font-family:'DM Mono',monospace; margin-top:1px; display:inline-block; white-space:normal; }
 /* Map toolbar */
-.map-toolbar { padding:10px 20px; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.map-toolbar { padding:8px 16px; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
 .map-tab-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.75rem; font-weight:600; padding:5px 14px; border-radius:7px; cursor:pointer; transition:all .15s; display:flex; align-items:center; gap:6px; }
 .map-tab-btn.active { background:var(--text); color:var(--bg); border-color:var(--text); }
 .map-tab-btn:not(.active):hover { border-color:var(--text); color:var(--text); }
 .map-badge-count { font-family:'DM Mono',monospace; font-size:0.6rem; padding:1px 6px; border-radius:8px; background:var(--soft); border:1px solid var(--border); }
 .map-tab-btn.active .map-badge-count { background:rgba(255,255,255,.2); border-color:transparent; }
-.map-sep { width:1px; height:20px; background:var(--border); flex-shrink:0; }
-.map-edit-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.75rem; font-weight:600; padding:5px 14px; border-radius:7px; cursor:pointer; transition:all .15s; }
-.map-edit-btn.on { background:var(--text); color:var(--bg); border-color:var(--text); }
-.map-edit-btn:not(.on):hover { border-color:var(--text); color:var(--text); }
-.map-save-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.75rem; font-weight:600; padding:5px 14px; border-radius:7px; cursor:pointer; transition:all .15s; }
-.map-save-btn:hover { border-color:#22a85a; color:#22a85a; }
-.map-save-btn.saved { border-color:#22a85a; color:#22a85a; background:rgba(34,168,90,.08); }
-/* Map sidebar */
-.map-sidebar { width:220px; flex-shrink:0; background:var(--surface); border-left:1px solid var(--border); overflow-y:auto; display:none; flex-direction:column; }
-.map-sidebar.open { display:flex; }
-.msb { padding:14px 16px; border-bottom:1px solid var(--border); }
-.msb-title { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px; }
-.msb-input { width:100%; background:var(--soft); border:1px solid var(--border); border-radius:7px; color:var(--text); font-family:'DM Mono',monospace; font-size:0.78rem; padding:7px 10px; outline:none; margin-bottom:7px; }
-.msb-input:focus { border-color:var(--text); }
-.msb-btn { width:100%; background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.78rem; font-weight:700; padding:8px; border-radius:7px; cursor:pointer; margin-bottom:6px; transition:opacity .15s; }
-.msb-btn:hover { opacity:.82; }
-.msb-btn.ghost { background:var(--soft); color:var(--text); border:1px solid var(--border); }
-.map-chip { display:inline-flex; align-items:center; gap:4px; background:var(--soft); border:1px solid var(--border); border-radius:6px; padding:2px 8px; font-family:'DM Mono',monospace; font-size:0.68rem; margin:2px; cursor:pointer; }
-.map-chip:hover { border-color:var(--muted); }
 /* Map footer */
-.map-footer { background:var(--surface); border-top:1px solid var(--border); padding:7px 20px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); }
+.map-footer { background:var(--surface); border-top:1px solid var(--border); padding:6px 16px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); }
 .map-unplaced { display:flex; gap:5px; flex-wrap:wrap; align-items:center; }
 .map-empty { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; pointer-events:none; }
 .map-empty .icon { font-size:2.5rem; opacity:.25; }
@@ -255,19 +242,16 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .map-group {
   position:absolute; border:1.5px solid var(--border); border-radius:8px;
   background:var(--surface); padding:0; box-shadow:var(--shadow);
-  width:175px;
+  width:160px;
 }
 .map-group-label {
   font-family:'DM Mono',monospace; font-size:0.55rem; font-weight:700;
   color:var(--muted); letter-spacing:0.07em; text-transform:uppercase;
   padding:4px 7px 3px; border-bottom:1px solid var(--border);
-  cursor:move; user-select:none; border-radius:6px 6px 0 0;
+  cursor:default; user-select:none; border-radius:6px 6px 0 0;
 }
-.map-group.edit-mode .map-group-label { background:var(--soft); }
 .map-group-rooms {
-  padding:4px; display:grid;
-  grid-template-columns:repeat(2, 1fr);
-  gap:3px;
+  padding:4px; display:flex; flex-direction:column; gap:3px;
 }
 </style>
 </head>
@@ -364,33 +348,14 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   <div class="map-toolbar">
     <button class="map-tab-btn active" data-maptab="now">Now <span class="map-badge-count" id="mapNowBadge">0</span></button>
     <button class="map-tab-btn" data-maptab="next">Next <span class="map-badge-count" id="mapNextBadge">0</span></button>
-    <div class="map-sep"></div>
-    <button class="map-edit-btn" id="mapEditBtn">✏ Edit Rooms</button>
-    <button class="map-save-btn" id="mapSaveBtn" style="display:none;">💾 Save Layout</button>
-    <span id="mapSaveStatus" style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);"></span>
   </div>
   <div class="map-body">
     <div class="map-outer" id="mapOuter">
       <div class="map-canvas" id="mapCanvas">
         <div class="map-empty" id="mapEmpty">
           <div class="icon">🏫</div>
-          <p>No rooms placed yet.<br>Click <strong>✏ Edit Rooms</strong> to add rooms and drag them into position.</p>
+          <p>No rooms on map yet.<br>Ask your admin to set up the map layout.</p>
         </div>
-      </div>
-    </div>
-    <div class="map-sidebar" id="mapSidebar">
-      <div class="msb">
-        <div class="msb-title">Add Room</div>
-        <input class="msb-input" id="mapNewCode" placeholder="Room code e.g. BR2" />
-        <button class="msb-btn" id="mapAddRoomBtn">+ Add Room</button>
-        <button class="msb-btn ghost" id="mapAutoBtn">🔍 Import from timetable</button>
-      </div>
-      <div class="msb" style="flex:1;">
-        <div class="msb-title">Placed Rooms (<span id="mapRoomCount">0</span>)</div>
-        <div id="mapChips"></div>
-      </div>
-      <div class="msb">
-        <button class="msb-btn ghost" id="mapClearAllBtn" style="color:#ef4444;border-color:#fca5a5;">🗑 Remove all rooms</button>
       </div>
     </div>
   </div>
@@ -1373,47 +1338,8 @@ document.querySelectorAll('[data-maptab]').forEach(btn => {
   });
 });
 
-// Edit toggle
-document.getElementById('mapEditBtn').addEventListener('click', () => {
-  mapEditMode = !mapEditMode;
-  document.getElementById('mapEditBtn').classList.toggle('on', mapEditMode);
-  document.getElementById('mapSidebar').classList.toggle('open', mapEditMode);
-  document.getElementById('mapSaveBtn').style.display = mapEditMode ? '' : 'none';
-  document.getElementById('mapSaveStatus').textContent = '';
-  renderMapView();
-});
-
-// Save layout to server (shared across all devices)
-document.getElementById('mapSaveBtn').addEventListener('click', async () => {
-  const serverUrl = (localStorage.getItem('tt-server') || 'https://timetable-server-r6nb.onrender.com').replace(/\/$/, '');
-  const pw = localStorage.getItem('tt-pw') || '';
-  if (!pw) {
-    document.getElementById('mapSaveStatus').textContent = '⚠ No password — open Admin to set it';
-    return;
-  }
-  const btn = document.getElementById('mapSaveBtn');
-  const status = document.getElementById('mapSaveStatus');
-  btn.textContent = 'Saving…'; btn.disabled = true;
-  try {
-    const payload = { rooms: mapRooms.map(r => ({ id: r.id, code: r.code })), groups: mapGroups };
-    const res = await fetch(`${serverUrl}/map-layout`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Admin-Password': pw },
-      body: JSON.stringify(payload)
-    });
-    if (res.ok) {
-      btn.textContent = '✓ Saved'; btn.classList.add('saved');
-      status.textContent = 'All devices will now see this layout';
-      setTimeout(() => { btn.textContent = '💾 Save Layout'; btn.classList.remove('saved'); btn.disabled = false; }, 3000);
-    } else if (res.status === 401) {
-      status.textContent = '✕ Wrong password'; btn.textContent = '💾 Save Layout'; btn.disabled = false;
-    } else {
-      status.textContent = `✕ Server error ${res.status}`; btn.textContent = '💾 Save Layout'; btn.disabled = false;
-    }
-  } catch(e) {
-    status.textContent = '✕ ' + e.message; btn.textContent = '💾 Save Layout'; btn.disabled = false;
-  }
-});
+// mapEditMode is always false in viewer — editing is admin-only
+const mapEditMode = false;
 
 // Load layout from server on map open, fall back to localStorage
 async function loadMapLayoutFromServer() {
@@ -1435,16 +1361,7 @@ async function loadMapLayoutFromServer() {
   } catch(e) { /* silently fall back to localStorage */ }
 }
 
-// Add room
-document.getElementById('mapAddRoomBtn').addEventListener('click', mapAddFromInput);
-document.getElementById('mapNewCode').addEventListener('keydown', e => { if (e.key === 'Enter') mapAddFromInput(); });
-function mapAddFromInput() {
-  const code = document.getElementById('mapNewCode').value.trim().toUpperCase();
-  if (!code) return;
-  if (mapRooms.find(r => r.code === code)) { alert('Room ' + code + ' already exists.'); return; }
-  mapAddRoom(code);
-  document.getElementById('mapNewCode').value = '';
-}
+// Add/remove rooms is admin-only — no listeners needed in viewer
 // Positions use % of canvas — stored as {xp, yp} and converted at render time
 // Col positions: L1=1.5%, L2=18%, MID=35%, R1=62%, R2=79%
 // Row positions: TOP=3%, MID=36%, BOT=69%
@@ -1507,42 +1424,8 @@ function mapRemoveRoom(id) {
 }
 
 // Auto-import
-document.getElementById('mapAutoBtn').addEventListener('click', () => {
-  if (!currentGroupMap) { alert('Load the timetable first — click ↻ Refresh.'); return; }
-  const found = new Set();
-  currentGroupMap.forEach(grp => {
-    Object.values(grp.slots).forEach(slots => slots.forEach(s => { if (s.d2) found.add(s.d2.toUpperCase().trim()); }));
-  });
-  if (!found.size) { alert('No room codes found in timetable data.'); return; }
-  const existing = new Set(mapRooms.map(r => r.code));
-  const toAdd = [...found].filter(r => !existing.has(r)).sort();
-  if (!toAdd.length) { alert('All rooms are already on the map.'); return; }
-  toAdd.forEach(code => mapAddRoom(code));
-  saveMapRooms(); saveMapGroups(); renderMapSidebar(); renderMapView();
-  const prefixes = [...new Set(toAdd.map(getRoomPrefix))];
-  alert(`Added ${toAdd.length} rooms across ${prefixes.length} group${prefixes.length>1?'s':''}: ${prefixes.join(', ')}\n\nDrag group headers to reposition.`);
-});
-
-// Clear all
-document.getElementById('mapClearAllBtn').addEventListener('click', () => {
-  if (!confirm('Remove all rooms from the map?')) return;
-  mapRooms = []; mapGroups = {};
-  saveMapRooms(); saveMapGroups(); renderMapSidebar(); renderMapView();
-});
-
-// Sidebar chips
-function renderMapSidebar() {
-  const chips = document.getElementById('mapChips');
-  chips.innerHTML = '';
-  document.getElementById('mapRoomCount').textContent = mapRooms.length;
-  [...mapRooms].sort((a,b) => a.code.localeCompare(b.code)).forEach(room => {
-    const chip = document.createElement('span');
-    chip.className = 'map-chip';
-    chip.innerHTML = room.code + ' <span style="color:var(--muted);font-size:.65rem;">✕</span>';
-    chip.querySelector('span').addEventListener('click', e => { e.stopPropagation(); mapRemoveRoom(room.id); });
-    chips.appendChild(chip);
-  });
-}
+// Sidebar rendering is admin-only in viewer
+function renderMapSidebar() { /* no-op in viewer */ }
 
 // ── Get placements for current map tab ────────────────────────────────────
 function getMapPlacements(slot) {
