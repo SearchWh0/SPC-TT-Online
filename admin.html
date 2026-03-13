@@ -204,6 +204,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
     <button class="tab-btn" data-tab="settingsTab">⚙ Settings</button>
     <button class="tab-btn" data-tab="emailTab">✉ Email</button>
     <button class="tab-btn" data-tab="changesTab">📌 Daily Changes</button>
+    <button class="tab-btn" data-tab="mapTab">🗺 Map Layout</button>
   </nav>
   <div class="header-right">
     <div class="site-day" id="todayLabel"></div>
@@ -567,6 +568,33 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- ══ MAP LAYOUT TAB ══ -->
+<div class="tab-page" id="mapTab">
+  <div class="settings-page" style="max-width:860px;">
+    <div class="settings-section full" style="margin-bottom:20px;">
+      <div class="section-title">Map Layout Editor</div>
+      <p class="section-desc" style="margin-bottom:16px;">Set up room positions for the viewer map. Import rooms from the timetable, drag groups to position, then save to server — all devices will see the same layout.</p>
+      <div class="btn-row">
+        <button class="s-btn green" id="adminMapAutoBtn">🔍 Import rooms from timetable</button>
+        <button class="s-btn" id="adminMapSaveBtn">💾 Save layout to server</button>
+        <button class="s-btn secondary" id="adminMapClearBtn" style="color:#ef4444;">🗑 Remove all rooms</button>
+      </div>
+      <div id="adminMapStatus" style="margin-top:10px;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--muted);min-height:18px;"></div>
+    </div>
+    <div class="settings-section full" style="padding:0;overflow:hidden;height:580px;position:relative;">
+      <div id="adminMapCanvas" style="width:100%;height:100%;position:relative;background:var(--surface2);
+        background-image:linear-gradient(rgba(0,0,0,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.05) 1px,transparent 1px);
+        background-size:30px 30px;border-radius:8px;">
+        <div id="adminMapEmpty" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;pointer-events:none;">
+          <div style="font-size:2rem;opacity:.25;">🏫</div>
+          <p style="font-size:.85rem;color:var(--muted);text-align:center;">Click <strong>Import rooms from timetable</strong> to get started.</p>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:10px;font-size:0.78rem;color:var(--muted);">💡 Drag group headers to reposition. Click ✕ on a room to remove it. Changes only take effect after clicking Save.</p>
   </div>
 </div>
 
@@ -1672,6 +1700,207 @@ document.getElementById('dcManualClearBtn').addEventListener('click', async () =
     else document.getElementById('dcManualStatus').textContent = `✕ Server error ${res.status}`;
   } catch(e) { document.getElementById('dcManualStatus').textContent = '✕ ' + e.message; }
 });
+// ── Admin Map Layout Editor ────────────────────────────────────────────────
+const MAP_PREFIX_POSITIONS = {
+  TC: { x:  16, y:  20 }, CL: { x: 200, y:  20 }, HC: { x: 390, y:  20 }, BE: { x: 700, y:  20 },
+  PA: { x:  16, y: 210 }, BR: { x: 200, y: 210 }, MC: { x: 390, y: 210 }, DO: { x: 700, y: 210 },
+  FW: { x: 200, y: 400 }, TF: { x: 390, y: 400 }, TA: { x: 700, y: 400 }, GL: { x: 880, y: 400 },
+};
+
+let adminMapRooms = [];
+let adminMapGroups = {};
+
+function adminGetPrefix(code) { return code.length >= 2 ? code.slice(0,2).toUpperCase() : code.toUpperCase(); }
+
+function adminMapSetStatus(msg) { document.getElementById('adminMapStatus').textContent = msg; }
+
+// Load from server when tab opens
+let adminMapLoaded = false;
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  if (btn.dataset.tab === 'mapTab') {
+    btn.addEventListener('click', () => {
+      if (!adminMapLoaded) { adminMapLoaded = true; adminLoadMapFromServer(); }
+      else { adminRenderMap(); }
+    });
+  }
+});
+
+async function adminLoadMapFromServer() {
+  const url = getServer(); if (!url) return;
+  adminMapSetStatus('Loading…');
+  try {
+    const res = await fetch(`${url}/map-layout`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.rooms) adminMapRooms = data.rooms;
+      if (data.groups) adminMapGroups = data.groups;
+      adminMapSetStatus('Loaded from server.');
+    } else {
+      adminMapSetStatus('No saved layout yet — import rooms to get started.');
+    }
+  } catch(e) { adminMapSetStatus('Could not reach server.'); }
+  adminRenderMap();
+}
+
+function adminSeedGroups() {
+  const canvas = document.getElementById('adminMapCanvas');
+  const cW = canvas.offsetWidth || 800, cH = canvas.offsetHeight || 580;
+  adminMapRooms.forEach(r => {
+    const prefix = adminGetPrefix(r.code);
+    if (!adminMapGroups[prefix]) {
+      const known = MAP_PREFIX_POSITIONS[prefix];
+      const count = Object.keys(adminMapGroups).length;
+      const px = known || { x: 20 + (count%5)*180, y: 20 + Math.floor(count/5)*180 };
+      adminMapGroups[prefix] = { xp: +(px.x/1080*100).toFixed(2), yp: +(px.y/600*100).toFixed(2) };
+    }
+  });
+}
+
+function adminRenderMap() {
+  const canvas = document.getElementById('adminMapCanvas');
+  canvas.querySelectorAll('.adm-group').forEach(e => e.remove());
+  document.getElementById('adminMapEmpty').style.display = adminMapRooms.length ? 'none' : '';
+  if (!adminMapRooms.length) return;
+
+  adminSeedGroups();
+  const cW = canvas.offsetWidth || 800, cH = canvas.offsetHeight || 580;
+
+  // Group rooms by prefix
+  const groups = {};
+  adminMapRooms.forEach(r => {
+    const p = adminGetPrefix(r.code);
+    if (!groups[p]) groups[p] = [];
+    groups[p].push(r);
+  });
+
+  Object.entries(groups).sort((a,b) => a[0].localeCompare(b[0])).forEach(([prefix, rooms]) => {
+    const pos = adminMapGroups[prefix];
+    const left = pos.xp !== undefined ? pos.xp/100*cW : (pos.x||0);
+    const top  = pos.yp !== undefined ? pos.yp/100*cH : (pos.y||0);
+
+    const groupEl = document.createElement('div');
+    groupEl.className = 'adm-group';
+    groupEl.style.cssText = `position:absolute;left:${left}px;top:${top}px;width:175px;
+      border:1.5px solid var(--border);border-radius:8px;background:var(--surface);
+      box-shadow:0 2px 8px rgba(0,0,0,.07);`;
+
+    const label = document.createElement('div');
+    label.style.cssText = `font-family:'DM Mono',monospace;font-size:0.58rem;font-weight:700;
+      color:var(--muted);text-transform:uppercase;letter-spacing:.07em;
+      padding:5px 8px 3px;border-bottom:1px solid var(--border);border-radius:6px 6px 0 0;
+      cursor:move;user-select:none;background:var(--soft);`;
+    label.textContent = prefix + ' Block  ✥';
+    groupEl.appendChild(label);
+
+    const grid = document.createElement('div');
+    grid.style.cssText = 'padding:4px;display:grid;grid-template-columns:repeat(2,1fr);gap:3px;';
+
+    rooms.sort((a,b) => a.code.localeCompare(b.code)).forEach(room => {
+      const cell = document.createElement('div');
+      cell.style.cssText = `background:var(--soft);border:1px solid var(--border);border-radius:5px;
+        padding:3px 6px;font-family:'DM Mono',monospace;font-size:0.65rem;
+        display:flex;align-items:center;justify-content:space-between;`;
+      const del = document.createElement('button');
+      del.textContent = '✕'; del.title = 'Remove ' + room.code;
+      del.style.cssText = 'background:none;border:none;color:var(--muted);cursor:pointer;font-size:.6rem;padding:0 0 0 3px;';
+      del.addEventListener('click', e => {
+        e.stopPropagation();
+        adminMapRooms = adminMapRooms.filter(r => r.id !== room.id);
+        // Clean up empty groups
+        const used = new Set(adminMapRooms.map(r => adminGetPrefix(r.code)));
+        Object.keys(adminMapGroups).forEach(p => { if (!used.has(p)) delete adminMapGroups[p]; });
+        adminRenderMap();
+      });
+      cell.innerHTML = `<span>${room.code}</span>`;
+      cell.appendChild(del);
+      grid.appendChild(cell);
+    });
+
+    groupEl.appendChild(grid);
+    adminMakeDraggable(groupEl, prefix, pos, cW, cH);
+    canvas.appendChild(groupEl);
+  });
+}
+
+function adminMakeDraggable(groupEl, prefix, pos, cW, cH) {
+  const label = groupEl.querySelector('div');
+  let sx, sy, oleft, otop;
+  function getLeft() { return pos.xp !== undefined ? pos.xp/100*cW : (pos.x||0); }
+  function getTop()  { return pos.yp !== undefined ? pos.yp/100*cH : (pos.y||0); }
+  label.addEventListener('mousedown', e => {
+    e.preventDefault(); sx = e.clientX; sy = e.clientY; oleft = getLeft(); otop = getTop();
+    groupEl.style.zIndex = 10;
+    function move(e2) {
+      const nl = Math.max(0, oleft + e2.clientX - sx);
+      const nt = Math.max(0, otop  + e2.clientY - sy);
+      groupEl.style.left = nl + 'px'; groupEl.style.top = nt + 'px';
+      adminMapGroups[prefix] = { xp: +(nl/cW*100).toFixed(2), yp: +(nt/cH*100).toFixed(2) };
+    }
+    function up() { groupEl.style.zIndex = ''; document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); }
+    document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
+  });
+  label.addEventListener('touchstart', e => {
+    const t = e.touches[0]; sx = t.clientX; sy = t.clientY; oleft = getLeft(); otop = getTop();
+    function move(e2) {
+      const t2 = e2.touches[0];
+      const nl = Math.max(0, oleft + t2.clientX - sx);
+      const nt = Math.max(0, otop  + t2.clientY - sy);
+      groupEl.style.left = nl + 'px'; groupEl.style.top = nt + 'px';
+      adminMapGroups[prefix] = { xp: +(nl/cW*100).toFixed(2), yp: +(nt/cH*100).toFixed(2) };
+    }
+    function up() { document.removeEventListener('touchmove', move); document.removeEventListener('touchend', up); }
+    document.addEventListener('touchmove', move, { passive: true }); document.addEventListener('touchend', up);
+  }, { passive: true });
+}
+
+// Import rooms from timetable data saved on server
+document.getElementById('adminMapAutoBtn').addEventListener('click', async () => {
+  const url = getServer(); if (!url) { adminMapSetStatus('⚠ No server URL.'); return; }
+  adminMapSetStatus('Loading timetable…');
+  try {
+    const res = await fetch(`${url}/timetable`);
+    if (!res.ok) { adminMapSetStatus('✕ Could not load timetable.'); return; }
+    const data = await res.json();
+    const found = new Set();
+    if (data.map) {
+      Object.values(data.map).forEach(grp => {
+        Object.values(grp.slots || {}).forEach(slots => slots.forEach(s => { if (s.d2) found.add(s.d2.toUpperCase().trim()); }));
+      });
+    }
+    if (!found.size) { adminMapSetStatus('No room codes found in timetable.'); return; }
+    const existing = new Set(adminMapRooms.map(r => r.code));
+    const toAdd = [...found].filter(r => !existing.has(r)).sort();
+    if (!toAdd.length) { adminMapSetStatus('All timetable rooms already on map.'); adminRenderMap(); return; }
+    toAdd.forEach(code => adminMapRooms.push({ id: Math.random().toString(36).slice(2), code }));
+    adminMapSetStatus(`Added ${toAdd.length} room${toAdd.length>1?'s':''}: ${toAdd.join(', ')}`);
+    adminRenderMap();
+  } catch(e) { adminMapSetStatus('✕ ' + e.message); }
+});
+
+// Save to server
+document.getElementById('adminMapSaveBtn').addEventListener('click', async () => {
+  const url = getServer(); if (!url) { adminMapSetStatus('⚠ No server URL.'); return; }
+  const pw = getPw(); if (!pw) { adminMapSetStatus('⚠ No password set.'); return; }
+  adminMapSetStatus('Saving…');
+  try {
+    const payload = { rooms: adminMapRooms.map(r => ({ id: r.id, code: r.code })), groups: adminMapGroups };
+    const res = await fetch(`${url}/map-layout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Password': pw },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) adminMapSetStatus('✓ Saved! All devices will now see this layout.');
+    else if (res.status === 401) adminMapSetStatus('✕ Wrong password.');
+    else adminMapSetStatus(`✕ Server error ${res.status}`);
+  } catch(e) { adminMapSetStatus('✕ ' + e.message); }
+});
+
+// Clear all
+document.getElementById('adminMapClearBtn').addEventListener('click', () => {
+  if (!confirm('Remove all rooms from the map layout?')) return;
+  adminMapRooms = []; adminMapGroups = {};
+  adminMapSetStatus('Cleared. Click Save to push to server.');
+  adminRenderMap();
+});
 </script>
-</body>
-</html>
+</body></html>
