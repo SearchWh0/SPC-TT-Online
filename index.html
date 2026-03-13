@@ -201,14 +201,14 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 [data-theme="dark"] .map-canvas { --grid-line:rgba(255,255,255,.04); }
 .map-canvas.edit-mode { cursor:default; }
 .map-room {
-  position:absolute; background:var(--surface); border:1.5px solid var(--border);
-  border-radius:10px; padding:7px 10px 8px; min-width:82px;
-  box-shadow:var(--shadow); transition:border-color .15s,box-shadow .15s;
-  user-select:none;
+  background:var(--soft); border:1.5px solid var(--border);
+  border-radius:8px; padding:7px 9px 8px;
+  box-shadow:none; transition:border-color .15s;
+  min-width:0;
 }
-.map-room.occupied { border-color:var(--text); }
-.map-room.draggable { cursor:grab; }
-.map-room.draggable:active { cursor:grabbing; box-shadow:var(--shadow-lg); z-index:10; }
+.map-room.occupied { border-color:var(--text); background:var(--surface); box-shadow:var(--shadow); }
+.map-room.draggable { cursor:default; }
+.map-room.draggable:active { cursor:default; }
 .map-room-code { font-family:'DM Mono',monospace; font-size:0.7rem; font-weight:600; color:var(--muted); margin-bottom:4px; display:flex; align-items:center; justify-content:space-between; }
 .map-room.occupied .map-room-code { color:var(--text); }
 .map-room-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.68rem; padding:0 0 0 4px; opacity:0; transition:opacity .15s; line-height:1; }
@@ -253,15 +253,20 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   position:absolute; border:1.5px solid var(--border); border-radius:12px;
   background:var(--surface); padding:0;
   box-shadow:var(--shadow);
+  width:320px;
 }
 .map-group-label {
   font-family:'DM Mono',monospace; font-size:0.65rem; font-weight:700;
   color:var(--muted); letter-spacing:0.07em; text-transform:uppercase;
   padding:6px 10px 4px; border-bottom:1px solid var(--border);
-  cursor:move; user-select:none;
+  cursor:move; user-select:none; border-radius:10px 10px 0 0;
 }
 .map-group.edit-mode .map-group-label { cursor:move; }
-.map-group-rooms { padding:8px; display:flex; flex-wrap:wrap; gap:6px; min-height:44px; }
+.map-group-rooms {
+  padding:8px; display:grid;
+  grid-template-columns:repeat(2, 1fr);
+  gap:6px;
+}
 </style>
 </head>
 <body>
