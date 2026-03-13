@@ -211,6 +211,32 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   </div>
 </div>
 
+<!-- Daily Changes Banner -->
+<div id="dailyChangesPanel" style="display:none;">
+  <div id="dcBanner" style="
+    background:var(--surface);border-bottom:1px solid var(--border);
+    max-width:100%;overflow:hidden;
+  ">
+    <div style="max-width:1100px;margin:0 auto;padding:0 28px;">
+      <!-- Header row - always visible, click to expand -->
+      <div id="dcToggleRow" style="
+        display:flex;align-items:center;gap:12px;padding:10px 0;cursor:pointer;user-select:none;
+      ">
+        <span style="font-size:1rem;">📌</span>
+        <span style="font-weight:700;font-size:0.88rem;">Today's Changes</span>
+        <span id="dcAbsentPill" style="display:none;background:#fef3c7;border:1px solid #fcd34d;color:#92400e;font-size:0.72rem;font-weight:600;padding:2px 9px;border-radius:10px;font-family:'DM Mono',monospace;"></span>
+        <span id="dcDatePill" style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--muted);"></span>
+        <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--muted);" id="dcChevron">▼ show</span>
+      </div>
+      <!-- Expandable table -->
+      <div id="dcTableWrap" style="display:none;padding-bottom:14px;overflow-x:auto;">
+        <div id="dcNotes" style="display:none;font-size:0.82rem;color:var(--muted);margin-bottom:10px;font-style:italic;"></div>
+        <table id="dcTable" style="border-collapse:collapse;width:100%;font-size:0.8rem;min-width:560px;"></table>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="state-wrap" id="loadingState">
   <div class="spinner"></div>
   <div class="state-title">Loading timetable…</div>
@@ -613,6 +639,7 @@ async function loadTimetable() {
       localStorage.setItem('tt-cached-time', Date.now().toString());
     } catch(e) {}
     renderTiles(groupMap, currentNames);
+    loadDailyChanges();
     // If a detail was open, silently re-render it in place; otherwise go to tiles
     if (activeDetailKey && groupMap.has(activeDetailKey)) {
       const grp = groupMap.get(activeDetailKey);
@@ -669,6 +696,211 @@ function showStaleBanner() {
 document.getElementById('refreshBtn').addEventListener('click', loadTimetable);
 setInterval(loadTimetable, 600000);
 
+// ── Daily Changes Panel ────────────────────────────────────────────────────
+let dcExpanded = false;
+
+document.getElementById('dcToggleRow').addEventListener('click', () => {
+  dcExpanded = !dcExpanded;
+  document.getElementById('dcTableWrap').style.display = dcExpanded ? '' : 'none';
+  document.getElementById('dcChevron').textContent = dcExpanded ? '▲ hide' : '▼ show';
+});
+
+async function loadDailyChanges() {
+  const url = getServerUrl();
+  if (!url) return;
+  try {
+    const res = await fetch(`${url}/daily-changes`);
+    if (!res.ok) { document.getElementById('dailyChangesPanel').style.display = 'none'; return; }
+    const data = await res.json();
+    renderDailyChanges(data);
+  } catch(e) {
+    document.getElementById('dailyChangesPanel').style.display = 'none';
+  }
+}
+
+// currentDailyChanges holds the latest fetched data so tiles can reference it
+let currentDailyChanges = null;
+
+function renderDailyChanges(data) {
+  currentDailyChanges = data;
+  const panel = document.getElementById('dailyChangesPanel');
+  if (!data || !data.lsos || !Object.keys(data.lsos).length) {
+    panel.style.display = 'none';
+    currentDailyChanges = null;
+    applyChangesToTiles();
+    return;
+  }
+  panel.style.display = '';
+
+  // Absent pill
+  const absentPill = document.getElementById('dcAbsentPill');
+  if (data.absent && data.absent.length) {
+    absentPill.style.display = '';
+    absentPill.textContent = '⚠ Absent: ' + data.absent.join(', ');
+  } else {
+    absentPill.style.display = 'none';
+  }
+
+  // Date pill
+  if (data.date) document.getElementById('dcDatePill').textContent = data.date;
+
+  // Notes
+  const notesEl = document.getElementById('dcNotes');
+  if (data.notes) { notesEl.style.display=''; notesEl.textContent = data.notes; }
+  else notesEl.style.display = 'none';
+
+  // Build table
+  const lsos = data.lsos;
+  const names = Object.keys(lsos);
+  const periods = ['p1','p2','p3','p4','p5','p6'];
+  const absent = new Set(data.absent || []);
+
+  const headerStyle = `padding:7px 12px;text-align:left;border:1px solid var(--border);
+    font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--muted);background:var(--soft);`;
+  const cellStyle = `padding:7px 12px;border:1px solid var(--border);vertical-align:top;`;
+
+  let html = `<thead><tr>
+    <th style="${headerStyle}">LSO</th>
+    ${periods.map(p=>`<th style="${headerStyle}">${p.toUpperCase()}</th>`).join('')}
+  </tr></thead><tbody>`;
+
+  names.forEach(name => {
+    const isAbsent = absent.has(name);
+    const rowBg = isAbsent ? 'background:#fef3c7;' : '';
+    html += `<tr style="${rowBg}">
+      <td style="${cellStyle}font-weight:700;">
+        ${name}${isAbsent ? ' <span style="font-size:0.68rem;color:#92400e;font-weight:400;">(absent)</span>' : ''}
+      </td>
+      ${periods.map(p => {
+        const val = (lsos[name] && lsos[name][p]) || '';
+        const changed = !!val;
+        return `<td style="${cellStyle}font-size:0.78rem;${changed ? 'font-weight:600;color:var(--text);' : 'color:var(--muted);'}">${val || '—'}</td>`;
+      }).join('')}
+    </tr>`;
+  });
+  html += '</tbody>';
+  document.getElementById('dcTable').innerHTML = html;
+
+  // Apply change badges to tiles
+  applyChangesToTiles();
+}
+
+// Build a lookup: lowercase LSO name → their changes data
+function getDcLookup() {
+  if (!currentDailyChanges || !currentDailyChanges.lsos) return {};
+  const lookup = {};
+  for (const [name, periods] of Object.entries(currentDailyChanges.lsos)) {
+    lookup[name.toLowerCase()] = { name, periods };
+  }
+  return lookup;
+}
+
+// After tiles are rendered, stamp a "changes today" ribbon onto matching tiles
+function applyChangesToTiles() {
+  // Remove any existing change overlays first
+  document.querySelectorAll('.dc-overlay').forEach(el => el.remove());
+  if (!currentDailyChanges) return;
+
+  const absent = new Set((currentDailyChanges.absent || []).map(n => n.toLowerCase()));
+  const lookup = getDcLookup();
+
+  document.querySelectorAll('.tile[data-name]').forEach(tile => {
+    const tileName = (tile.dataset.name || '').toLowerCase();
+    const match = lookup[tileName];
+    const isAbsent = absent.has(tileName);
+
+    if (!match && !isAbsent) return;
+
+    // Count how many periods have changes
+    const changeCount = match
+      ? Object.values(match.periods).filter(v => v).length
+      : 0;
+
+    const ribbon = document.createElement('div');
+    ribbon.className = 'dc-overlay';
+    ribbon.style.cssText = `
+      position:absolute;top:7px;right:7px;
+      font-family:'DM Mono',monospace;font-size:0.6rem;font-weight:700;
+      padding:2px 7px;border-radius:6px;letter-spacing:0.04em;
+      pointer-events:none;z-index:2;
+    `;
+    if (isAbsent) {
+      ribbon.style.background = '#fef3c7';
+      ribbon.style.color = '#92400e';
+      ribbon.style.border = '1px solid #fcd34d';
+      ribbon.textContent = 'ABSENT';
+    } else {
+      ribbon.style.background = '#dbeafe';
+      ribbon.style.color = '#1e40af';
+      ribbon.style.border = '1px solid #93c5fd';
+      ribbon.textContent = changeCount + (changeCount === 1 ? ' change' : ' changes');
+    }
+    // Tile needs position:relative — add it if missing
+    if (getComputedStyle(tile).position === 'static') tile.style.position = 'relative';
+    tile.appendChild(ribbon);
+  });
+}
+
+// Inject change rows into detail view when it's open for an LSO with changes
+function injectDcIntoDetail(name) {
+  if (!currentDailyChanges) return;
+  const lookup = getDcLookup();
+  const match = lookup[(name || '').toLowerCase()];
+  const absent = new Set((currentDailyChanges.absent || []).map(n => n.toLowerCase()));
+  const isAbsent = absent.has((name || '').toLowerCase());
+  if (!match && !isAbsent) return;
+
+  const inner = document.getElementById('detailInner');
+  if (!inner) return;
+  if (inner.querySelector('.dc-detail-block')) return;
+
+  const block = document.createElement('div');
+  block.className = 'dc-detail-block';
+  block.style.cssText = `
+    margin:16px 0 0;padding:14px 18px;
+    background:${isAbsent ? '#fef3c7' : '#eff6ff'};
+    border:1px solid ${isAbsent ? '#fcd34d' : '#93c5fd'};
+    border-radius:12px;
+  `;
+
+  let inner2 = `<div style="font-weight:700;font-size:0.82rem;margin-bottom:${isAbsent && (!match || !Object.values(match.periods||{}).some(Boolean)) ? '0' : '10px'};color:${isAbsent ? '#92400e' : '#1e40af'};">
+    📌 Today's Changes${isAbsent ? ' — <span style="color:#b45309;">ABSENT TODAY</span>' : ''}
+  </div>`;
+
+  if (match) {
+    const periods = ['p1','p2','p3','p4','p5','p6'];
+    const hasPeriods = periods.some(p => match.periods[p]);
+    if (hasPeriods) {
+      inner2 += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">`;
+      periods.forEach(p => {
+        const val = match.periods[p];
+        inner2 += `<div style="background:white;border:1px solid ${isAbsent ? '#fcd34d' : '#bfdbfe'};border-radius:8px;padding:8px 10px;">
+          <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:#6b7280;margin-bottom:3px;">${p.toUpperCase()}</div>
+          <div style="font-size:0.78rem;font-weight:${val?'600':'400'};color:${val?'#111':'#9ca3af'};">${val || '—'}</div>
+        </div>`;
+      });
+      inner2 += `</div>`;
+    }
+  }
+
+  block.innerHTML = inner2;
+
+  // Insert after the period-grid
+  const periodGrid = inner.querySelector('.period-grid');
+  if (periodGrid && periodGrid.nextSibling) {
+    inner.insertBefore(block, periodGrid.nextSibling);
+  } else if (periodGrid) {
+    inner.appendChild(block);
+  } else {
+    inner.insertBefore(block, inner.firstChild);
+  }
+}
+
+// Load daily changes on startup and every 5 minutes
+loadDailyChanges();
+setInterval(loadDailyChanges, 300000);
+
 // ── Tiles ──────────────────────────────────────────────────────────────────
 function renderTiles(groupMap, names) {
   const grid = document.getElementById('tileGrid');
@@ -684,6 +916,7 @@ function renderTiles(groupMap, names) {
     const lsoName = lsoNames[key] || null;
     const activePeriods = [1,2,3,4,5,6].filter(p=>slots[p]&&slots[p].length>0);
     const tile = document.createElement('div'); tile.className='tile';
+    tile.dataset.name = name;
     tile.addEventListener('click',()=>openDetail(key));
     const bar = document.createElement('div'); bar.className='tile-colour-bar'; bar.style.background=bg;
     const body = document.createElement('div'); body.className='tile-body';
@@ -741,6 +974,8 @@ function renderTiles(groupMap, names) {
 
     tile.appendChild(bar); tile.appendChild(body); grid.appendChild(tile);
   });
+  // Stamp daily-changes badges on tiles if changes are loaded
+  applyChangesToTiles();
 }
 
 // ── Detail ─────────────────────────────────────────────────────────────────
@@ -932,6 +1167,9 @@ function renderDetail(key, grp, name) {
       setTimeout(()=>cell.classList.remove('flash-copy'),1200);
     }).catch(()=>{});
   });
+
+  // Inject today's changes panel for this LSO at the top of the detail view
+  injectDcIntoDetail(name);
 }
 
 function flash(btn){const orig=btn.textContent;btn.textContent='✓ Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copied');},2000);}
