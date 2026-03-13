@@ -1319,7 +1319,7 @@ function switchMainView(view) {
 // ── Map state ──────────────────────────────────────────────────────────────
 let mapRooms    = loadMapRooms();
 let mapTab      = 'now'; // 'now' | 'next'
-let mapEditMode = false;
+const mapEditMode = false; // editing is admin-only
 
 function loadMapRooms() {
   try { return JSON.parse(localStorage.getItem('tt-map-rooms') || '[]'); }
@@ -1337,9 +1337,6 @@ document.querySelectorAll('[data-maptab]').forEach(btn => {
     renderMapView();
   });
 });
-
-// mapEditMode is always false in viewer — editing is admin-only
-const mapEditMode = false;
 
 // Load layout from server on map open, fall back to localStorage
 async function loadMapLayoutFromServer() {
