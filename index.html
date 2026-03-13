@@ -187,13 +187,14 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 }
 
 /* ── Map view ── */
-.map-view { display:none; }
-.map-view.visible { display:block; }
-.map-outer { overflow:hidden; padding:12px; background:var(--bg); height:calc(100vh - 130px); display:flex; align-items:stretch; }
+.map-view { display:none; flex-direction:column; }
+.map-view.visible { display:flex; height:calc(100vh - 73px); }
+.map-body { display:flex; flex:1; min-height:0; }
+.map-outer { flex:1; overflow:hidden; padding:12px; background:var(--bg); min-height:0; display:flex; flex-direction:column; }
 .map-canvas {
   position:relative; background:var(--surface2);
   border:1px solid var(--border); border-radius:12px;
-  width:100%; height:100%;
+  flex:1; min-height:0;
   background-image: linear-gradient(var(--grid-line,rgba(0,0,0,.05)) 1px,transparent 1px),
                     linear-gradient(90deg,var(--grid-line,rgba(0,0,0,.05)) 1px,transparent 1px);
   background-size:30px 30px;
@@ -232,8 +233,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .map-save-btn:hover { border-color:#22a85a; color:#22a85a; }
 .map-save-btn.saved { border-color:#22a85a; color:#22a85a; background:rgba(34,168,90,.08); }
 /* Map sidebar */
-.map-body { display:flex; }
-.map-sidebar { width:240px; flex-shrink:0; background:var(--surface); border-left:1px solid var(--border); overflow-y:auto; display:none; flex-direction:column; }
+.map-sidebar { width:220px; flex-shrink:0; background:var(--surface); border-left:1px solid var(--border); overflow-y:auto; display:none; flex-direction:column; }
 .map-sidebar.open { display:flex; }
 .msb { padding:14px 16px; border-bottom:1px solid var(--border); }
 .msb-title { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px; }
