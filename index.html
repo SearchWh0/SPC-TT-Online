@@ -196,26 +196,41 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 
 /* ── Map view ── */
 .map-view { display:none; flex-direction:column; }
-.map-view.visible { display:flex; height:calc(100vh - 73px); }
-.map-body { display:flex; flex:1; min-height:0; }
-.map-outer { flex:1; overflow:hidden; padding:12px; background:var(--bg); min-height:0; display:flex; flex-direction:column; }
-.map-canvas {
-  position:relative; background:var(--surface2);
-  border:1px solid var(--border); border-radius:12px;
-  flex:1; min-height:0;
-  background-image: linear-gradient(var(--grid-line,rgba(0,0,0,.05)) 1px,transparent 1px),
-                    linear-gradient(90deg,var(--grid-line,rgba(0,0,0,.05)) 1px,transparent 1px);
-  background-size:30px 30px;
+
+/* ── Desktop map — fills screen, no scroll ── */
+@media (min-width: 769px) {
+  .map-view.visible { display:flex; height:calc(100vh - 73px); }
+  .map-body { display:flex; flex:1; min-height:0; }
+  .map-outer { flex:1; overflow:hidden; padding:12px; background:var(--bg); min-height:0; display:flex; flex-direction:column; }
+  .map-canvas {
+    position:relative; background:var(--surface2);
+    border:1px solid var(--border); border-radius:12px;
+    flex:1; min-height:0;
+    background-image: linear-gradient(var(--grid-line,rgba(0,0,0,.05)) 1px,transparent 1px),
+                      linear-gradient(90deg,var(--grid-line,rgba(0,0,0,.05)) 1px,transparent 1px);
+    background-size:30px 30px;
+  }
+}
+
+/* ── Mobile map — fixed canvas size, scroll to explore ── */
+@media (max-width: 768px) {
+  .map-view.visible { display:block; }
+  .map-body { display:block; }
+  .map-outer {
+    overflow:auto; -webkit-overflow-scrolling:touch;
+    padding:10px; background:var(--bg);
+  }
+  .map-canvas {
+    position:relative; display:block;
+    width:1100px; height:660px;
+    background:var(--surface2);
+    border:1px solid var(--border); border-radius:8px;
+    background-image: linear-gradient(var(--grid-line,rgba(0,0,0,.05)) 1px,transparent 1px),
+                      linear-gradient(90deg,var(--grid-line,rgba(0,0,0,.05)) 1px,transparent 1px);
+    background-size:30px 30px;
+  }
 }
 [data-theme="dark"] .map-canvas { --grid-line:rgba(255,255,255,.04); }
-.map-canvas.edit-mode { cursor:default; }
-
-@media (max-width: 768px) {
-  .map-view.visible { height:auto; }
-  .map-body { flex-direction:column; }
-  .map-outer { overflow:auto; -webkit-overflow-scrolling:touch; padding:10px; }
-  .map-canvas { flex:none; width:1100px; height:640px; border-radius:8px; }
-}
 .map-room {
   background:var(--soft); border:1.5px solid var(--border);
   border-radius:6px; padding:4px 8px 5px;
@@ -1291,9 +1306,10 @@ document.getElementById('tabMap').addEventListener('click', () => {
   switchMainView('map');
   if (!mapLayoutLoaded) {
     mapLayoutLoaded = true;
-    loadMapLayoutFromServer();
+    // Wait for DOM layout so offsetWidth is correct before positioning groups
+    requestAnimationFrame(() => loadMapLayoutFromServer());
   } else {
-    renderMapView();
+    requestAnimationFrame(() => renderMapView());
   }
 });
 
