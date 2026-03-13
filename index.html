@@ -1404,22 +1404,30 @@ function loadMapGroups() {
 }
 function saveMapGroups() { localStorage.setItem('tt-map-groups', JSON.stringify(mapGroups)); }
 
+// Ensure every prefix from current rooms has a group position
+function seedMapGroups() {
+  let changed = false;
+  const usedPrefixes = [...new Set(mapRooms.map(r => getRoomPrefix(r.code)))];
+  usedPrefixes.forEach(prefix => {
+    if (!mapGroups[prefix]) {
+      const pos = MAP_PREFIX_POSITIONS[prefix];
+      if (pos) {
+        mapGroups[prefix] = { x: pos.x, y: pos.y };
+      } else {
+        const count = Object.keys(mapGroups).length;
+        mapGroups[prefix] = { x: 40 + (count % 5) * 220, y: 40 + Math.floor(count / 5) * 200 };
+      }
+      changed = true;
+    }
+  });
+  if (changed) saveMapGroups();
+}
+seedMapGroups();
+
 function mapAddRoom(code) {
   if (mapRooms.find(r => r.code === code)) return;
-  const prefix = getRoomPrefix(code);
-  // Ensure group exists with a position
-  if (!mapGroups[prefix]) {
-    const pos = MAP_PREFIX_POSITIONS[prefix];
-    if (pos) {
-      mapGroups[prefix] = { x: pos.x, y: pos.y };
-    } else {
-      // Unknown prefix — stack to the right of existing groups
-      const count = Object.keys(mapGroups).length;
-      mapGroups[prefix] = { x: 40 + (count % 5) * 220, y: 40 + Math.floor(count / 5) * 200 };
-    }
-    saveMapGroups();
-  }
   mapRooms.push({ id: mapUid(), code });
+  seedMapGroups();
   saveMapRooms(); renderMapSidebar(); renderMapView();
 }
 
@@ -1518,7 +1526,7 @@ function renderMapView() {
   // Canvas size — based on group positions
   let maxX = 800, maxY = 540;
   Object.keys(groups).forEach(prefix => {
-    const pos = mapGroups[prefix] || { x: 40, y: 40 };
+    const pos = mapGroups[prefix] || MAP_PREFIX_POSITIONS[prefix] || { x: 40, y: 40 };
     maxX = Math.max(maxX, pos.x + 280);
     maxY = Math.max(maxY, pos.y + 200);
   });
@@ -1528,8 +1536,14 @@ function renderMapView() {
 
   // Render each group as a zone
   Object.entries(groups).sort((a,b) => a[0].localeCompare(b[0])).forEach(([prefix, rooms]) => {
-    const pos = mapGroups[prefix] || { x: 40, y: 40 };
-    if (!mapGroups[prefix]) { mapGroups[prefix] = { x: 40, y: 40 }; saveMapGroups(); }
+    // Use saved position, then known position, then auto-stack
+    if (!mapGroups[prefix]) {
+      const known = MAP_PREFIX_POSITIONS[prefix];
+      const count = Object.keys(mapGroups).length;
+      mapGroups[prefix] = known || { x: 40 + (count % 5) * 220, y: 40 + Math.floor(count / 5) * 200 };
+      saveMapGroups();
+    }
+    const pos = mapGroups[prefix];
 
     const groupEl = document.createElement('div');
     groupEl.className = 'map-group' + (mapEditMode ? ' edit-mode' : '');
