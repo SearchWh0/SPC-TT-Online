@@ -1346,12 +1346,16 @@ dcReadBtn.addEventListener('click', async () => {
 
     if (res.status === 503) {
       const d = await res.json();
-      dcSetStatus('⚠ ' + (d.error || 'ANTHROPIC_API_KEY not configured on server.'));
+      dcSetStatus('⚠ ' + (d.error || 'GEMINI_API_KEY not configured on server.'));
       dcReadBtn.disabled = false;
       return;
     }
     if (res.status === 401) { dcSetStatus('✕ Wrong password.'); dcReadBtn.disabled = false; return; }
-    if (!res.ok) { dcSetStatus(`✕ Server error ${res.status}`); dcReadBtn.disabled = false; return; }
+    if (!res.ok) {
+      let msg = `Server error ${res.status}`;
+      try { const d = await res.json(); if (d.error) msg = d.error; } catch(e) {}
+      dcSetStatus('✕ ' + msg); dcReadBtn.disabled = false; return;
+    }
 
     const data = await res.json();
     const text = data.text || '';
