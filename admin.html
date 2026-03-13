@@ -156,6 +156,21 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .cell-data.flash-copy::after { content:'✓'; position:absolute; top:7px; right:9px; font-size:0.7rem; color:#22a85a; }
 .cell-data.empty { cursor:default; }
 
+/* ── Power Automate section ── */
+.pa-steps { display:flex; flex-direction:column; gap:10px; margin:14px 0; }
+.pa-step { display:flex; gap:12px; align-items:flex-start; }
+.pa-step-num { width:22px; height:22px; border-radius:50%; background:var(--text); color:var(--bg); font-size:0.7rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+.pa-step-text { font-size:0.84rem; line-height:1.6; color:var(--text); }
+.pa-step-text code { font-family:'DM Mono',monospace; font-size:0.78rem; background:var(--soft); border:1px solid var(--border); border-radius:4px; padding:1px 6px; }
+.pa-step-text strong { font-weight:700; }
+.pa-endpoint { font-family:'DM Mono',monospace; font-size:0.72rem; background:var(--soft); border:1px solid var(--border); border-radius:8px; padding:10px 14px; margin:10px 0; word-break:break-all; color:var(--text); }
+.pa-endpoint .method { color:#22a85a; font-weight:700; margin-right:8px; }
+.pa-json { font-family:'DM Mono',monospace; font-size:0.7rem; background:var(--soft); border:1px solid var(--border); border-radius:8px; padding:12px 14px; margin:10px 0; white-space:pre; overflow-x:auto; color:var(--text); line-height:1.7; }
+.pa-copy-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'DM Mono',monospace; font-size:0.68rem; padding:4px 10px; border-radius:6px; cursor:pointer; transition:border-color .15s,color .15s; }
+.pa-copy-btn:hover { border-color:var(--text); color:var(--text); }
+.pa-warning { background:#fff8e1; border:1px solid #f0c040; border-radius:8px; padding:10px 14px; font-size:0.8rem; color:#7a5800; margin:10px 0; }
+[data-theme="dark"] .pa-warning { background:#2a2000; border-color:#7a5800; color:#f0c040; }
+
 /* ── Email Composer ── */
 .email-section { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:22px; margin-bottom:20px; }
 .email-preview-wrap { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:18px 22px; margin-bottom:14px; font-family:'DM Mono',monospace; font-size:0.82rem; line-height:1.9; color:var(--text); white-space:pre-wrap; min-height:160px; }
@@ -188,6 +203,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
     <button class="tab-btn active" data-tab="timetableTab">📋 Timetable</button>
     <button class="tab-btn" data-tab="settingsTab">⚙ Settings</button>
     <button class="tab-btn" data-tab="emailTab">✉ Email</button>
+    <button class="tab-btn" data-tab="changesTab">📌 Daily Changes</button>
   </nav>
   <div class="header-right">
     <div class="site-day" id="todayLabel"></div>
@@ -257,6 +273,64 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
         </div>
         <button class="open-sheet-btn" id="openSheetBtn">📂 Open Today's Sheet in Excel</button>
         <div class="field-status">Opens the right sheet — Ctrl+A → Ctrl+C → switch back and paste</div>
+      </div>
+
+      <!-- Power Automate -->
+      <div class="settings-section full" id="paSection">
+        <div class="section-title">⚡ Power Automate — Fully Automatic Daily Upload</div>
+        <p class="section-desc">Set up a Power Automate flow that runs at 7am each weekday, reads today's sheet from your Excel file, and posts it to the server automatically — no manual steps.</p>
+
+        <div class="pa-warning">
+          ⚠️ <strong>One-time setup required first:</strong> Paste your timetable at least once manually using the Timetable tab. This saves the colour → person mapping so the automated flow knows who is who.
+        </div>
+
+        <div style="font-weight:700;font-size:0.9rem;margin:16px 0 8px;">Step 1 — Your endpoint details</div>
+        <p class="section-desc" style="margin-bottom:8px">Copy these into Power Automate exactly as shown.</p>
+
+        <div style="font-size:0.75rem;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">HTTP POST URL</div>
+        <div class="pa-endpoint" id="paEndpointUrl"><span class="method">POST</span><span id="paUrlText">https://timetable-server-r6nb.onrender.com/automate</span></div>
+        <button class="pa-copy-btn" id="copyPaUrl">Copy URL</button>
+
+        <div style="font-size:0.75rem;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.06em;margin:12px 0 4px">Headers</div>
+        <div class="pa-json" id="paHeadersJson">{
+  "Content-Type": "application/json",
+  "x-admin-password": "<span id="paPasswordPlaceholder">your-password</span>"
+}</div>
+        <button class="pa-copy-btn" id="copyPaHeaders">Copy headers</button>
+
+        <div style="font-weight:700;font-size:0.9rem;margin:20px 0 8px;">Step 2 — Build the flow in Power Automate</div>
+        <div class="pa-steps">
+          <div class="pa-step"><div class="pa-step-num">1</div><div class="pa-step-text">Go to <strong>make.powerautomate.com</strong> and sign in with your school Microsoft account.</div></div>
+          <div class="pa-step"><div class="pa-step-num">2</div><div class="pa-step-text">Click <strong>Create → Scheduled cloud flow</strong>. Set it to run at <code>7:00 AM</code>, repeat every <code>1 day</code>.</div></div>
+          <div class="pa-step"><div class="pa-step-num">3</div><div class="pa-step-text">Add a <strong>Condition</strong> action. Set it to check: <code>dayOfWeek(utcNow(), 'AUS Eastern Standard Time')</code> is not equal to <code>0</code> and not equal to <code>6</code>. This skips weekends.</div></div>
+          <div class="pa-step"><div class="pa-step-num">4</div><div class="pa-step-text">In the <strong>Yes</strong> branch, add action: <strong>Excel Online (Business) → Get a row</strong>. Connect to your SharePoint file. Under Sheet Name, use an expression to calculate today's sheet — see Step 3 below.</div></div>
+          <div class="pa-step"><div class="pa-step-num">5</div><div class="pa-step-text">Add action: <strong>Excel Online (Business) → List rows present in a table</strong> — OR use <strong>Get worksheets</strong> to read the entire sheet range. Select your file and today's calculated sheet name.</div></div>
+          <div class="pa-step"><div class="pa-step-num">6</div><div class="pa-step-text">Add action: <strong>HTTP</strong>. Method: <code>POST</code>. URI: the URL above. Add the headers above. Body: use the expression from Step 4.</div></div>
+          <div class="pa-step"><div class="pa-step-num">7</div><div class="pa-step-text">Save and test the flow. Check the server responds with <code>{"ok": true}</code>.</div></div>
+        </div>
+
+        <div style="font-weight:700;font-size:0.9rem;margin:20px 0 8px;">Step 3 — Sheet name expression (Day 1–10)</div>
+        <p class="section-desc" style="margin-bottom:8px">Use this expression in Power Automate for the sheet name. It calculates the correct Day number based on the cycle start date.</p>
+        <div class="pa-json" id="paExpressionText">concat('Day ', add(mod(sub(div(sub(ticks(convertFromUtc(utcNow(),'AUS Eastern Standard Time','yyyy-MM-dd')), ticks('2026-02-23')), 864000000000), 1), 10), 1))</div>
+        <button class="pa-copy-btn" id="copyPaExpression">Copy expression</button>
+        <div class="field-status" style="margin-top:6px">⚠ This expression counts weekdays — paste it into a Power Automate "Compose" action first and verify the output matches today's Day number shown above.</div>
+
+        <div style="font-weight:700;font-size:0.9rem;margin:20px 0 8px;">Step 4 — Body expression</div>
+        <p class="section-desc" style="margin-bottom:8px">The HTTP action body should pass each row's values and the row index. Use this template and replace <code>outputs('List_rows')?['body/value']</code> with the actual output from your List rows action.</p>
+        <div class="pa-json">@{
+  "rows": outputs('List_rows')?['body/value']
+}</div>
+
+        <div class="pa-warning" style="margin-top:16px">
+          📌 <strong>Important:</strong> Power Automate's Excel connector does not return cell background colours. The server will match columns by position using the colour layout saved from your last manual paste. If you change the spreadsheet layout, do one manual paste to update the mapping.
+        </div>
+
+        <div style="font-weight:700;font-size:0.9rem;margin:20px 0 8px;">Saved column map</div>
+        <p class="section-desc" style="margin-bottom:8px">This is generated automatically when you paste the timetable. The server uses it to assign colours when Power Automate sends values-only data.</p>
+        <div class="pa-json" id="paColMapDisplay">No column map saved yet — paste a timetable first.</div>
+        <div class="btn-row" style="margin-top:8px">
+          <button class="s-btn secondary" id="clearColMapBtn">Clear column map</button>
+        </div>
       </div>
 
       <!-- Colour names + LSO names -->
@@ -418,6 +492,60 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   </div>
 </div>
 
+<!-- ══ DAILY CHANGES TAB ══ -->
+<div class="tab-page" id="changesTab">
+  <div class="settings-page" style="max-width:780px;">
+
+    <div class="settings-section full" style="margin-bottom:20px;">
+      <div class="section-title">Upload Daily Changes Image</div>
+      <p class="section-desc">Take a photo or screenshot of today's daily TT changes sheet and upload it here. Claude will read the text and extract each LSO's assignments per period, then publish it to the viewer so all LSOs can see today's changes.</p>
+
+      <!-- Upload zone -->
+      <div id="dcDropZone" style="border:2px dashed var(--border);border-radius:12px;padding:36px 24px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;margin-bottom:16px;background:var(--surface2);">
+        <div style="font-size:2rem;margin-bottom:8px;">📷</div>
+        <div style="font-weight:700;margin-bottom:4px;">Drop image here or click to upload</div>
+        <div style="font-size:0.8rem;color:var(--muted);">PNG, JPG, HEIC — screenshot or photo of the changes sheet</div>
+        <input type="file" id="dcFileInput" accept="image/*" style="display:none;" />
+      </div>
+
+      <!-- Preview -->
+      <div id="dcPreviewWrap" style="display:none;margin-bottom:16px;">
+        <img id="dcPreviewImg" style="max-width:100%;max-height:300px;border-radius:10px;border:1px solid var(--border);display:block;" />
+        <button id="dcClearImg" style="margin-top:8px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.8rem;">✕ Remove image</button>
+      </div>
+
+      <!-- Read button -->
+      <div class="btn-row">
+        <button class="s-btn green" id="dcReadBtn" disabled>🤖 Read with Claude</button>
+        <button class="s-btn secondary" id="dcPublishBtn" disabled>📤 Publish to viewer</button>
+        <button class="s-btn secondary" id="dcClearBtn" style="color:#ef4444;">🗑 Clear published changes</button>
+      </div>
+      <div id="dcStatus" style="margin-top:12px;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--muted);min-height:20px;"></div>
+    </div>
+
+    <!-- Extracted result -->
+    <div class="settings-section full" id="dcResultSection" style="display:none;">
+      <div class="section-title">Extracted Changes — Review before publishing</div>
+      <p class="section-desc" style="margin-bottom:16px;">Check Claude's reading below. You can edit any field before publishing. Absent LSOs are highlighted.</p>
+
+      <!-- Absent bar -->
+      <div id="dcAbsentBar" style="display:none;background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:0.83rem;">
+        <strong>Absent today:</strong> <span id="dcAbsentNames"></span>
+      </div>
+
+      <!-- Changes table -->
+      <div id="dcChangesTable" style="overflow-x:auto;"></div>
+
+      <!-- Raw text toggle -->
+      <details style="margin-top:16px;">
+        <summary style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);cursor:pointer;user-select:none;">Show raw extracted text</summary>
+        <pre id="dcRawText" style="margin-top:10px;background:var(--soft);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'DM Mono',monospace;font-size:0.72rem;white-space:pre-wrap;line-height:1.7;max-height:300px;overflow-y:auto;"></pre>
+      </details>
+    </div>
+
+  </div>
+</div>
+
 <script>
 // ── Cycle ──────────────────────────────────────────────────────────────────
 const CYCLE_START = new Date('2026-02-23T00:00:00');
@@ -504,6 +632,64 @@ document.getElementById('openSheetBtn').addEventListener('click', () => {
   localStorage.setItem('tt-sharepoint', base);
   const sep = base.includes('?')?'&':'?';
   window.open(`${base}${sep}activeCell=%27Day%20${dayNum}%27!A1&action=default`, '_blank');
+});
+
+// ── Power Automate section ─────────────────────────────────────────────────
+function updatePASection() {
+  const url  = getServer() || 'https://timetable-server-r6nb.onrender.com';
+  const pw   = localStorage.getItem('tt-pw') || 'your-password';
+  const urlText = document.getElementById('paUrlText');
+  const pwEl    = document.getElementById('paPasswordPlaceholder');
+  if (urlText) urlText.textContent = `${url}/automate/pa`;
+  if (pwEl)    pwEl.textContent    = pw;
+
+  // Show saved column map
+  const mapEl = document.getElementById('paColMapDisplay');
+  if (mapEl) {
+    const saved = localStorage.getItem('tt-col-map');
+    if (saved) {
+      try {
+        const m = JSON.parse(saved);
+        mapEl.textContent = JSON.stringify(m, null, 2);
+      } catch(e) { mapEl.textContent = 'Invalid saved map.'; }
+    } else {
+      mapEl.textContent = 'No column map saved yet — paste a timetable first.';
+    }
+  }
+}
+updatePASection();
+
+// Update PA section whenever server config changes
+document.getElementById('saveConfigBtn').addEventListener('click', updatePASection);
+
+function copyText(text, btn, label) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = label, 1800);
+  });
+}
+
+document.getElementById('copyPaUrl').addEventListener('click', function() {
+  const url = getServer() || 'https://timetable-server-r6nb.onrender.com';
+  copyText(`${url}/automate`, this, 'Copy URL');
+});
+
+document.getElementById('copyPaHeaders').addEventListener('click', function() {
+  const pw = localStorage.getItem('tt-pw') || 'your-password';
+  const headers = JSON.stringify({ 'Content-Type': 'application/json', 'x-admin-password': pw }, null, 2);
+  copyText(headers, this, 'Copy headers');
+});
+
+document.getElementById('copyPaExpression').addEventListener('click', function() {
+  const expr = document.getElementById('paExpressionText').textContent;
+  copyText(expr, this, 'Copy expression');
+});
+
+document.getElementById('clearColMapBtn').addEventListener('click', () => {
+  if (confirm('Clear the saved column map? You will need to paste manually once to rebuild it.')) {
+    localStorage.removeItem('tt-col-map');
+    updatePASection();
+  }
 });
 
 // ── LSO per-person names ───────────────────────────────────────────────────
@@ -879,6 +1065,39 @@ function processHTMLData(htmlStr) {
     }
   }
   if(groupMap.size===0){setMsg('No coloured groups found.','err');return;}
+
+  // ── Save column→colour map for Power Automate ──────────────────────────
+  // Records which column index maps to which colour key, so PA can send
+  // values-only data and the server can reconstruct colour groups by position.
+  const colMap = {}; // { colIndex: { key, bg, fg, periodNum } }
+  for(let c=dataStartCol;c<numCols;c+=3){
+    // Find the first non-excluded bg at this column across all rows
+    for(let r=0;r<grid.length;r++){
+      if(r===REF_ROW)continue;
+      const row=grid[r];
+      const c0=row[c]||{text:'',bg:null,fg:null};
+      if(c0.bg&&!isExcluded(c0.bg)){
+        const key=c0.bg+'||'+(c0.fg||'');
+        colMap[c]={key,bg:c0.bg,fg:c0.fg||null,periodNum:periodNums[c]};
+        break;
+      }
+    }
+  }
+  localStorage.setItem('tt-col-map', JSON.stringify(colMap));
+
+  // Push colMap to server so Power Automate can fetch it server-side if needed
+  const colMapUrl = getServer();
+  const colMapPw  = localStorage.getItem('tt-pw');
+  if (colMapUrl && colMapPw) {
+    fetch(`${colMapUrl}/colmap`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': colMapPw },
+      body: JSON.stringify({ colMap })
+    }).catch(() => {}); // silent — colmap push is best-effort
+  }
+
+  updatePASection();
+
   currentGroupMap=groupMap;
   setMsg('Parsed — pushing to server…','');
   pushToServer(groupMap);
@@ -1060,6 +1279,243 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 initEmailTab();
 loadLSODefaults();
+
+// ── Daily Changes ──────────────────────────────────────────────────────────
+let dcImageBase64 = null;
+let dcImageMime   = null;
+let dcExtracted   = null; // { absent:[], lsos:{ name: { p1,p2,p3,p4,p5,p6 } }, raw }
+
+const dcDrop    = document.getElementById('dcDropZone');
+const dcFile    = document.getElementById('dcFileInput');
+const dcPreview = document.getElementById('dcPreviewWrap');
+const dcImg     = document.getElementById('dcPreviewImg');
+const dcReadBtn = document.getElementById('dcReadBtn');
+const dcPubBtn  = document.getElementById('dcPublishBtn');
+const dcStatus  = document.getElementById('dcStatus');
+
+// Drop zone
+dcDrop.addEventListener('click', () => dcFile.click());
+dcDrop.addEventListener('dragover', e => { e.preventDefault(); dcDrop.style.borderColor = 'var(--text)'; });
+dcDrop.addEventListener('dragleave', () => { dcDrop.style.borderColor = 'var(--border)'; });
+dcDrop.addEventListener('drop', e => { e.preventDefault(); dcDrop.style.borderColor = 'var(--border)'; const f = e.dataTransfer.files[0]; if (f) loadImage(f); });
+dcFile.addEventListener('change', () => { if (dcFile.files[0]) loadImage(dcFile.files[0]); });
+document.getElementById('dcClearImg').addEventListener('click', clearDcImage);
+
+function loadImage(file) {
+  if (!file.type.startsWith('image/')) { dcSetStatus('⚠ Please upload an image file.'); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    dcImageBase64 = e.target.result.split(',')[1];
+    dcImageMime   = file.type;
+    dcImg.src     = e.target.result;
+    dcPreview.style.display = '';
+    dcDrop.style.display    = 'none';
+    dcReadBtn.disabled      = false;
+    dcSetStatus('Image loaded — click "Read with Claude" to extract changes.');
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearDcImage() {
+  dcImageBase64 = null; dcImageMime = null;
+  dcPreview.style.display = 'none';
+  dcDrop.style.display    = '';
+  dcReadBtn.disabled      = true;
+  dcPubBtn.disabled       = true;
+  dcExtracted             = null;
+  document.getElementById('dcResultSection').style.display = 'none';
+  dcFile.value = '';
+  dcSetStatus('');
+}
+
+// Read with Claude
+dcReadBtn.addEventListener('click', async () => {
+  if (!dcImageBase64) return;
+  dcReadBtn.disabled = true;
+  dcSetStatus('🤖 Sending to Claude… this may take 10–20 seconds.');
+
+  const prompt = `You are reading a school LSO (Learning Support Officer) daily timetable changes sheet.
+
+Extract ALL information from this image into this exact JSON structure:
+{
+  "absent": ["Name1", "Name2"],
+  "date": "extracted date string if visible, else null",
+  "lsos": {
+    "LSO Name": {
+      "p1": "assignment text or null",
+      "p2": "assignment text or null",
+      "p3": "assignment text or null",
+      "p4": "assignment text or null",
+      "p5": "assignment text or null",
+      "p6": "assignment text or null"
+    }
+  },
+  "notes": "any general notes at the top of the sheet"
+}
+
+Rules:
+- Each LSO gets one entry. Use exactly the name as written.
+- For each period, copy the full assignment text (e.g. "Cover Indi", "LEC – No NAPLAN students", "Special Provisions NAPLAN Year 9").
+- If a cell is empty or the LSO has no assignment that period, use null.
+- Absent LSOs mentioned at the top should go in the "absent" array.
+- Respond with ONLY the JSON object, no markdown, no explanation.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: dcImageMime, data: dcImageBase64 } },
+            { type: 'text', text: prompt }
+          ]
+        }]
+      })
+    });
+
+    if (!res.ok) { dcSetStatus(`✕ API error ${res.status} — check your connection.`); dcReadBtn.disabled = false; return; }
+    const data = await res.json();
+    const text = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+
+    try {
+      const clean = text.replace(/```json|```/g,'').trim();
+      dcExtracted = JSON.parse(clean);
+      dcExtracted.raw = text;
+      renderDcResult(dcExtracted);
+      dcPubBtn.disabled = false;
+      dcSetStatus('✓ Extraction complete — review the table below, then click Publish.');
+    } catch(e) {
+      dcSetStatus('⚠ Could not parse Claude\'s response. Try again or check the raw text below.');
+      document.getElementById('dcResultSection').style.display = '';
+      document.getElementById('dcRawText').textContent = text;
+      document.getElementById('dcChangesTable').innerHTML = '';
+      document.getElementById('dcAbsentBar').style.display = 'none';
+    }
+  } catch(e) {
+    dcSetStatus('✕ Network error: ' + e.message);
+  }
+  dcReadBtn.disabled = false;
+});
+
+function renderDcResult(data) {
+  const section = document.getElementById('dcResultSection');
+  section.style.display = '';
+
+  // Absent bar
+  const absentBar = document.getElementById('dcAbsentBar');
+  if (data.absent && data.absent.length) {
+    absentBar.style.display = '';
+    document.getElementById('dcAbsentNames').textContent = data.absent.join(', ');
+  } else {
+    absentBar.style.display = 'none';
+  }
+
+  // Raw text
+  document.getElementById('dcRawText').textContent = data.raw || '';
+
+  // Build table
+  const lsos = data.lsos || {};
+  const names = Object.keys(lsos);
+  const periods = ['p1','p2','p3','p4','p5','p6'];
+
+  if (!names.length) {
+    document.getElementById('dcChangesTable').innerHTML = '<p style="color:var(--muted);font-size:.83rem;">No LSO assignments found in image.</p>';
+    return;
+  }
+
+  let html = `<table style="border-collapse:collapse;width:100%;font-size:.8rem;">
+    <thead><tr style="background:var(--soft);">
+      <th style="padding:8px 12px;text-align:left;border:1px solid var(--border);font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);">LSO</th>
+      ${periods.map(p=>`<th style="padding:8px 12px;text-align:left;border:1px solid var(--border);font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);">${p.toUpperCase()}</th>`).join('')}
+    </tr></thead><tbody>`;
+
+  names.forEach(name => {
+    const isAbsent = (data.absent||[]).includes(name);
+    const rowStyle = isAbsent ? 'background:#fef3c7;' : '';
+    html += `<tr style="${rowStyle}">
+      <td style="padding:8px 12px;border:1px solid var(--border);font-weight:700;">${name}${isAbsent?' <span style="color:#92400e;font-size:.7rem;">(absent)</span>':''}</td>
+      ${periods.map(p => {
+        const val = lsos[name][p] || '';
+        return `<td style="padding:6px 12px;border:1px solid var(--border);">
+          <input value="${escHtml(val)}" data-lso="${escHtml(name)}" data-period="${p}"
+            style="width:100%;background:transparent;border:none;outline:none;font-family:'Outfit',sans-serif;font-size:.78rem;color:var(--text);min-width:120px;"
+            placeholder="—" />
+        </td>`;
+      }).join('')}
+    </tr>`;
+  });
+
+  html += '</tbody></table>';
+  document.getElementById('dcChangesTable').innerHTML = html;
+
+  // Keep dcExtracted in sync with edits
+  document.getElementById('dcChangesTable').querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', () => {
+      const lso = inp.dataset.lso, per = inp.dataset.period;
+      if (dcExtracted.lsos[lso]) dcExtracted.lsos[lso][per] = inp.value;
+    });
+  });
+}
+
+function escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Publish to server
+dcPubBtn.addEventListener('click', async () => {
+  if (!dcExtracted) return;
+  const url = getServer();
+  if (!url) { dcSetStatus('⚠ No server URL — go to Settings tab.'); return; }
+
+  // Collect current values from editable table
+  const lsos = {};
+  document.getElementById('dcChangesTable').querySelectorAll('input').forEach(inp => {
+    const lso = inp.dataset.lso, per = inp.dataset.period;
+    if (!lsos[lso]) lsos[lso] = {};
+    lsos[lso][per] = inp.value.trim() || null;
+  });
+
+  const payload = {
+    date: dcExtracted.date || new Date().toLocaleDateString('en-GB'),
+    absent: dcExtracted.absent || [],
+    lsos,
+    notes: dcExtracted.notes || null,
+    publishedAt: new Date().toISOString()
+  };
+
+  dcSetStatus('Publishing…');
+  try {
+    const res = await fetch(`${url}/daily-changes`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Password': getPw() },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) dcSetStatus('✓ Published! LSOs can see the daily changes panel in the viewer now.');
+    else if (res.status === 401) dcSetStatus('✕ Wrong password.');
+    else dcSetStatus(`✕ Server error ${res.status}`);
+  } catch(e) { dcSetStatus('✕ Could not reach server: ' + e.message); }
+});
+
+// Clear published changes
+document.getElementById('dcClearBtn').addEventListener('click', async () => {
+  if (!confirm('Clear today\'s published changes from the viewer?')) return;
+  const url = getServer();
+  if (!url) { dcSetStatus('⚠ No server URL.'); return; }
+  try {
+    const res = await fetch(`${url}/daily-changes`, {
+      method: 'DELETE',
+      headers: { 'X-Admin-Password': getPw() }
+    });
+    if (res.ok) dcSetStatus('Cleared.');
+    else dcSetStatus(`✕ Server error ${res.status}`);
+  } catch(e) { dcSetStatus('✕ ' + e.message); }
+});
+
+function dcSetStatus(msg) { dcStatus.textContent = msg; }
 </script>
 </body>
 </html>
