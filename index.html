@@ -247,6 +247,21 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .map-empty { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; pointer-events:none; }
 .map-empty .icon { font-size:2.5rem; opacity:.25; }
 .map-empty p { font-size:.85rem; color:var(--muted); text-align:center; line-height:1.7; max-width:300px; }
+
+/* ── Map group zones ── */
+.map-group {
+  position:absolute; border:1.5px solid var(--border); border-radius:12px;
+  background:var(--surface); padding:0;
+  box-shadow:var(--shadow);
+}
+.map-group-label {
+  font-family:'DM Mono',monospace; font-size:0.65rem; font-weight:700;
+  color:var(--muted); letter-spacing:0.07em; text-transform:uppercase;
+  padding:6px 10px 4px; border-bottom:1px solid var(--border);
+  cursor:move; user-select:none;
+}
+.map-group.edit-mode .map-group-label { cursor:move; }
+.map-group-rooms { padding:8px; display:flex; flex-wrap:wrap; gap:6px; min-height:44px; }
 </style>
 </head>
 <body>
@@ -1361,14 +1376,59 @@ function mapAddFromInput() {
   mapAddRoom(code);
   document.getElementById('mapNewCode').value = '';
 }
+// Known prefix → approximate canvas position (x, y) based on school layout
+// Canvas is ~1200x700. Layout: left=0, middle=400, right=800. top=0, mid=250, bottom=500
+const MAP_PREFIX_POSITIONS = {
+  TC: { x:  40, y:  30 },  // Top left x2
+  CL: { x: 200, y:  30 },  // Top left
+  PA: { x:  40, y: 240 },  // Middle left x2
+  BR: { x: 200, y: 240 },  // Middle left
+  FW: { x:  40, y: 460 },  // Bottom left
+  HC: { x: 450, y:  30 },  // Middle top
+  MC: { x: 450, y: 240 },  // Middle middle
+  TF: { x: 450, y: 460 },  // Middle bottom
+  BE: { x: 840, y:  30 },  // Top right
+  DO: { x: 840, y: 240 },  // Middle right
+  GL: { x: 980, y: 240 },  // Middle right x2
+  TA: { x: 840, y: 460 },  // Bottom right
+};
+
+function getRoomPrefix(code) {
+  return code.length >= 2 ? code.slice(0, 2).toUpperCase() : code.toUpperCase();
+}
+
+// mapGroups: { prefix: { x, y } } — positions of group zones (draggable)
+let mapGroups = loadMapGroups();
+function loadMapGroups() {
+  try { return JSON.parse(localStorage.getItem('tt-map-groups') || 'null') || {}; } catch(e) { return {}; }
+}
+function saveMapGroups() { localStorage.setItem('tt-map-groups', JSON.stringify(mapGroups)); }
+
 function mapAddRoom(code) {
-  const idx = mapRooms.length, cols = 8;
-  mapRooms.push({ id: mapUid(), code, x: 20 + (idx % cols) * 140, y: 20 + Math.floor(idx / cols) * 100 });
+  if (mapRooms.find(r => r.code === code)) return;
+  const prefix = getRoomPrefix(code);
+  // Ensure group exists with a position
+  if (!mapGroups[prefix]) {
+    const pos = MAP_PREFIX_POSITIONS[prefix];
+    if (pos) {
+      mapGroups[prefix] = { x: pos.x, y: pos.y };
+    } else {
+      // Unknown prefix — stack to the right of existing groups
+      const count = Object.keys(mapGroups).length;
+      mapGroups[prefix] = { x: 40 + (count % 5) * 220, y: 40 + Math.floor(count / 5) * 200 };
+    }
+    saveMapGroups();
+  }
+  mapRooms.push({ id: mapUid(), code });
   saveMapRooms(); renderMapSidebar(); renderMapView();
 }
+
 function mapRemoveRoom(id) {
   mapRooms = mapRooms.filter(r => r.id !== id);
-  saveMapRooms(); renderMapSidebar(); renderMapView();
+  // Remove group if no rooms left in it
+  const usedPrefixes = new Set(mapRooms.map(r => getRoomPrefix(r.code)));
+  Object.keys(mapGroups).forEach(p => { if (!usedPrefixes.has(p)) delete mapGroups[p]; });
+  saveMapRooms(); saveMapGroups(); renderMapSidebar(); renderMapView();
 }
 
 // Auto-import
@@ -1382,18 +1442,17 @@ document.getElementById('mapAutoBtn').addEventListener('click', () => {
   const existing = new Set(mapRooms.map(r => r.code));
   const toAdd = [...found].filter(r => !existing.has(r)).sort();
   if (!toAdd.length) { alert('All rooms are already on the map.'); return; }
-  toAdd.forEach(code => {
-    const idx = mapRooms.length, cols = 8;
-    mapRooms.push({ id: mapUid(), code, x: 20 + (idx % cols) * 140, y: 20 + Math.floor(idx / cols) * 100 });
-  });
-  saveMapRooms(); renderMapSidebar(); renderMapView();
-  alert('Added ' + toAdd.length + ' rooms: ' + toAdd.join(', ') + '\n\nDrag them into position.');
+  toAdd.forEach(code => mapAddRoom(code));
+  saveMapRooms(); saveMapGroups(); renderMapSidebar(); renderMapView();
+  const prefixes = [...new Set(toAdd.map(getRoomPrefix))];
+  alert(`Added ${toAdd.length} rooms across ${prefixes.length} group${prefixes.length>1?'s':''}: ${prefixes.join(', ')}\n\nDrag group headers to reposition.`);
 });
 
 // Clear all
 document.getElementById('mapClearAllBtn').addEventListener('click', () => {
   if (!confirm('Remove all rooms from the map?')) return;
-  mapRooms = []; saveMapRooms(); renderMapSidebar(); renderMapView();
+  mapRooms = []; mapGroups = {};
+  saveMapRooms(); saveMapGroups(); renderMapSidebar(); renderMapView();
 });
 
 // Sidebar chips
@@ -1443,66 +1502,96 @@ function renderMapView() {
   const placements = getMapPlacements(slot);
 
   const canvas = document.getElementById('mapCanvas');
-  canvas.querySelectorAll('.map-room').forEach(el => el.remove());
+  canvas.querySelectorAll('.map-group').forEach(el => el.remove());
 
   // Empty state
   document.getElementById('mapEmpty').style.display = mapRooms.length ? 'none' : '';
 
-  // Canvas size
-  let maxX = 700, maxY = 500;
-  mapRooms.forEach(r => { maxX = Math.max(maxX, r.x + 160); maxY = Math.max(maxY, r.y + 120); });
+  // Group rooms by prefix
+  const groups = {};
+  mapRooms.forEach(room => {
+    const prefix = getRoomPrefix(room.code);
+    if (!groups[prefix]) groups[prefix] = [];
+    groups[prefix].push(room);
+  });
+
+  // Canvas size — based on group positions
+  let maxX = 800, maxY = 540;
+  Object.keys(groups).forEach(prefix => {
+    const pos = mapGroups[prefix] || { x: 40, y: 40 };
+    maxX = Math.max(maxX, pos.x + 280);
+    maxY = Math.max(maxY, pos.y + 200);
+  });
   canvas.style.width = maxX + 'px'; canvas.style.height = maxY + 'px';
 
   const placedCodes = new Set(mapRooms.map(r => r.code.toUpperCase()));
 
-  mapRooms.forEach(room => {
-    const students = placements.get(room.code.toUpperCase()) || [];
-    const el = document.createElement('div');
-    el.className = 'map-room' + (students.length ? ' occupied' : '') + (mapEditMode ? ' draggable' : '');
-    el.style.left = room.x + 'px'; el.style.top = room.y + 'px';
-    el.dataset.id = room.id;
+  // Render each group as a zone
+  Object.entries(groups).sort((a,b) => a[0].localeCompare(b[0])).forEach(([prefix, rooms]) => {
+    const pos = mapGroups[prefix] || { x: 40, y: 40 };
+    if (!mapGroups[prefix]) { mapGroups[prefix] = { x: 40, y: 40 }; saveMapGroups(); }
 
-    const codeRow = document.createElement('div'); codeRow.className = 'map-room-code';
-    codeRow.appendChild(document.createTextNode(room.code));
-    if (mapEditMode) {
-      const del = document.createElement('button'); del.className = 'map-room-del'; del.textContent = '✕';
-      del.addEventListener('click', e => { e.stopPropagation(); mapRemoveRoom(room.id); });
-      codeRow.appendChild(del);
-    }
-    el.appendChild(codeRow);
+    const groupEl = document.createElement('div');
+    groupEl.className = 'map-group' + (mapEditMode ? ' edit-mode' : '');
+    groupEl.style.left = pos.x + 'px';
+    groupEl.style.top  = pos.y + 'px';
 
-    if (students.length) {
-      const stuDiv = document.createElement('div'); stuDiv.className = 'map-students';
-      students.forEach(s => {
-        const b = document.createElement('span'); b.className = 'map-badge';
-        b.style.background = s.color; if (s.fg) b.style.color = s.fg;
-        b.textContent = s.name;
-        // Check if this LSO has daily changes
-        if (currentDailyChanges) {
-          const dcLookup = getDcLookup();
-          const match = dcLookup[s.name.toLowerCase()];
-          const isAbsent = new Set((currentDailyChanges.absent||[]).map(n=>n.toLowerCase())).has(s.name.toLowerCase());
-          if (isAbsent) {
-            const tag = document.createElement('span'); tag.className = 'map-dc-tag';
-            tag.style.cssText = 'background:#fef3c7;color:#92400e;border:1px solid #fcd34d;';
-            tag.textContent = 'ABSENT'; b.appendChild(tag);
-          } else if (match) {
-            const p = mapTab === 'now' ? (cur && cur.period ? 'p' + cur.period : null) : (nxt && nxt.period ? 'p' + nxt.period : null);
-            const change = p && match.periods[p];
-            if (change) {
+    const labelEl = document.createElement('div');
+    labelEl.className = 'map-group-label';
+    labelEl.textContent = prefix + ' Block';
+    groupEl.appendChild(labelEl);
+
+    const roomsEl = document.createElement('div');
+    roomsEl.className = 'map-group-rooms';
+
+    rooms.sort((a,b) => a.code.localeCompare(b.code)).forEach(room => {
+      const students = placements.get(room.code.toUpperCase()) || [];
+      const roomEl = document.createElement('div');
+      roomEl.className = 'map-room' + (students.length ? ' occupied' : '');
+
+      const codeRow = document.createElement('div'); codeRow.className = 'map-room-code';
+      codeRow.appendChild(document.createTextNode(room.code));
+      if (mapEditMode) {
+        const del = document.createElement('button'); del.className = 'map-room-del'; del.textContent = '✕';
+        del.addEventListener('click', e => { e.stopPropagation(); mapRemoveRoom(room.id); });
+        codeRow.appendChild(del);
+      }
+      roomEl.appendChild(codeRow);
+
+      if (students.length) {
+        const stuDiv = document.createElement('div'); stuDiv.className = 'map-students';
+        students.forEach(s => {
+          const b = document.createElement('span'); b.className = 'map-badge';
+          b.style.background = s.color; if (s.fg) b.style.color = s.fg;
+          b.textContent = s.name;
+          if (currentDailyChanges) {
+            const dcLookup = getDcLookup();
+            const match = dcLookup[s.name.toLowerCase()];
+            const isAbsent = new Set((currentDailyChanges.absent||[]).map(n=>n.toLowerCase())).has(s.name.toLowerCase());
+            if (isAbsent) {
               const tag = document.createElement('span'); tag.className = 'map-dc-tag';
-              tag.style.cssText = 'background:#dbeafe;color:#1e40af;border:1px solid #93c5fd;display:block;margin-top:2px;';
-              tag.textContent = '📌 ' + change; b.appendChild(tag);
+              tag.style.cssText = 'background:#fef3c7;color:#92400e;border:1px solid #fcd34d;';
+              tag.textContent = 'ABSENT'; b.appendChild(tag);
+            } else if (match) {
+              const p = mapTab === 'now' ? (cur && cur.period ? 'p'+cur.period : null) : (nxt && nxt.period ? 'p'+nxt.period : null);
+              const change = p && match.periods[p];
+              if (change) {
+                const tag = document.createElement('span'); tag.className = 'map-dc-tag';
+                tag.style.cssText = 'background:#dbeafe;color:#1e40af;border:1px solid #93c5fd;display:block;margin-top:2px;';
+                tag.textContent = '📌 ' + change; b.appendChild(tag);
+              }
             }
           }
-        }
-        stuDiv.appendChild(b);
-      });
-      el.appendChild(stuDiv);
-    }
+          stuDiv.appendChild(b);
+        });
+        roomEl.appendChild(stuDiv);
+      }
+      roomsEl.appendChild(roomEl);
+    });
 
-    if (mapEditMode) makeMapDraggable(el, room);
-    canvas.appendChild(el);
+    groupEl.appendChild(roomsEl);
+    if (mapEditMode) makeGroupDraggable(groupEl, prefix, pos);
+    canvas.appendChild(groupEl);
   });
 
   // Unplaced
@@ -1537,29 +1626,34 @@ function getMapCurrentAndNext() {
   return { cur, nxt };
 }
 
-function makeMapDraggable(el, room) {
+// Drag entire group zone by its label header
+function makeGroupDraggable(groupEl, prefix, pos) {
+  const label = groupEl.querySelector('.map-group-label');
   let sx, sy, ox, oy;
-  el.addEventListener('mousedown', e => {
-    if (e.target.classList.contains('map-room-del')) return;
-    e.preventDefault();
-    sx = e.clientX; sy = e.clientY; ox = room.x; oy = room.y; el.style.zIndex = 10;
-    function move(e2) {
-      room.x = Math.max(0, ox + e2.clientX - sx);
-      room.y = Math.max(0, oy + e2.clientY - sy);
-      el.style.left = room.x + 'px'; el.style.top = room.y + 'px';
-    }
-    function up() {
-      el.style.zIndex = ''; saveMapRooms(); renderMapSidebar();
-      document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up);
-    }
+  function startDrag(clientX, clientY) {
+    sx = clientX; sy = clientY; ox = pos.x; oy = pos.y;
+    groupEl.style.zIndex = 10;
+  }
+  function doDrag(clientX, clientY) {
+    pos.x = Math.max(0, ox + clientX - sx);
+    pos.y = Math.max(0, oy + clientY - sy);
+    groupEl.style.left = pos.x + 'px';
+    groupEl.style.top  = pos.y + 'px';
+    mapGroups[prefix] = { x: pos.x, y: pos.y };
+  }
+  function endDrag() { groupEl.style.zIndex = ''; saveMapGroups(); }
+
+  label.addEventListener('mousedown', e => {
+    e.preventDefault(); startDrag(e.clientX, e.clientY);
+    function move(e2) { doDrag(e2.clientX, e2.clientY); }
+    function up() { endDrag(); document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); }
     document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
   });
-  el.addEventListener('touchstart', e => {
-    if (e.target.classList.contains('map-room-del')) return;
-    const t = e.touches[0]; sx = t.clientX; sy = t.clientY; ox = room.x; oy = room.y; el.style.zIndex = 10;
-    function tmove(e2) { const t2 = e2.touches[0]; room.x = Math.max(0, ox + t2.clientX - sx); room.y = Math.max(0, oy + t2.clientY - sy); el.style.left = room.x + 'px'; el.style.top = room.y + 'px'; }
-    function tup() { el.style.zIndex = ''; saveMapRooms(); document.removeEventListener('touchmove', tmove); document.removeEventListener('touchend', tup); }
-    document.addEventListener('touchmove', tmove, { passive: true }); document.addEventListener('touchend', tup);
+  label.addEventListener('touchstart', e => {
+    const t = e.touches[0]; startDrag(t.clientX, t.clientY);
+    function move(e2) { const t2 = e2.touches[0]; doDrag(t2.clientX, t2.clientY); }
+    function up() { endDrag(); document.removeEventListener('touchmove', move); document.removeEventListener('touchend', up); }
+    document.addEventListener('touchmove', move, { passive: true }); document.addEventListener('touchend', up);
   }, { passive: true });
 }
 
