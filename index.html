@@ -53,7 +53,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 [data-theme="dark"] .toggle-track::after { transform:translateX(16px); background:#111010; }
 
 /* Period strip */
-.period-strip { background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:73px; z-index:99; display:none; transition:background .25s,border-color .25s; }
+.period-strip { background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:99; display:none; transition:background .25s,border-color .25s; margin-top:0; }
 .period-strip.visible { display:block; }
 .period-strip-inner { max-width:1100px; margin:0 auto; padding:0 28px; height:44px; display:flex; align-items:center; gap:16px; }
 .period-strip-dot { width:7px; height:7px; border-radius:50%; background:#22a85a; flex-shrink:0; animation:pulse-dot 2s ease-in-out infinite; }
@@ -405,7 +405,60 @@ function getLSONameForKey(key){const names=getLSONames();return names[key]||loca
 function getToday_ddmmyy(){const d=new Date();return`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getFullYear()).slice(-2)}`;}
 function getEmailOverrides(){try{return JSON.parse(localStorage.getItem('tt-email-overrides')||'{}');}catch(e){return{};}}
 function codeToEmailPrefix(code,overrides){const upper=code.toUpperCase().trim();if(overrides[upper])return{prefix:overrides[upper],isOverride:true};const lower=upper.toLowerCase();return{prefix:lower[lower.length-1]+lower.slice(0,lower.length-1),isOverride:false};}
-function buildLSOEmail(slots,lsoSettings){const{domain,yourName,cc}=lsoSettings;const overrides=getEmailOverrides();const dd=getToday_ddmmyy();const subject=`LSO ${dd}`;const periodLines=[];const teacherMap=new Map();for(let p=1;p<=6;p++){const entries=slots[p];if(entries&&entries.length>0){entries.forEach(({d1,d2,d3})=>{if(d1||d2||d3){periodLines.push(`P${p} - ${d1||''}   ${d2||''}   ${d3||''}`.trimEnd());if(d3){const code=d3.trim().toUpperCase();if(!teacherMap.has(code))teacherMap.set(code,codeToEmailPrefix(code,overrides));}}});}}const teacherEntries=[...teacherMap.entries()];const teacherEmails=teacherEntries.map(([code,{prefix}])=>`${prefix}@${domain}`);const body=['Good morning teachers,','','Today I will be attending and supporting the students within your classes.','',...periodLines,'',`Please introduce me to the students as ${yourName}.`,'I look forward to working with you today and providing effective support to our students.','','Kind regards,',yourName].join('\n');return{subject,body,teacherEmails,teacherEntries,cc};}
+function buildLSOEmail(slots,lsoSettings,dcChanges){
+  // dcChanges: array of {lso,period,type,description,classCode,room,teacherCode} for this person
+  const{domain,yourName,cc}=lsoSettings;
+  const overrides=getEmailOverrides();
+  const dd=getToday_ddmmyy();
+  const subject=`LSO ${dd}`;
+  const periodLines=[];
+  const teacherMap=new Map();
+
+  // Build a lookup of DC changes by period for quick access
+  const dcByPeriod={};
+  (dcChanges||[]).forEach(ch=>{
+    const pNum=parseInt((ch.period||'').replace('p',''),10);
+    if(pNum>=1&&pNum<=6){
+      if(!dcByPeriod[pNum])dcByPeriod[pNum]=[];
+      dcByPeriod[pNum].push(ch);
+    }
+  });
+
+  for(let p=1;p<=6;p++){
+    const dcForPeriod=dcByPeriod[p]||[];
+    const entries=slots[p];
+
+    if(dcForPeriod.length>0){
+      // Use DC data — one line per change
+      dcForPeriod.forEach(ch=>{
+        const d1=ch.classCode||ch.description||'';
+        const d2=ch.room||'';
+        const d3=ch.teacherCode||'';
+        periodLines.push(`P${p} - ${d1}   ${d2}   ${d3}`.trimEnd());
+        if(d3){
+          const code=d3.trim().toUpperCase();
+          if(!teacherMap.has(code))teacherMap.set(code,codeToEmailPrefix(code,overrides));
+        }
+      });
+    } else if(entries&&entries.length>0){
+      // No DC change — use original timetable data
+      entries.forEach(({d1,d2,d3})=>{
+        if(d1||d2||d3){
+          periodLines.push(`P${p} - ${d1||''}   ${d2||''}   ${d3||''}`.trimEnd());
+          if(d3){
+            const code=d3.trim().toUpperCase();
+            if(!teacherMap.has(code))teacherMap.set(code,codeToEmailPrefix(code,overrides));
+          }
+        }
+      });
+    }
+  }
+
+  const teacherEntries=[...teacherMap.entries()];
+  const teacherEmails=teacherEntries.map(([code,{prefix}])=>`${prefix}@${domain}`);
+  const body=['Good morning teachers,','','Today I will be attending and supporting the students within your classes.','',...periodLines,'',`Please introduce me to the students as ${yourName}.`,'I look forward to working with you today and providing effective support to our students.','','Kind regards,',yourName].join('\n');
+  return{subject,body,teacherEmails,teacherEntries,cc};
+}
 function getLSOSettings(key){return{domain:localStorage.getItem('lso-domain')||'stpeters.vic.edu.au',yourName:getLSONameForKey(key),cc:localStorage.getItem('lso-cc')||'kmcmellon@stpeters.vic.edu.au'};}
 function saveLSOGlobalSettings(s){localStorage.setItem('lso-domain',s.domain);localStorage.setItem('lso-cc',s.cc);}
 
@@ -775,8 +828,21 @@ function renderDetail(key,grp,name){
     </div>`;
 
   let lastEmail=null;
-  function refreshEmail(){const settings={domain:document.getElementById('lsoDomain').value.trim()||'stpeters.vic.edu.au',yourName:document.getElementById('lsoName').value.trim()||'Mr. Chew',cc:document.getElementById('lsoCC').value.trim()};saveLSOGlobalSettings(settings);lastEmail=buildLSOEmail(slots,settings);document.getElementById('lsoSubject').textContent=lastEmail.subject;document.getElementById('lsoCCVal').textContent=lastEmail.cc;document.getElementById('lsoBodyPreview').textContent=lastEmail.body;const chipsEl=document.getElementById('lsoTeacherChips');if(lastEmail.teacherEntries.length===0){chipsEl.innerHTML='<span style="color:var(--muted);font-size:0.8rem;font-style:italic;">No teachers found in timetable data</span>';}else{chipsEl.innerHTML=lastEmail.teacherEntries.map(([code,{prefix,isOverride}],i)=>`<div class="teacher-chip">${escapeHTML(code)}<span class="arrow">→</span><span class="email-part">${escapeHTML(lastEmail.teacherEmails[i])}</span>${isOverride?'<span class="override-badge">override</span>':''}</div>`).join('');}}
-
+  function refreshEmail(){
+    const settings={domain:document.getElementById('lsoDomain').value.trim()||'stpeters.vic.edu.au',yourName:document.getElementById('lsoName').value.trim()||'Mr. Chew',cc:document.getElementById('lsoCC').value.trim()};
+    saveLSOGlobalSettings(settings);
+    // Get DC changes for this person to reflect in email
+    const dcLookup=getDcLookup();
+    const dcEntry=dcLookup[(name||'').toLowerCase()];
+    const dcChanges=dcEntry?dcEntry.changes:[];
+    lastEmail=buildLSOEmail(slots,settings,dcChanges);
+    document.getElementById('lsoSubject').textContent=lastEmail.subject;
+    document.getElementById('lsoCCVal').textContent=lastEmail.cc;
+    document.getElementById('lsoBodyPreview').textContent=lastEmail.body;
+    const chipsEl=document.getElementById('lsoTeacherChips');
+    if(lastEmail.teacherEntries.length===0){chipsEl.innerHTML='<span style="color:var(--muted);font-size:0.8rem;font-style:italic;">No teachers found in timetable data</span>';}
+    else{chipsEl.innerHTML=lastEmail.teacherEntries.map(([code,{prefix,isOverride}],i)=>`<div class="teacher-chip">${escapeHTML(code)}<span class="arrow">→</span><span class="email-part">${escapeHTML(lastEmail.teacherEmails[i])}</span>${isOverride?'<span class="override-badge">override</span>':''}</div>`).join('');}
+  }
   inner.querySelector('#lsoSaveNameBtn').addEventListener('click',function(){const lsoNames=getLSONames();const val=document.getElementById('lsoName').value.trim();if(val)lsoNames[key]=val;else delete lsoNames[key];saveLSONames(lsoNames);const hint=document.getElementById('lsoNameHint');hint.textContent=`✓ saved for ${name}`;hint.style.color='#22a85a';setTimeout(()=>{hint.textContent=`saved for ${name}`;hint.style.color='';},2000);renderTiles(currentGroupMap,currentNames);});
   inner.querySelector('#emailLSOToggle').addEventListener('click',function(){const panel=document.getElementById('lsoPanel');const isVisible=panel.classList.toggle('visible');this.textContent=isVisible?'✕ Close':'✉ Email LSO';if(isVisible){refreshEmail();panel.scrollIntoView({behavior:'smooth',block:'nearest'});}});
   ['lsoName','lsoDomain','lsoCC'].forEach(id=>{inner.querySelector('#'+id).addEventListener('input',refreshEmail);});
