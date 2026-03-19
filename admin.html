@@ -190,6 +190,26 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .email-history-preview { font-size:0.78rem; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
 .email-history-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.9rem; padding:3px 6px; border-radius:5px; flex-shrink:0; }
 .email-history-del:hover { color:#e05151; background:rgba(224,81,81,0.1); }
+
+/* ── Merge section ── */
+.merge-select-list { display:flex; flex-direction:column; gap:6px; margin-bottom:14px; }
+.merge-check-row { display:flex; align-items:center; gap:12px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:10px 14px; cursor:pointer; transition:border-color .15s; user-select:none; }
+.merge-check-row:hover { border-color:var(--text); }
+.merge-check-row input[type=checkbox] { width:16px; height:16px; accent-color:var(--text); flex-shrink:0; cursor:pointer; }
+.merge-check-swatch { width:28px; height:28px; border-radius:6px; flex-shrink:0; border:1px solid rgba(0,0,0,.08); }
+.merge-check-name { font-size:0.88rem; font-weight:600; flex:1; }
+.merge-check-key { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--muted); }
+.merge-list { display:flex; flex-direction:column; gap:8px; margin-bottom:14px; }
+.merge-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:12px 14px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.merge-swatches { display:flex; gap:3px; flex-shrink:0; }
+.merge-swatch { width:18px; height:18px; border-radius:4px; border:1px solid rgba(0,0,0,.08); }
+.merge-arrow { color:var(--muted); font-size:0.9rem; }
+.merge-result-swatch { width:22px; height:22px; border-radius:5px; border:1px solid rgba(0,0,0,.08); flex-shrink:0; }
+.merge-item-name { font-size:0.88rem; font-weight:700; flex:1; min-width:80px; }
+.merge-del-btn { background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.9rem; padding:4px 8px; border-radius:6px; transition:color .15s,background .15s; }
+.merge-del-btn:hover { color:#e05151; background:rgba(224,81,81,0.1); }
+.merge-hint { font-size:0.82rem; color:var(--muted); font-style:italic; padding:6px 2px; }
+.merge-count-badge { font-family:'DM Mono',monospace; font-size:0.62rem; background:var(--soft); border:1px solid var(--border); border-radius:6px; padding:2px 7px; color:var(--muted); flex-shrink:0; }
 </style>
 </head>
 <body>
@@ -348,6 +368,27 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
         <div class="field-status" id="namesStatus"></div>
       </div>
 
+      <!-- ══ MERGE COLOUR GROUPS ══ -->
+      <div class="settings-section full" id="mergeSection">
+        <div class="section-title">🔀 Merge Colour Groups</div>
+        <p class="section-desc">When the same person's timetable is split across two or more slightly-different colours (due to colour drift between devices in Excel), select those groups below and merge them into one. The merged result is pushed to the server — viewers see a single, complete timetable for that person. Merges are saved and automatically re-applied each time you paste.</p>
+        <div id="mergeSelectList" class="merge-select-list">
+          <div class="merge-hint">Paste a timetable first to see colour groups here.</div>
+        </div>
+        <div class="btn-row" style="margin-bottom:16px;">
+          <button class="s-btn green" id="doMergeBtn" disabled>🔀 Merge selected groups</button>
+          <button class="s-btn secondary" id="clearMergeSelBtn">Clear selection</button>
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px;">Saved Merges</div>
+        <div id="mergeList" class="merge-list">
+          <div class="merge-hint">No merges saved yet.</div>
+        </div>
+        <div class="btn-row">
+          <button class="s-btn secondary" id="clearAllMergesBtn">Clear all merges</button>
+        </div>
+        <div class="field-status" id="mergeStatus"></div>
+      </div>
+
       <!-- LSO Global defaults -->
       <div class="settings-section">
         <div class="section-title">LSO Email Defaults</div>
@@ -497,13 +538,11 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 <div class="tab-page" id="changesTab">
   <div class="settings-page" style="max-width:860px;">
 
-    <!-- Mode switcher -->
     <div style="display:flex;gap:10px;margin-bottom:20px;">
       <button class="s-btn" id="dcModeAuto" style="flex:1;background:var(--text);color:var(--bg);">📷 Upload Image (auto-read)</button>
       <button class="s-btn secondary" id="dcModeManual" style="flex:1;">✏️ Enter Manually</button>
     </div>
 
-    <!-- ── AUTO MODE ── -->
     <div id="dcAutoSection">
       <div class="settings-section full" style="margin-bottom:20px;">
         <div class="section-title">Upload Daily Changes Image</div>
@@ -529,7 +568,6 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
         <div id="dcStatus" style="margin-top:12px;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--muted);min-height:20px;"></div>
       </div>
 
-      <!-- Extracted/editable result -->
       <div class="settings-section full" id="dcResultSection" style="display:none;">
         <div class="section-title">Review &amp; Edit — then Publish</div>
         <p class="section-desc" style="margin-bottom:16px;">All fields are editable. Fix anything before publishing.</p>
@@ -544,19 +582,16 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
       </div>
     </div>
 
-    <!-- ── MANUAL MODE ── -->
     <div id="dcManualSection" style="display:none;">
       <div class="settings-section full" style="margin-bottom:20px;">
         <div class="section-title">Manual Entry</div>
         <p class="section-desc" style="margin-bottom:16px;">Type in today's changes directly. Add each LSO that has a change, fill in only the periods that differ from normal. Leave blank for periods with no change.</p>
 
-        <!-- Absent field -->
         <div class="field-group" style="margin-bottom:16px;">
           <span class="field-label">Absent today (comma separated)</span>
           <input class="field-input" id="dcManualAbsent" type="text" placeholder="e.g. Indi, H'Onorine" />
         </div>
 
-        <!-- LSO rows -->
         <div id="dcManualRows"></div>
 
         <div class="btn-row" style="margin-top:12px;">
@@ -585,7 +620,6 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
       <div id="adminMapStatus" style="margin-top:10px;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--muted);min-height:18px;"></div>
     </div>
     <div class="settings-section full" style="padding:0;overflow:hidden;position:relative;">
-      <!-- Aspect ratio lock: 1080:600 = 55.56% padding-top -->
       <div style="width:100%;padding-top:55.56%;position:relative;">
         <div id="adminMapCanvas" style="position:absolute;inset:0;background:var(--surface2);
           background-image:linear-gradient(rgba(0,0,0,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.05) 1px,transparent 1px);
@@ -640,7 +674,12 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(btn.dataset.tab).classList.add('active');
-    if (btn.dataset.tab === 'settingsTab') { refreshColourNameList(); renderOverrideTable(); loadLSODefaults(); }
+    if (btn.dataset.tab === 'settingsTab') {
+      refreshColourNameList();
+      renderOverrideTable();
+      loadLSODefaults();
+      refreshMergeUI();
+    }
     if (btn.dataset.tab === 'emailTab') { setTimeout(initEmailTab, 50); }
   });
 });
@@ -698,7 +737,6 @@ function updatePASection() {
   if (urlText) urlText.textContent = `${url}/automate/pa`;
   if (pwEl)    pwEl.textContent    = pw;
 
-  // Show saved column map
   const mapEl = document.getElementById('paColMapDisplay');
   if (mapEl) {
     const saved = localStorage.getItem('tt-col-map');
@@ -714,7 +752,6 @@ function updatePASection() {
 }
 updatePASection();
 
-// Update PA section whenever server config changes
 document.getElementById('saveConfigBtn').addEventListener('click', updatePASection);
 
 function copyText(text, btn, label) {
@@ -767,7 +804,7 @@ document.getElementById('saveLSODefaultsBtn').addEventListener('click', () => {
   setStatus('lsoDefaultsStatus', '✓ Saved', 'green');
 });
 
-// ── Colour name manager (now includes LSO name column) ──────────────────────
+// ── Colour name manager ────────────────────────────────────────────────────
 function refreshColourNameList() {
   const list = document.getElementById('colourNameList');
   const lsoNames = getLSONames();
@@ -779,7 +816,6 @@ function refreshColourNameList() {
   const sorted = [...currentGroupMap.entries()].sort((a,b)=>getLuminance(a[1].bg)-getLuminance(b[1].bg));
   list.innerHTML = '';
 
-  // Header row
   const header = document.createElement('div');
   header.style.cssText = 'display:flex;gap:12px;padding:4px 14px;';
   header.innerHTML = `<div style="width:32px;flex-shrink:0"></div><div style="width:92px;flex-shrink:0;font-family:DM Mono,monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Colour</div><div style="flex:1;font-family:DM Mono,monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Group Name</div><div style="flex:1;font-family:DM Mono,monospace;font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">LSO Name (this person's email)</div>`;
@@ -840,12 +876,229 @@ document.getElementById('clearNamesBtn').addEventListener('click', () => {
   setStatus('namesStatus','Names cleared','');
 });
 
+// ── Merge system ────────────────────────────────────────────────────────────
+function getMerges() {
+  try { return JSON.parse(localStorage.getItem('tt-merges') || '[]'); }
+  catch(e) { return []; }
+}
+function saveMerges(arr) { localStorage.setItem('tt-merges', JSON.stringify(arr)); }
+
+// Apply all saved merges to a raw groupMap, returning a new merged groupMap
+function applyMerges(sourceGroupMap) {
+  const merges = getMerges();
+  if (!merges.length) return sourceGroupMap;
+
+  const result = new Map();
+  const handled = new Set();
+
+  merges.forEach(merge => {
+    const mergedSlots = {};
+    let primaryBg = null, primaryFg = null;
+    let foundAny = false;
+
+    merge.keys.forEach(k => {
+      const grp = sourceGroupMap.get(k);
+      if (!grp) return;
+      if (k === merge.primaryKey || !foundAny) {
+        primaryBg = grp.bg;
+        primaryFg = grp.fg;
+        foundAny = true;
+      }
+      // Merge slots: combine entries per period
+      Object.entries(grp.slots).forEach(([period, entries]) => {
+        if (!mergedSlots[period]) mergedSlots[period] = [];
+        entries.forEach(entry => {
+          // Avoid duplicates (same d1+d2+d3)
+          const sig = entry.d1+'|'+entry.d2+'|'+entry.d3;
+          const already = mergedSlots[period].some(e => e.d1+'|'+e.d2+'|'+e.d3 === sig);
+          if (!already) mergedSlots[period].push(entry);
+        });
+      });
+      handled.add(k);
+    });
+
+    if (!foundAny) return; // none of these keys exist in current paste
+
+    // The merged group key is the primary key (preserves server-side identity)
+    result.set(merge.primaryKey, {
+      bg: primaryBg,
+      fg: primaryFg,
+      slots: mergedSlots,
+      _mergeId: merge.id
+    });
+
+    // Preserve/propagate the name from primaryKey
+    if (!colorNames[merge.primaryKey] && merge.name) {
+      colorNames[merge.primaryKey] = merge.name;
+    }
+  });
+
+  // Add all unmerged groups
+  sourceGroupMap.forEach((grp, key) => {
+    if (!handled.has(key)) {
+      result.set(key, grp);
+    }
+  });
+
+  return result;
+}
+
+// Refresh the merge UI
+function refreshMergeUI() {
+  const listEl = document.getElementById('mergeSelectList');
+  const mergeListEl = document.getElementById('mergeList');
+  const merges = getMerges();
+
+  // --- Checkbox list (raw groups, pre-merge) ---
+  if (!rawGroupMap || rawGroupMap.size === 0) {
+    listEl.innerHTML = '<div class="merge-hint">Paste a timetable first to see colour groups here.</div>';
+  } else {
+    const sorted = [...rawGroupMap.entries()].sort((a,b) => getLuminance(a[1].bg) - getLuminance(b[1].bg));
+    listEl.innerHTML = '';
+
+    // Show which groups are already merged
+    const alreadyMerged = new Set();
+    merges.forEach(m => m.keys.forEach(k => alreadyMerged.add(k)));
+
+    sorted.forEach(([key, {bg, fg}], i) => {
+      const name = colorNames[key] || `Name ${i+1}`;
+      const isMerged = alreadyMerged.has(key);
+      const row = document.createElement('label');
+      row.className = 'merge-check-row';
+      row.style.opacity = isMerged ? '0.55' : '1';
+      row.innerHTML = `
+        <input type="checkbox" class="merge-cb" data-key="${escapeHTML(key)}" ${isMerged ? 'disabled title="Already in a merge"' : ''} />
+        <div class="merge-check-swatch" style="background:${bg}${fg ? ';border-color:'+fg : ''}"></div>
+        <div class="merge-check-name">${escapeHTML(name)}</div>
+        <div class="merge-check-key">${escapeHTML(bg)}${isMerged ? ' · <em>in merge</em>' : ''}</div>
+      `;
+      listEl.appendChild(row);
+    });
+
+    listEl.querySelectorAll('.merge-cb').forEach(cb => {
+      cb.addEventListener('change', updateMergeBtn);
+    });
+  }
+
+  // --- Saved merges list ---
+  if (!merges.length) {
+    mergeListEl.innerHTML = '<div class="merge-hint">No merges saved yet.</div>';
+  } else {
+    mergeListEl.innerHTML = '';
+    merges.forEach(merge => {
+      const item = document.createElement('div');
+      item.className = 'merge-item';
+
+      const swatchesHtml = merge.keys.map(k => {
+        const grp = rawGroupMap && rawGroupMap.get(k);
+        const bg = (grp && grp.bg) || (merge.keyColors && merge.keyColors[k]) || '#ccc';
+        return `<div class="merge-swatch" style="background:${bg}" title="${escapeHTML(k)}"></div>`;
+      }).join('');
+
+      const primaryGrp = rawGroupMap && rawGroupMap.get(merge.primaryKey);
+      const primaryBg = (primaryGrp && primaryGrp.bg) || (merge.keyColors && merge.keyColors[merge.primaryKey]) || '#ccc';
+
+      item.innerHTML = `
+        <div class="merge-swatches">${swatchesHtml}</div>
+        <div class="merge-arrow">→</div>
+        <div class="merge-result-swatch" style="background:${primaryBg}"></div>
+        <div class="merge-item-name">${escapeHTML(merge.name || 'Unnamed merge')}</div>
+        <div class="merge-count-badge">${merge.keys.length} groups</div>
+        <button class="merge-del-btn" data-mergeid="${escapeHTML(merge.id)}" title="Delete this merge">✕</button>
+      `;
+      mergeListEl.appendChild(item);
+    });
+
+    mergeListEl.querySelectorAll('.merge-del-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.mergeid;
+        const arr = getMerges().filter(m => m.id !== id);
+        saveMerges(arr);
+        refreshMergeUI();
+        if (rawGroupMap) {
+          currentGroupMap = applyMerges(rawGroupMap);
+          renderApp(currentGroupMap);
+          pushToServer(currentGroupMap);
+          setStatus('mergeStatus', 'Merge deleted — original groups restored & re-pushed.', 'green');
+        }
+      });
+    });
+  }
+
+  updateMergeBtn();
+}
+
+function updateMergeBtn() {
+  const checked = document.querySelectorAll('.merge-cb:checked');
+  const btn = document.getElementById('doMergeBtn');
+  if (btn) btn.disabled = checked.length < 2;
+}
+
+document.getElementById('doMergeBtn').addEventListener('click', () => {
+  const checked = [...document.querySelectorAll('.merge-cb:checked')];
+  if (checked.length < 2) return;
+
+  const keys = checked.map(cb => cb.dataset.key);
+  const primaryKey = keys[0]; // first selected = primary (keeps its colour)
+
+  // Build name from known colour names of selected groups
+  const names = keys.map(k => colorNames[k]).filter(Boolean);
+  const mergeName = names.length ? names[0] : 'Merged group'; // use first person's name
+
+  // Snapshot colours for display even after re-paste
+  const keyColors = {};
+  keys.forEach(k => {
+    const grp = rawGroupMap && rawGroupMap.get(k);
+    if (grp) keyColors[k] = grp.bg;
+  });
+
+  const merge = {
+    id: Math.random().toString(36).slice(2, 10),
+    name: mergeName,
+    keys,
+    primaryKey,
+    keyColors
+  };
+
+  const merges = getMerges();
+  // Remove any existing merges that contain any of these keys
+  const cleaned = merges.filter(m => !m.keys.some(k => keys.includes(k)));
+  cleaned.push(merge);
+  saveMerges(cleaned);
+
+  // Apply immediately
+  currentGroupMap = applyMerges(rawGroupMap);
+  refreshMergeUI();
+  refreshColourNameList();
+  renderApp(currentGroupMap);
+  pushToServer(currentGroupMap);
+
+  const periodsCovered = Object.keys(currentGroupMap.get(primaryKey)?.slots || {}).length;
+  setStatus('mergeStatus', `✓ Merged ${keys.length} groups into "${mergeName}" (${periodsCovered} periods) — pushed to server`, 'green');
+});
+
+document.getElementById('clearMergeSelBtn').addEventListener('click', () => {
+  document.querySelectorAll('.merge-cb').forEach(cb => cb.checked = false);
+  updateMergeBtn();
+});
+
+document.getElementById('clearAllMergesBtn').addEventListener('click', () => {
+  if (!confirm('Clear all merges? The original split groups will reappear.')) return;
+  saveMerges([]);
+  refreshMergeUI();
+  if (rawGroupMap) {
+    currentGroupMap = applyMerges(rawGroupMap); // = rawGroupMap with no merges
+    renderApp(currentGroupMap);
+    pushToServer(currentGroupMap);
+    setStatus('mergeStatus', 'All merges cleared — original groups restored.', '');
+  }
+});
+
 // ── Export / Import ────────────────────────────────────────────────────────
-// Keys to export/import
 const EXPORT_KEYS = [
   'tt-server','tt-pw','tt-theme','tt-colornames','tt-lso-names',
   'tt-email-overrides','tt-sharepoint','lso-name','lso-domain','lso-cc',
-  'tt-email-template','tt-email-name'
+  'tt-email-template','tt-email-name','tt-merges'
 ];
 
 document.getElementById('exportSettingsBtn').addEventListener('click', () => {
@@ -897,7 +1150,6 @@ document.getElementById('doImportBtn').addEventListener('click', () => {
         count++;
       }
     });
-    // Reload inputs
     serverUrlEl.value = localStorage.getItem('tt-server') || '';
     adminPwEl.value   = localStorage.getItem('tt-pw') || '';
     spUrlEl.value     = localStorage.getItem('tt-sharepoint') || '';
@@ -905,10 +1157,10 @@ document.getElementById('doImportBtn').addEventListener('click', () => {
     const theme = localStorage.getItem('tt-theme') || 'light';
     html.setAttribute('data-theme', theme);
     document.getElementById('toggleLabel').textContent = theme==='dark'?'Dark':'Light';
-    // Reload colornames
     try { Object.assign(colorNames, JSON.parse(localStorage.getItem('tt-colornames')||'{}')); } catch(e){}
     renderOverrideTable();
     refreshColourNameList();
+    refreshMergeUI();
     setStatus('importStatus', `✓ Imported ${count} setting(s) — everything restored`, 'green');
     document.getElementById('importPanel').style.display = 'none';
   } catch(e) {
@@ -1032,7 +1284,8 @@ function escapeHTML(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;
 
 // ── State ──────────────────────────────────────────────────────────────────
 const colorNames = JSON.parse(localStorage.getItem('tt-colornames')||'{}');
-let currentGroupMap = null;
+let rawGroupMap = null;     // unmerged, straight from paste
+let currentGroupMap = null; // after applyMerges()
 
 async function pushToServer(groupMap) {
   const url=getServer();
@@ -1074,7 +1327,7 @@ document.getElementById('clearBtn').addEventListener('click',()=>{
   classNav.innerHTML=''; contentArea.innerHTML='';
   document.getElementById('statusBar').textContent='';
   document.getElementById('pasteStatus').textContent='';
-  currentGroupMap=null;
+  rawGroupMap=null; currentGroupMap=null;
 });
 
 function handlePaste(e) {
@@ -1121,12 +1374,12 @@ function processHTMLData(htmlStr) {
   }
   if(groupMap.size===0){setMsg('No coloured groups found.','err');return;}
 
+  // Save raw (pre-merge) group map
+  rawGroupMap = groupMap;
+
   // ── Save column→colour map for Power Automate ──────────────────────────
-  // Records which column index maps to which colour key, so PA can send
-  // values-only data and the server can reconstruct colour groups by position.
-  const colMap = {}; // { colIndex: { key, bg, fg, periodNum } }
+  const colMap = {};
   for(let c=dataStartCol;c<numCols;c+=3){
-    // Find the first non-excluded bg at this column across all rows
     for(let r=0;r<grid.length;r++){
       if(r===REF_ROW)continue;
       const row=grid[r];
@@ -1140,7 +1393,6 @@ function processHTMLData(htmlStr) {
   }
   localStorage.setItem('tt-col-map', JSON.stringify(colMap));
 
-  // Push colMap to server so Power Automate can fetch it server-side if needed
   const colMapUrl = getServer();
   const colMapPw  = localStorage.getItem('tt-pw');
   if (colMapUrl && colMapPw) {
@@ -1148,15 +1400,21 @@ function processHTMLData(htmlStr) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-admin-password': colMapPw },
       body: JSON.stringify({ colMap })
-    }).catch(() => {}); // silent — colmap push is best-effort
+    }).catch(() => {});
   }
 
   updatePASection();
 
-  currentGroupMap=groupMap;
+  // Apply any saved merges before rendering/pushing
+  currentGroupMap = applyMerges(groupMap);
+
   setMsg('Parsed — pushing to server…','');
-  pushToServer(groupMap);
-  renderApp(groupMap);
+  pushToServer(currentGroupMap);
+  renderApp(currentGroupMap);
+
+  // Refresh merge UI if settings tab is open
+  const mergeSection = document.getElementById('mergeSection');
+  if (mergeSection) refreshMergeUI();
 }
 
 // ── Render ─────────────────────────────────────────────────────────────────
@@ -1183,12 +1441,16 @@ function renderApp(groupMap) {
     btn.addEventListener('dblclick',startEditing);
     classNav.appendChild(btn);
     const panel=document.createElement('div'); panel.className='panel'; panel.id=id;
+
+    // Show merge badge if this group is a merge result
+    const mergeIndicator = slots._mergeId ? `<span style="font-family:'DM Mono',monospace;font-size:0.62rem;background:#dbeafe;border:1px solid #93c5fd;color:#1e40af;border-radius:6px;padding:2px 8px;margin-left:8px;">🔀 merged</span>` : '';
+
     const periodRows=[1,2,3,4,5,6].map(p=>{
       const entries=slots[p];
       if(!entries||entries.length===0)return`<div class="period-row empty-row"><div class="accent-bar" style="background:${bg}"></div><div class="cell-period">P${p}</div><div class="cell-dash">—</div><div class="cell-data empty" style="grid-column:4/-1"></div></div>`;
       return entries.map(({d1,d2,d3})=>`<div class="period-row"><div class="accent-bar" style="background:${bg}"></div><div class="cell-period has-data">P${p}</div><div class="cell-dash">—</div><div class="cell-data${d1?'':' empty'}" data-copy="${escapeHTML(d1||'')}">${escapeHTML(d1||'')}</div><div class="cell-data${d2?'':' empty'}" data-copy="${escapeHTML(d2||'')}">${escapeHTML(d2||'')}</div><div class="cell-data${d3?'':' empty'}" data-copy="${escapeHTML(d3||'')}">${escapeHTML(d3||'')}</div></div>`).join('');
     }).join('');
-    panel.innerHTML=`<div class="panel-header"><div class="panel-colour-bar" style="background:${bg}"></div><div><div class="panel-title" id="ptitle-${id}">${escapeHTML(savedName)}</div><div class="panel-subtitle">${escapeHTML(bg)}${fg?' · '+escapeHTML(fg):''}</div></div><div class="panel-actions"><button class="copy-btn">Copy P1–P6</button></div></div><div class="period-grid">${periodRows}</div>`;
+    panel.innerHTML=`<div class="panel-header"><div class="panel-colour-bar" style="background:${bg}"></div><div><div class="panel-title" id="ptitle-${id}">${escapeHTML(savedName)}${mergeIndicator}</div><div class="panel-subtitle">${escapeHTML(bg)}${fg?' · '+escapeHTML(fg):''}</div></div><div class="panel-actions"><button class="copy-btn">Copy P1–P6</button></div></div><div class="period-grid">${periodRows}</div>`;
     panel.querySelector('.copy-btn').addEventListener('click',function(){
       const b=this; const grp=currentGroupMap.get(key); if(!grp)return;
       const text=[1,2,3,4,5,6].map(p=>{const ent=grp.slots[p];if(!ent||ent.length===0)return`P${p} - \t\t`;return ent.map(({d1,d2,d3})=>`P${p} - ${d1}\t${d2}\t${d3}`).join('\n');}).join('\n');
@@ -1338,7 +1600,7 @@ loadLSODefaults();
 // ── Daily Changes ──────────────────────────────────────────────────────────
 let dcImageBase64 = null;
 let dcImageMime   = null;
-let dcExtracted   = null; // { absent:[], lsos:{ name: { p1,p2,p3,p4,p5,p6 } }, raw }
+let dcExtracted   = null;
 
 const dcDrop    = document.getElementById('dcDropZone');
 const dcFile    = document.getElementById('dcFileInput');
@@ -1348,7 +1610,6 @@ const dcReadBtn = document.getElementById('dcReadBtn');
 const dcPubBtn  = document.getElementById('dcPublishBtn');
 const dcStatus  = document.getElementById('dcStatus');
 
-// Drop zone
 dcDrop.addEventListener('click', () => dcFile.click());
 dcDrop.addEventListener('dragover', e => { e.preventDefault(); dcDrop.style.borderColor = 'var(--text)'; });
 dcDrop.addEventListener('dragleave', () => { dcDrop.style.borderColor = 'var(--border)'; });
@@ -1367,7 +1628,6 @@ function loadImage(file) {
     dcDrop.style.display    = 'none';
     dcReadBtn.disabled      = false;
     dcSetStatus('Image loaded — reading with AI…');
-    // Auto-trigger read immediately
     setTimeout(() => dcReadBtn.click(), 100);
   };
   reader.readAsDataURL(file);
@@ -1385,7 +1645,6 @@ function clearDcImage() {
   dcSetStatus('');
 }
 
-// Read with Claude
 dcReadBtn.addEventListener('click', async () => {
   if (!dcImageBase64) return;
   const url = getServer();
@@ -1441,7 +1700,6 @@ function renderDcResult(data) {
   const section = document.getElementById('dcResultSection');
   section.style.display = '';
 
-  // Absent bar
   const absentBar = document.getElementById('dcAbsentBar');
   if (data.absent && data.absent.length) {
     absentBar.style.display = '';
@@ -1450,10 +1708,8 @@ function renderDcResult(data) {
     absentBar.style.display = 'none';
   }
 
-  // Raw text
   document.getElementById('dcRawText').textContent = data.raw || '';
 
-  // Build table
   const lsos = data.lsos || {};
   const names = Object.keys(lsos);
   const periods = ['p1','p2','p3','p4','p5','p6'];
@@ -1488,7 +1744,6 @@ function renderDcResult(data) {
   html += '</tbody></table>';
   document.getElementById('dcChangesTable').innerHTML = html;
 
-  // Keep dcExtracted in sync with edits
   document.getElementById('dcChangesTable').querySelectorAll('input').forEach(inp => {
     inp.addEventListener('input', () => {
       const lso = inp.dataset.lso, per = inp.dataset.period;
@@ -1501,13 +1756,11 @@ function escHtml(s) {
   return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// Publish to server
 dcPubBtn.addEventListener('click', async () => {
   if (!dcExtracted) return;
   const url = getServer();
   if (!url) { dcSetStatus('⚠ No server URL — go to Settings tab.'); return; }
 
-  // Collect current values from editable table
   const lsos = {};
   document.getElementById('dcChangesTable').querySelectorAll('input').forEach(inp => {
     const lso = inp.dataset.lso, per = inp.dataset.period;
@@ -1536,7 +1789,6 @@ dcPubBtn.addEventListener('click', async () => {
   } catch(e) { dcSetStatus('✕ Could not reach server: ' + e.message); }
 });
 
-// Clear published changes
 document.getElementById('dcClearBtn').addEventListener('click', async () => {
   if (!confirm('Clear today\'s published changes from the viewer?')) return;
   const url = getServer();
@@ -1553,7 +1805,6 @@ document.getElementById('dcClearBtn').addEventListener('click', async () => {
 
 function dcSetStatus(msg) { dcStatus.textContent = msg; }
 
-// ── Mode switching ─────────────────────────────────────────────────────────
 document.getElementById('dcModeAuto').addEventListener('click', () => {
   document.getElementById('dcAutoSection').style.display = '';
   document.getElementById('dcManualSection').style.display = 'none';
@@ -1568,8 +1819,6 @@ document.getElementById('dcModeManual').addEventListener('click', () => {
   renderManualRows();
 });
 
-// ── Manual entry ───────────────────────────────────────────────────────────
-// Pre-populate with known LSO names from color names map
 function getKnownLSONames() {
   try {
     const names = JSON.parse(localStorage.getItem('tt-colornames') || '{}');
@@ -1577,11 +1826,10 @@ function getKnownLSONames() {
   } catch(e) { return []; }
 }
 
-let manualRows = []; // [{id, name, p1..p6}]
+let manualRows = [];
 
 function ensureManualRows() {
   if (manualRows.length === 0) {
-    // Pre-fill with known LSOs
     const known = getKnownLSONames();
     if (known.length) {
       manualRows = known.map(name => ({ id: Math.random().toString(36).slice(2), name, p1:'',p2:'',p3:'',p4:'',p5:'',p6:'' }));
@@ -1628,7 +1876,6 @@ function renderManualRows() {
   html += '</tbody></table>';
   container.innerHTML = html;
 
-  // Sync inputs back to manualRows
   container.querySelectorAll('input').forEach(inp => {
     inp.addEventListener('input', () => {
       const row = manualRows.find(r => r.id === inp.dataset.rowid);
@@ -1646,12 +1893,10 @@ function renderManualRows() {
 document.getElementById('dcManualAddRow').addEventListener('click', () => {
   manualRows.push(blankRow());
   renderManualRows();
-  // Focus the new name input
   const inputs = document.getElementById('dcManualRows').querySelectorAll('input[data-field="name"]');
   if (inputs.length) inputs[inputs.length-1].focus();
 });
 
-// Publish manual
 document.getElementById('dcManualPublishBtn').addEventListener('click', async () => {
   const url = getServer();
   if (!url) { document.getElementById('dcManualStatus').textContent = '⚠ No server URL — go to Settings tab.'; return; }
@@ -1692,7 +1937,6 @@ document.getElementById('dcManualPublishBtn').addEventListener('click', async ()
   } catch(e) { document.getElementById('dcManualStatus').textContent = '✕ ' + e.message; }
 });
 
-// Clear from manual mode
 document.getElementById('dcManualClearBtn').addEventListener('click', async () => {
   if (!confirm('Clear today\'s published changes from the viewer?')) return;
   const url = getServer();
@@ -1703,6 +1947,7 @@ document.getElementById('dcManualClearBtn').addEventListener('click', async () =
     else document.getElementById('dcManualStatus').textContent = `✕ Server error ${res.status}`;
   } catch(e) { document.getElementById('dcManualStatus').textContent = '✕ ' + e.message; }
 });
+
 // ── Admin Map Layout Editor ────────────────────────────────────────────────
 const MAP_PREFIX_POSITIONS = {
   TC: { x:  12, y:  18 }, CL: { x: 244, y:  18 }, HC: { x: 420, y:  18 }, BE: { x: 760, y:  18 },
@@ -1717,7 +1962,6 @@ function adminGetPrefix(code) { return code.length >= 2 ? code.slice(0,2).toUppe
 
 function adminMapSetStatus(msg) { document.getElementById('adminMapStatus').textContent = msg; }
 
-// Load from server when tab opens
 let adminMapLoaded = false;
 document.querySelectorAll('.tab-btn').forEach(btn => {
   if (btn.dataset.tab === 'mapTab') {
@@ -1768,7 +2012,6 @@ function adminRenderMap() {
   adminSeedGroups();
   const cW = canvas.offsetWidth || 800, cH = canvas.offsetHeight || 580;
 
-  // Group rooms by prefix
   const groups = {};
   adminMapRooms.forEach(r => {
     const p = adminGetPrefix(r.code);
@@ -1809,7 +2052,6 @@ function adminRenderMap() {
       del.addEventListener('click', e => {
         e.stopPropagation();
         adminMapRooms = adminMapRooms.filter(r => r.id !== room.id);
-        // Clean up empty groups
         const used = new Set(adminMapRooms.map(r => adminGetPrefix(r.code)));
         Object.keys(adminMapGroups).forEach(p => { if (!used.has(p)) delete adminMapGroups[p]; });
         adminRenderMap();
@@ -1856,7 +2098,6 @@ function adminMakeDraggable(groupEl, prefix, pos, cW, cH) {
   }, { passive: true });
 }
 
-// Import rooms from timetable data saved on server
 document.getElementById('adminMapAutoBtn').addEventListener('click', async () => {
   const url = getServer(); if (!url) { adminMapSetStatus('⚠ No server URL.'); return; }
   adminMapSetStatus('Loading timetable…');
@@ -1880,7 +2121,6 @@ document.getElementById('adminMapAutoBtn').addEventListener('click', async () =>
   } catch(e) { adminMapSetStatus('✕ ' + e.message); }
 });
 
-// Save to server
 document.getElementById('adminMapSaveBtn').addEventListener('click', async () => {
   const url = getServer(); if (!url) { adminMapSetStatus('⚠ No server URL.'); return; }
   const pw = getPw(); if (!pw) { adminMapSetStatus('⚠ No password set.'); return; }
@@ -1898,7 +2138,6 @@ document.getElementById('adminMapSaveBtn').addEventListener('click', async () =>
   } catch(e) { adminMapSetStatus('✕ ' + e.message); }
 });
 
-// Clear all
 document.getElementById('adminMapClearBtn').addEventListener('click', () => {
   if (!confirm('Remove all rooms from the map layout?')) return;
   adminMapRooms = []; adminMapGroups = {};
