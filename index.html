@@ -570,44 +570,102 @@ function injectDcIntoDetail(name){
   const isAllAbsent=entry.absentPeriods==='all';
   const partialAbsentPeriods=Array.isArray(entry.absentPeriods)?new Set(entry.absentPeriods):null;
   const changes=entry.changes||[];
-  const dc=normaliseDC(currentDailyChanges);
 
-  // ── Step 1: Inject change strips below each affected period row ───────────
-  const periodRows=inner.querySelectorAll('.period-row');
+  // ── Step 1: For each period row, REPLACE cell content with DC data ──────────
+  const periodRows=inner.querySelectorAll('.period-row:not(.empty-row)');
   periodRows.forEach(row=>{
     const periodCell=row.querySelector('.cell-period');
     if(!periodCell)return;
     const pKey=periodCell.textContent.trim().toLowerCase(); // "P1" → "p1"
     const rowChanges=changes.filter(c=>c.period===pKey);
     const isPAbsent=partialAbsentPeriods&&partialAbsentPeriods.has(pKey);
-    if(!rowChanges.length&&!isPAbsent&&!isAllAbsent)return;
 
-    // Remove previously injected strip for this row
-    const existing=row.nextElementSibling;
-    if(existing&&(existing.classList.contains('dc-change-strip')||existing.classList.contains('dc-absent-strip')))existing.remove();
+    // Remove any previously injected strip
+    const next=row.nextElementSibling;
+    if(next&&(next.classList.contains('dc-change-strip')||next.classList.contains('dc-absent-strip')))next.remove();
 
-    const strip=document.createElement('div');
     if(isAllAbsent||isPAbsent){
+      // Dim the row and add absent strip below
+      row.style.opacity='0.45';
+      const strip=document.createElement('div');
       strip.className='dc-absent-strip';
-      strip.innerHTML=`<span style="font-weight:700;color:#92400e;font-size:0.8rem;">⚠ ABSENT this period</span>`;
-    } else {
-      strip.className='dc-change-strip';
-      rowChanges.forEach(ch=>{
-        const div=document.createElement('div');
-        div.style.cssText='display:flex;align-items:center;gap:6px;flex-wrap:wrap;';
-        let html=`<span style="font-family:'DM Mono',monospace;font-size:0.68rem;font-weight:700;background:#1e40af;color:#fff;border-radius:4px;padding:2px 8px;">📌 CHANGE</span>`;
-        if(ch.description)html+=`<span style="font-weight:600;font-size:0.82rem;">${ch.description}</span>`;
-        if(ch.classCode)html+=`<span style="font-family:'DM Mono',monospace;font-size:0.72rem;background:#e5e7eb;color:#374151;border-radius:4px;padding:2px 8px;">${ch.classCode}</span>`;
-        if(ch.room)html+=`<span style="font-family:'DM Mono',monospace;font-size:0.75rem;font-weight:700;background:#1d4ed8;color:#fff;border-radius:4px;padding:3px 10px;">${ch.room}</span>`;
-        if(ch.teacherCode)html+=`<span style="font-family:'DM Mono',monospace;font-size:0.72rem;background:#374151;color:#fff;border-radius:4px;padding:2px 8px;">${ch.teacherCode}</span>`;
-        div.innerHTML=html;
-        strip.appendChild(div);
-      });
+      strip.innerHTML=`<span style="font-weight:700;color:#92400e;font-size:0.78rem;">⚠ Absent this period</span>`;
+      row.parentNode.insertBefore(strip,row.nextSibling);
+      return;
     }
-    row.parentNode.insertBefore(strip,row.nextSibling);
+
+    if(!rowChanges.length)return;
+
+    // Get the existing cell values (original timetable data)
+    const cells=row.querySelectorAll('.cell-data');
+    const origD1=cells[0]?cells[0].textContent.trim():'';
+    const origD2=cells[1]?cells[1].textContent.trim():'';
+    const origD3=cells[2]?cells[2].textContent.trim():'';
+
+    // Use first change (there's normally only one cover per period)
+    const ch=rowChanges[0];
+
+    // Only replace if the change has actual room/class data (cover-type changes)
+    if(ch.classCode||ch.room||ch.teacherCode){
+      // Replace cell 1 (class code / description)
+      if(cells[0]){
+        cells[0].textContent=ch.classCode||ch.description||origD1;
+        cells[0].dataset.copy=ch.classCode||ch.description||origD1;
+        cells[0].style.color='#1d4ed8';
+        cells[0].style.fontWeight='700';
+      }
+      // Replace cell 2 (room)
+      if(cells[1]){
+        cells[1].textContent=ch.room||origD2;
+        cells[1].dataset.copy=ch.room||origD2;
+        cells[1].style.color='#1d4ed8';
+        cells[1].style.fontWeight='700';
+      }
+      // Replace cell 3 (teacher code)
+      if(cells[2]){
+        cells[2].textContent=ch.teacherCode||origD3;
+        cells[2].dataset.copy=ch.teacherCode||origD3;
+        cells[2].style.color='#1d4ed8';
+        cells[2].style.fontWeight='700';
+      }
+      // Highlight the accent bar blue
+      const accentBar=row.querySelector('.accent-bar');
+      if(accentBar)accentBar.style.background='#1d4ed8';
+      // Mark the period number
+      periodCell.style.color='#1d4ed8';
+
+      // Add "was:" strip underneath showing original → new
+      const strip=document.createElement('div');
+      strip.className='dc-change-strip';
+
+      // Build the "was" line from original data
+      const origParts=[origD1,origD2,origD3].filter(Boolean);
+      const newParts=[ch.classCode,ch.room,ch.teacherCode].filter(Boolean);
+      const descPart=ch.description?`<span style="font-weight:600;font-size:0.78rem;color:#1e40af;">${ch.description}</span>`:'';
+      const wasPart=origParts.length?`<span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);">was: ${origParts.join(' · ')}</span>`:'';
+
+      strip.innerHTML=`
+        <span style="font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:700;background:#1d4ed8;color:#fff;border-radius:3px;padding:2px 7px;flex-shrink:0;">📌 CHANGE</span>
+        ${descPart}
+        ${wasPart}
+      `;
+      row.parentNode.insertBefore(strip,row.nextSibling);
+
+    } else {
+      // No room data (LEC, MacqLit, etc.) — just add a note strip, don't replace cells
+      const strip=document.createElement('div');
+      strip.className='dc-change-strip';
+      strip.innerHTML=`
+        <span style="font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:700;background:#6b7280;color:#fff;border-radius:3px;padding:2px 7px;flex-shrink:0;">📌 NOTE</span>
+        <span style="font-weight:600;font-size:0.78rem;">${ch.description||''}</span>
+      `;
+      row.parentNode.insertBefore(strip,row.nextSibling);
+    }
   });
 
-  // ── Step 2: Summary block below the period grid ───────────────────────────
+  // ── Step 2: Summary block below period grid ────────────────────────────────
+  if(!changes.length&&!isAllAbsent&&!partialAbsentPeriods)return;
+
   const block=document.createElement('div');
   block.className='dc-detail-block';
   block.style.cssText=`margin-top:20px;border-radius:12px;overflow:hidden;border:1px solid ${isAllAbsent?'#fcd34d':'#bfdbfe'};`;
@@ -620,18 +678,18 @@ function injectDcIntoDetail(name){
 
   let bodyHtml='';
   if(changes.length){
-    bodyHtml='<div style="padding:14px 18px;display:flex;flex-direction:column;gap:10px;background:var(--surface);">';
+    bodyHtml='<div style="padding:14px 18px;display:flex;flex-direction:column;gap:8px;background:var(--surface);">';
     changes.forEach(ch=>{
-      bodyHtml+=`<div style="display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:${ch.type==='cancelled'?'#fee2e2':ch.type==='cover'?'#f0fdf4':'#f8fafc'};border-radius:8px;border:1px solid ${ch.type==='cancelled'?'#fca5a5':ch.type==='cover'?'#bbf7d0':'#e2e8f0'};">
+      const hasCover=ch.classCode||ch.room||ch.teacherCode;
+      bodyHtml+=`<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 12px;background:${ch.type==='cancelled'?'#fee2e2':ch.type==='cover'?'#f0fdf4':'#f8fafc'};border-radius:8px;border:1px solid ${ch.type==='cancelled'?'#fca5a5':ch.type==='cover'?'#bbf7d0':'#e2e8f0'};">
         <span style="font-family:'DM Mono',monospace;font-size:0.72rem;font-weight:700;background:var(--text);color:var(--bg);border-radius:4px;padding:3px 8px;flex-shrink:0;">${ch.period.toUpperCase()}</span>
         <div style="flex:1;min-width:0;">
-          ${ch.description?`<div style="font-weight:700;font-size:0.85rem;margin-bottom:5px;">${ch.description}</div>`:''}
-          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-            ${ch.classCode?`<span style="font-family:'DM Mono',monospace;font-size:0.72rem;background:#e5e7eb;color:#374151;border-radius:4px;padding:2px 8px;">${ch.classCode}</span>`:''}
-            ${ch.room?`<span style="font-family:'DM Mono',monospace;font-size:0.75rem;font-weight:700;background:#1d4ed8;color:#fff;border-radius:4px;padding:3px 10px;">${ch.room}</span>`:''}
-            ${ch.teacherCode?`<span style="font-family:'DM Mono',monospace;font-size:0.72rem;background:#374151;color:#fff;border-radius:4px;padding:2px 8px;">${ch.teacherCode}</span>`:''}
-            <span style="font-family:'DM Mono',monospace;font-size:0.65rem;padding:2px 7px;border-radius:4px;background:${ch.type==='cover'?'#dcfce7':ch.type==='cancelled'?'#fee2e2':'#e5e7eb'};color:${ch.type==='cover'?'#166534':ch.type==='cancelled'?'#991b1b':'#374151'};">${ch.type}</span>
-          </div>
+          ${ch.description?`<div style="font-weight:700;font-size:0.82rem;margin-bottom:${hasCover?'5px':'0'};">${ch.description}</div>`:''}
+          ${hasCover?`<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
+            ${ch.classCode?`<span style="font-family:'DM Mono',monospace;font-size:0.7rem;background:#e5e7eb;color:#374151;border-radius:4px;padding:2px 7px;">${ch.classCode}</span>`:''}
+            ${ch.room?`<span style="font-family:'DM Mono',monospace;font-size:0.73rem;font-weight:700;background:#1d4ed8;color:#fff;border-radius:4px;padding:2px 9px;">${ch.room}</span>`:''}
+            ${ch.teacherCode?`<span style="font-family:'DM Mono',monospace;font-size:0.7rem;background:#374151;color:#fff;border-radius:4px;padding:2px 7px;">${ch.teacherCode}</span>`:''}
+          </div>`:''}
         </div>
       </div>`;
     });
