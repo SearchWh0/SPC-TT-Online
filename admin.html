@@ -1687,20 +1687,19 @@ dcReadBtn.addEventListener('click', async () => {
   if (!url) { dcSetStatus('⚠ No server URL — go to Settings tab first.'); return; }
 
   dcReadBtn.disabled = true;
-  dcSetStatus('🤖 Sending image to server… this may take 10–20 seconds.');
+  dcSetStatus('🤖 Reading image with AI… this may take 10–20 seconds.');
 
   try {
     const res = await fetch(`${url}/read-image`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-Admin-Password': getPw() },
-      body: JSON.stringify({ imageBase64: dcImageBase64, imageMime: dcImageMime, systemPrompt: DC_AI_PROMPT })
+      body: JSON.stringify({ imageBase64: dcImageBase64, imageMime: dcImageMime })
     });
 
     if (res.status === 503) {
-      const d = await res.json();
+      const d = await res.json().catch(() => ({}));
       dcSetStatus('⚠ ' + (d.error || 'OPENROUTER_API_KEY not configured on server.'));
-      dcReadBtn.disabled = false;
-      return;
+      dcReadBtn.disabled = false; return;
     }
     if (res.status === 401) { dcSetStatus('✕ Wrong password.'); dcReadBtn.disabled = false; return; }
     if (!res.ok) {
@@ -1713,14 +1712,14 @@ dcReadBtn.addEventListener('click', async () => {
     const text = data.text || '';
 
     try {
-      const clean = text.replace(/```json|```/g,'').trim();
+      const clean = text.replace(/```json[\s\S]*?```|```/g, '').trim();
       dcExtracted = JSON.parse(clean);
       dcExtracted.raw = text;
       renderDcResult(dcExtracted);
       dcPubBtn.disabled = false;
-      dcSetStatus('✓ Extraction complete — review the table below, then click Publish.');
+      dcSetStatus('✓ Extraction complete — review below, then click Publish.');
     } catch(e) {
-      dcSetStatus('⚠ Could not parse Claude\'s response. Try again or check the raw text below.');
+      dcSetStatus('⚠ Could not parse response — check raw text below and edit manually.');
       document.getElementById('dcResultSection').style.display = '';
       document.getElementById('dcRawText').textContent = text;
       document.getElementById('dcChangesTable').innerHTML = '';
