@@ -1645,6 +1645,42 @@ function clearDcImage() {
   dcSetStatus('');
 }
 
+// AI prompt for structured daily-changes extraction
+const DC_AI_PROMPT = `You are extracting structured data from a school daily timetable changes sheet.
+
+Return ONLY valid JSON (no markdown, no code fences, no explanation) in this exact format:
+{
+  "absent": [
+    { "name": "PersonName", "periods": null },
+    { "name": "PersonName", "periods": ["p1","p2"] }
+  ],
+  "changes": [
+    {
+      "lso": "PersonFirstName",
+      "period": "p2",
+      "type": "cover",
+      "description": "Cover Paige",
+      "classCode": "08MMAT260CRAA",
+      "room": "BR1",
+      "teacherCode": "CRANL"
+    }
+  ],
+  "notes": null
+}
+
+RULES:
+- "absent" entries: if the absent list says "Kylie (P1 & P2)" set periods:["p1","p2"]. If no period qualifier, set periods:null (means all day absent).
+- Each row in the changes table is a SEPARATE change entry — one entry per LSO per period.
+- The coloured box in each cell contains: left side = room code, right side = teacher code.
+- The text above the coloured box is the classCode (e.g. 08MMAT260CRAA).
+- The text at the top of each cell (before the coloured box) is the description (e.g. "Cover Paige", "Cover Indi").
+- type values: "cover" if it says "Cover [name]", "cancelled" if cancelled/group cancelled, "other" for LEC/RCP/MacqLit/TAE admin etc.
+- If there is no coloured box (no room/teacher), set room:null and teacherCode:null and classCode:null.
+- Use the person's first name only for "lso".
+- period is "p1" through "p6" based on which column the entry appears in.
+- Extract ALL entries from ALL cells — there may be multiple changes per person or per period.
+- "notes" should capture any general notes not tied to a specific person/period, or null.`;
+
 dcReadBtn.addEventListener('click', async () => {
   if (!dcImageBase64) return;
   const url = getServer();
@@ -1657,7 +1693,7 @@ dcReadBtn.addEventListener('click', async () => {
     const res = await fetch(`${url}/read-image`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-Admin-Password': getPw() },
-      body: JSON.stringify({ imageBase64: dcImageBase64, imageMime: dcImageMime })
+      body: JSON.stringify({ imageBase64: dcImageBase64, imageMime: dcImageMime, systemPrompt: DC_AI_PROMPT })
     });
 
     if (res.status === 503) {
@@ -1700,56 +1736,107 @@ function renderDcResult(data) {
   const section = document.getElementById('dcResultSection');
   section.style.display = '';
 
+  // Absent bar — handle both old format (string[]) and new format ({name, periods}[])
   const absentBar = document.getElementById('dcAbsentBar');
-  if (data.absent && data.absent.length) {
+  const absentList = (data.absent || []).map(a => typeof a === 'string' ? a : (a.periods ? `${a.name} (${a.periods.join('&').toUpperCase()})` : a.name));
+  if (absentList.length) {
     absentBar.style.display = '';
-    document.getElementById('dcAbsentNames').textContent = data.absent.join(', ');
+    document.getElementById('dcAbsentNames').textContent = absentList.join(', ');
   } else {
     absentBar.style.display = 'none';
   }
 
   document.getElementById('dcRawText').textContent = data.raw || '';
 
-  const lsos = data.lsos || {};
-  const names = Object.keys(lsos);
-  const periods = ['p1','p2','p3','p4','p5','p6'];
-
-  if (!names.length) {
-    document.getElementById('dcChangesTable').innerHTML = '<p style="color:var(--muted);font-size:.83rem;">No LSO assignments found in image.</p>';
+  // Support both old format (data.lsos) and new format (data.changes)
+  const changes = data.changes || legacyLsosToChanges(data.lsos || {});
+  if (!changes.length) {
+    document.getElementById('dcChangesTable').innerHTML = '<p style="color:var(--muted);font-size:.83rem;">No changes found in image.</p>';
     return;
   }
 
+  // Group by LSO name for display
+  const byLso = {};
+  changes.forEach(ch => {
+    if (!byLso[ch.lso]) byLso[ch.lso] = [];
+    byLso[ch.lso].push(ch);
+  });
+
+  const ths = 'padding:7px 10px;text-align:left;border:1px solid var(--border);font-family:\'DM Mono\',monospace;font-size:.62rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--soft);';
+  const tds = 'padding:6px 10px;border:1px solid var(--border);vertical-align:top;font-size:.8rem;';
+
   let html = `<table style="border-collapse:collapse;width:100%;font-size:.8rem;">
-    <thead><tr style="background:var(--soft);">
-      <th style="padding:8px 12px;text-align:left;border:1px solid var(--border);font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);">LSO</th>
-      ${periods.map(p=>`<th style="padding:8px 12px;text-align:left;border:1px solid var(--border);font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);">${p.toUpperCase()}</th>`).join('')}
+    <thead><tr>
+      <th style="${ths}">LSO</th>
+      <th style="${ths}">Period</th>
+      <th style="${ths}">Description</th>
+      <th style="${ths}">Class Code</th>
+      <th style="${ths}">Room</th>
+      <th style="${ths}">Teacher</th>
+      <th style="${ths}">Type</th>
+      <th style="${ths}width:28px;"></th>
     </tr></thead><tbody>`;
 
-  names.forEach(name => {
-    const isAbsent = (data.absent||[]).includes(name);
-    const rowStyle = isAbsent ? 'background:#fef3c7;' : '';
-    html += `<tr style="${rowStyle}">
-      <td style="padding:8px 12px;border:1px solid var(--border);font-weight:700;">${name}${isAbsent?' <span style="color:#92400e;font-size:.7rem;">(absent)</span>':''}</td>
-      ${periods.map(p => {
-        const val = lsos[name][p] || '';
-        return `<td style="padding:6px 12px;border:1px solid var(--border);">
-          <input value="${escHtml(val)}" data-lso="${escHtml(name)}" data-period="${p}"
-            style="width:100%;background:transparent;border:none;outline:none;font-family:'Outfit',sans-serif;font-size:.78rem;color:var(--text);min-width:120px;"
-            placeholder="—" />
-        </td>`;
-      }).join('')}
+  changes.forEach((ch, idx) => {
+    const typeColor = ch.type === 'cover' ? '#dcfce7' : ch.type === 'cancelled' ? '#fee2e2' : '#f3f4f6';
+    html += `<tr data-idx="${idx}" style="background:${typeColor}">
+      <td style="${tds}font-weight:700;"><input value="${escHtml(ch.lso||'')}" data-idx="${idx}" data-field="lso" style="width:80px;background:transparent;border:none;border-bottom:1px solid var(--border);outline:none;font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:700;" /></td>
+      <td style="${tds}"><select data-idx="${idx}" data-field="period" style="background:transparent;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:.75rem;padding:2px 4px;">
+        ${['p1','p2','p3','p4','p5','p6'].map(p=>`<option value="${p}" ${ch.period===p?'selected':''}>${p.toUpperCase()}</option>`).join('')}
+      </select></td>
+      <td style="${tds}"><input value="${escHtml(ch.description||'')}" data-idx="${idx}" data-field="description" style="width:160px;background:transparent;border:none;border-bottom:1px solid var(--border);outline:none;font-family:'Outfit',sans-serif;font-size:.8rem;" /></td>
+      <td style="${tds}"><input value="${escHtml(ch.classCode||'')}" data-idx="${idx}" data-field="classCode" style="width:130px;background:transparent;border:none;border-bottom:1px solid var(--border);outline:none;font-family:'DM Mono',monospace;font-size:.75rem;" placeholder="—" /></td>
+      <td style="${tds}"><input value="${escHtml(ch.room||'')}" data-idx="${idx}" data-field="room" style="width:70px;background:transparent;border:none;border-bottom:1px solid var(--border);outline:none;font-family:'DM Mono',monospace;font-size:.75rem;" placeholder="—" /></td>
+      <td style="${tds}"><input value="${escHtml(ch.teacherCode||'')}" data-idx="${idx}" data-field="teacherCode" style="width:70px;background:transparent;border:none;border-bottom:1px solid var(--border);outline:none;font-family:'DM Mono',monospace;font-size:.75rem;" placeholder="—" /></td>
+      <td style="${tds}"><select data-idx="${idx}" data-field="type" style="background:transparent;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:.72rem;padding:2px 4px;">
+        ${['cover','other','cancelled'].map(t=>`<option value="${t}" ${ch.type===t?'selected':''}>${t}</option>`).join('')}
+      </select></td>
+      <td style="${tds}text-align:center;"><button data-delidx="${idx}" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;padding:2px 5px;">✕</button></td>
     </tr>`;
   });
 
   html += '</tbody></table>';
+  html += `<button id="dcAddChangeRow" style="margin-top:8px;background:none;border:1.5px dashed var(--border);color:var(--muted);font-family:'Outfit',sans-serif;font-size:.8rem;padding:7px 16px;border-radius:7px;cursor:pointer;width:100%;">+ Add change row</button>`;
+
   document.getElementById('dcChangesTable').innerHTML = html;
 
-  document.getElementById('dcChangesTable').querySelectorAll('input').forEach(inp => {
-    inp.addEventListener('input', () => {
-      const lso = inp.dataset.lso, per = inp.dataset.period;
-      if (dcExtracted.lsos[lso]) dcExtracted.lsos[lso][per] = inp.value;
+  // Keep dcExtracted.changes in sync
+  function syncField(inp) {
+    const idx = parseInt(inp.dataset.idx);
+    const field = inp.dataset.field;
+    if (!dcExtracted.changes) dcExtracted.changes = legacyLsosToChanges(dcExtracted.lsos || {});
+    if (dcExtracted.changes[idx]) dcExtracted.changes[idx][field] = inp.value || null;
+  }
+  document.getElementById('dcChangesTable').querySelectorAll('input,select').forEach(el => {
+    el.addEventListener('input', () => syncField(el));
+    el.addEventListener('change', () => syncField(el));
+  });
+  document.getElementById('dcChangesTable').querySelectorAll('[data-delidx]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.delidx);
+      if (!dcExtracted.changes) dcExtracted.changes = legacyLsosToChanges(dcExtracted.lsos || {});
+      dcExtracted.changes.splice(idx, 1);
+      renderDcResult(dcExtracted);
     });
   });
+  document.getElementById('dcAddChangeRow').addEventListener('click', () => {
+    if (!dcExtracted.changes) dcExtracted.changes = legacyLsosToChanges(dcExtracted.lsos || {});
+    dcExtracted.changes.push({ lso:'', period:'p1', type:'cover', description:'', classCode:null, room:null, teacherCode:null });
+    renderDcResult(dcExtracted);
+    // scroll to bottom of table
+    document.getElementById('dcChangesTable').scrollIntoView({ behavior:'smooth', block:'end' });
+  });
+}
+
+// Convert old lsos format {name:{p1:'text'}} to new changes[] format
+function legacyLsosToChanges(lsos) {
+  const out = [];
+  Object.entries(lsos).forEach(([name, periods]) => {
+    ['p1','p2','p3','p4','p5','p6'].forEach(p => {
+      if (periods[p]) out.push({ lso: name, period: p, type: 'other', description: periods[p], classCode: null, room: null, teacherCode: null });
+    });
+  });
+  return out;
 }
 
 function escHtml(s) {
@@ -1761,17 +1848,19 @@ dcPubBtn.addEventListener('click', async () => {
   const url = getServer();
   if (!url) { dcSetStatus('⚠ No server URL — go to Settings tab.'); return; }
 
-  const lsos = {};
-  document.getElementById('dcChangesTable').querySelectorAll('input').forEach(inp => {
-    const lso = inp.dataset.lso, per = inp.dataset.period;
-    if (!lsos[lso]) lsos[lso] = {};
-    lsos[lso][per] = inp.value.trim() || null;
+  // Collect edits from the live table into dcExtracted.changes
+  document.getElementById('dcChangesTable').querySelectorAll('input,select').forEach(el => {
+    const idx = parseInt(el.dataset.idx);
+    const field = el.dataset.field;
+    if (!isNaN(idx) && field && dcExtracted.changes && dcExtracted.changes[idx]) {
+      dcExtracted.changes[idx][field] = el.value.trim() || null;
+    }
   });
 
   const payload = {
     date: dcExtracted.date || new Date().toLocaleDateString('en-GB'),
     absent: dcExtracted.absent || [],
-    lsos,
+    changes: dcExtracted.changes || [],
     notes: dcExtracted.notes || null,
     publishedAt: new Date().toISOString()
   };
@@ -1783,7 +1872,7 @@ dcPubBtn.addEventListener('click', async () => {
       headers: { 'Content-Type': 'application/json', 'X-Admin-Password': getPw() },
       body: JSON.stringify(payload)
     });
-    if (res.ok) dcSetStatus('✓ Published! LSOs can see the daily changes panel in the viewer now.');
+    if (res.ok) dcSetStatus('✓ Published! LSOs can see today\'s changes in the viewer now.');
     else if (res.status === 401) dcSetStatus('✕ Wrong password.');
     else dcSetStatus(`✕ Server error ${res.status}`);
   } catch(e) { dcSetStatus('✕ Could not reach server: ' + e.message); }
@@ -1826,21 +1915,21 @@ function getKnownLSONames() {
   } catch(e) { return []; }
 }
 
-let manualRows = [];
+let manualRows = []; // each: { id, lso, period, type, description, classCode, room, teacherCode }
 
 function ensureManualRows() {
   if (manualRows.length === 0) {
     const known = getKnownLSONames();
     if (known.length) {
-      manualRows = known.map(name => ({ id: Math.random().toString(36).slice(2), name, p1:'',p2:'',p3:'',p4:'',p5:'',p6:'' }));
+      manualRows = known.map(name => ({ id: Math.random().toString(36).slice(2), lso: name, period:'p1', type:'cover', description:'', classCode:'', room:'', teacherCode:'' }));
     } else {
-      manualRows = [blankRow()];
+      manualRows = [blankManualRow()];
     }
   }
 }
 
-function blankRow() {
-  return { id: Math.random().toString(36).slice(2), name:'', p1:'',p2:'',p3:'',p4:'',p5:'',p6:'' };
+function blankManualRow() {
+  return { id: Math.random().toString(36).slice(2), lso:'', period:'p1', type:'cover', description:'', classCode:'', room:'', teacherCode:'' };
 }
 
 function renderManualRows() {
@@ -1848,39 +1937,47 @@ function renderManualRows() {
   const container = document.getElementById('dcManualRows');
   container.innerHTML = '';
 
-  const periods = ['p1','p2','p3','p4','p5','p6'];
-  const headerStyle = 'padding:6px 10px;text-align:left;border:1px solid var(--border);font-family:"DM Mono",monospace;font-size:0.62rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--soft);';
-  const cellStyle   = 'padding:4px 6px;border:1px solid var(--border);';
+  const ths = 'padding:5px 8px;text-align:left;border:1px solid var(--border);font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--soft);';
+  const tds = 'padding:3px 5px;border:1px solid var(--border);';
+  const inp = 'width:100%;background:transparent;border:none;outline:none;font-family:\'Outfit\',sans-serif;font-size:.78rem;color:var(--text);';
+  const inpMono = inp.replace("'Outfit'","'DM Mono'");
 
-  let html = `<table style="border-collapse:collapse;width:100%;font-size:0.82rem;margin-bottom:10px;">
+  let html = `<table style="border-collapse:collapse;width:100%;font-size:.8rem;margin-bottom:10px;">
     <thead><tr>
-      <th style="${headerStyle}min-width:110px;">LSO Name</th>
-      ${periods.map(p=>`<th style="${headerStyle}">${p.toUpperCase()}</th>`).join('')}
-      <th style="${headerStyle}width:32px;"></th>
+      <th style="${ths}min-width:90px;">LSO</th>
+      <th style="${ths}">Period</th>
+      <th style="${ths}">Description</th>
+      <th style="${ths}">Class Code</th>
+      <th style="${ths}">Room</th>
+      <th style="${ths}">Teacher</th>
+      <th style="${ths}">Type</th>
+      <th style="${ths}width:28px;"></th>
     </tr></thead><tbody>`;
 
   manualRows.forEach(row => {
-    html += `<tr data-rowid="${row.id}">
-      <td style="${cellStyle}"><input value="${escHtml(row.name)}" data-field="name" data-rowid="${row.id}"
-        style="width:100%;background:transparent;border:none;outline:none;font-weight:700;font-family:'Outfit',sans-serif;font-size:0.82rem;color:var(--text);min-width:100px;"
-        placeholder="LSO name" /></td>
-      ${periods.map(p => `<td style="${cellStyle}"><input value="${escHtml(row[p]||'')}" data-field="${p}" data-rowid="${row.id}"
-        style="width:100%;background:transparent;border:none;outline:none;font-family:'Outfit',sans-serif;font-size:0.78rem;color:var(--text);min-width:120px;"
-        placeholder="—" /></td>`).join('')}
-      <td style="${cellStyle}text-align:center;">
-        <button data-delrow="${row.id}" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.8rem;padding:2px 4px;">✕</button>
-      </td>
+    const typeColor = row.type === 'cover' ? '#dcfce7' : row.type === 'cancelled' ? '#fee2e2' : '#f3f4f6';
+    html += `<tr data-rowid="${row.id}" style="background:${typeColor}">
+      <td style="${tds}"><input value="${escHtml(row.lso||'')}" data-field="lso" data-rowid="${row.id}" style="${inp}min-width:80px;" placeholder="LSO name" /></td>
+      <td style="${tds}"><select data-field="period" data-rowid="${row.id}" style="background:transparent;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:.75rem;padding:2px 4px;">
+        ${['p1','p2','p3','p4','p5','p6'].map(p=>`<option value="${p}" ${row.period===p?'selected':''}>${p.toUpperCase()}</option>`).join('')}
+      </select></td>
+      <td style="${tds}"><input value="${escHtml(row.description||'')}" data-field="description" data-rowid="${row.id}" style="${inp}min-width:130px;" placeholder="e.g. Cover Paige" /></td>
+      <td style="${tds}"><input value="${escHtml(row.classCode||'')}" data-field="classCode" data-rowid="${row.id}" style="${inpMono}min-width:110px;" placeholder="08MMAT260CRAA" /></td>
+      <td style="${tds}"><input value="${escHtml(row.room||'')}" data-field="room" data-rowid="${row.id}" style="${inpMono}min-width:55px;" placeholder="BR1" /></td>
+      <td style="${tds}"><input value="${escHtml(row.teacherCode||'')}" data-field="teacherCode" data-rowid="${row.id}" style="${inpMono}min-width:55px;" placeholder="CRANL" /></td>
+      <td style="${tds}"><select data-field="type" data-rowid="${row.id}" style="background:transparent;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:.72rem;padding:2px 4px;">
+        ${['cover','other','cancelled'].map(t=>`<option value="${t}" ${row.type===t?'selected':''}>${t}</option>`).join('')}
+      </select></td>
+      <td style="${tds}text-align:center;"><button data-delrow="${row.id}" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;padding:2px 5px;">✕</button></td>
     </tr>`;
   });
 
   html += '</tbody></table>';
   container.innerHTML = html;
 
-  container.querySelectorAll('input').forEach(inp => {
-    inp.addEventListener('input', () => {
-      const row = manualRows.find(r => r.id === inp.dataset.rowid);
-      if (row) row[inp.dataset.field] = inp.value;
-    });
+  container.querySelectorAll('input,select').forEach(el => {
+    el.addEventListener('input', () => { const r=manualRows.find(r=>r.id===el.dataset.rowid); if(r) r[el.dataset.field]=el.value; });
+    el.addEventListener('change', () => { const r=manualRows.find(r=>r.id===el.dataset.rowid); if(r) r[el.dataset.field]=el.value; });
   });
   container.querySelectorAll('[data-delrow]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1891,9 +1988,9 @@ function renderManualRows() {
 }
 
 document.getElementById('dcManualAddRow').addEventListener('click', () => {
-  manualRows.push(blankRow());
+  manualRows.push(blankManualRow());
   renderManualRows();
-  const inputs = document.getElementById('dcManualRows').querySelectorAll('input[data-field="name"]');
+  const inputs = document.getElementById('dcManualRows').querySelectorAll('input[data-field="lso"]');
   if (inputs.length) inputs[inputs.length-1].focus();
 });
 
@@ -1901,25 +1998,38 @@ document.getElementById('dcManualPublishBtn').addEventListener('click', async ()
   const url = getServer();
   if (!url) { document.getElementById('dcManualStatus').textContent = '⚠ No server URL — go to Settings tab.'; return; }
 
-  const lsos = {};
-  manualRows.forEach(row => {
-    const name = row.name.trim();
-    if (!name) return;
-    lsos[name] = { p1: row.p1||null, p2: row.p2||null, p3: row.p3||null, p4: row.p4||null, p5: row.p5||null, p6: row.p6||null };
-  });
+  const changes = manualRows
+    .filter(r => r.lso.trim())
+    .map(r => ({
+      lso: r.lso.trim(),
+      period: r.period || 'p1',
+      type: r.type || 'other',
+      description: r.description.trim() || null,
+      classCode: r.classCode.trim() || null,
+      room: r.room.trim() || null,
+      teacherCode: r.teacherCode.trim() || null
+    }));
 
   const absentRaw = document.getElementById('dcManualAbsent').value.trim();
-  const absent = absentRaw ? absentRaw.split(',').map(s=>s.trim()).filter(Boolean) : [];
+  // Parse absent with optional period qualifiers: "Kylie (P1&P2), Baden"
+  const absent = absentRaw ? absentRaw.split(',').map(s => {
+    const m = s.trim().match(/^(.+?)\s*\(([^)]+)\)\s*$/);
+    if (m) {
+      const periods = m[2].split(/[&,\s]+/).map(p=>p.trim().toLowerCase()).filter(p=>/^p[1-6]$/.test(p));
+      return { name: m[1].trim(), periods: periods.length ? periods : null };
+    }
+    return { name: s.trim(), periods: null };
+  }).filter(a => a.name) : [];
 
-  if (!Object.keys(lsos).length && !absent.length) {
-    document.getElementById('dcManualStatus').textContent = '⚠ Nothing to publish — add at least one LSO or absent name.';
+  if (!changes.length && !absent.length) {
+    document.getElementById('dcManualStatus').textContent = '⚠ Nothing to publish — add at least one change or absent name.';
     return;
   }
 
   const payload = {
     date: new Date().toLocaleDateString('en-GB'),
     absent,
-    lsos,
+    changes,
     notes: null,
     publishedAt: new Date().toISOString()
   };
