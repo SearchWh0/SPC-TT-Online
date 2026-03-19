@@ -41,7 +41,6 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   .view-tab { font-size:0.7rem; padding:5px 10px; }
 }
 
-/* ── View tabs (Timetable / Map) ── */
 .view-tabs { display:flex; gap:0; margin-left:10px; border:1px solid var(--border); border-radius:8px; overflow:hidden; flex-shrink:0; }
 .view-tab { background:none; border:none; color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.78rem; font-weight:600; padding:6px 14px; cursor:pointer; transition:background .15s,color .15s; }
 .view-tab.active { background:var(--text); color:var(--bg); }
@@ -53,7 +52,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 [data-theme="dark"] .toggle-track { background:#c8f542; }
 [data-theme="dark"] .toggle-track::after { transform:translateX(16px); background:#111010; }
 
-/* ── Period strip ── */
+/* Period strip */
 .period-strip { background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:73px; z-index:99; display:none; transition:background .25s,border-color .25s; }
 .period-strip.visible { display:block; }
 .period-strip-inner { max-width:1100px; margin:0 auto; padding:0 28px; height:44px; display:flex; align-items:center; gap:16px; }
@@ -71,7 +70,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .period-strip-next strong { color:var(--text); font-weight:600; }
 @media(max-width:520px){ .period-strip-bar-wrap,.period-strip-sep,.period-strip-next { display:none; } }
 
-/* ── Tile status rows ── */
+/* Tile status rows */
 .tile-status { border-top:1px solid var(--border); margin-top:12px; padding-top:10px; display:flex; flex-direction:column; gap:5px; }
 .tile-status-row { display:flex; align-items:center; gap:7px; }
 .tile-status-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); flex-shrink:0; width:40px; }
@@ -79,14 +78,13 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .tile-status-value.is-break { color:var(--muted); font-weight:400; font-style:italic; }
 .tile-status-value.is-free  { color:var(--muted); font-weight:400; }
 
-/* ── States ── */
+/* States */
 .state-wrap { max-width:560px; margin:80px auto; padding:0 24px; text-align:center; }
 .state-icon { font-size:3rem; margin-bottom:20px; opacity:0.4; }
 .state-title { font-size:1.3rem; font-weight:700; margin-bottom:8px; }
 .state-sub { font-size:0.88rem; color:var(--muted); line-height:1.7; }
 .spinner { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--text); border-radius:50%; animation:spin .7s linear infinite; margin:0 auto 20px; }
 @keyframes spin { to { transform:rotate(360deg); } }
-
 .server-setup { max-width:560px; margin:0 auto; padding:0 24px 24px; display:none; }
 .server-setup.visible { display:block; }
 .setup-row { display:flex; gap:10px; align-items:center; margin-top:20px; }
@@ -94,7 +92,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .setup-input:focus { border-color:var(--text); }
 .setup-btn { background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.85rem; font-weight:600; padding:10px 20px; border-radius:8px; cursor:pointer; white-space:nowrap; }
 
-/* ── Tile View ── */
+/* Tile view */
 .tile-view { display:none; }
 .tile-view.visible { display:block; }
 .tile-grid { max-width:1100px; margin:0 auto; padding:28px 28px 100px; display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:18px; }
@@ -110,7 +108,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .tile-period-chip.has-data { color:var(--text); border-color:var(--muted); }
 .tile-empty-label { font-size:0.78rem; color:var(--muted); font-style:italic; margin-top:auto; }
 
-/* ── Compact view ── */
+/* Compact view */
 .tile-grid.compact { grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:8px; padding-top:20px; }
 .tile-grid.compact .tile { min-height:0; border-radius:12px; }
 .tile-grid.compact .tile-colour-bar { height:5px; }
@@ -121,11 +119,10 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .tile-grid.compact .tile-empty-label,
 .tile-grid.compact .tile-status { display:none; }
 
-/* ── View toggle button ── */
 .view-toggle-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'DM Mono',monospace; font-size:0.72rem; padding:6px 12px; border-radius:7px; cursor:pointer; transition:border-color .2s,color .2s; letter-spacing:0.04em; display:flex; align-items:center; gap:6px; white-space:nowrap; }
 .view-toggle-btn:hover { border-color:var(--text); color:var(--text); }
 
-/* ── Detail View ── */
+/* Detail view */
 .detail-view { display:none; }
 .detail-view.visible { display:block; }
 .detail-inner { max-width:1000px; margin:0 auto; padding:32px 24px 100px; }
@@ -140,10 +137,13 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .email-lso-btn { background:var(--email-btn); color:#fff; border:none; font-family:'Outfit',sans-serif; font-size:0.85rem; font-weight:600; padding:11px 22px; border-radius:10px; cursor:pointer; transition:opacity .15s,transform .15s; white-space:nowrap; }
 .email-lso-btn:hover { opacity:0.85; transform:translateY(-1px); }
 
-.period-grid { display:flex; flex-direction:column; gap:12px; }
+.period-grid { display:flex; flex-direction:column; gap:4px; }
 .period-row { display:grid; grid-template-columns:6px 70px 28px 1fr 1fr 1fr; align-items:stretch; background:var(--surface); border-radius:14px; overflow:hidden; box-shadow:var(--shadow); border:1px solid var(--border); min-height:64px; transition:box-shadow .15s,border-color .15s; }
 .period-row:hover { box-shadow:var(--shadow-lg); border-color:var(--muted); }
 .period-row.empty-row { opacity:0.28; }
+/* DC change strip — inserted after period-row as a sibling */
+.dc-change-strip { border:1px solid #bfdbfe; border-top:none; border-radius:0 0 10px 10px; background:#eff6ff; padding:8px 16px; margin-top:-4px; margin-bottom:4px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.dc-absent-strip { border:1px solid #fcd34d; border-top:none; border-radius:0 0 10px 10px; background:#fef3c7; padding:8px 16px; margin-top:-4px; margin-bottom:4px; }
 .period-row > div { display:flex; align-items:center; padding:18px 20px; }
 .period-row > div + div { border-left:1px solid var(--border); }
 .accent-bar { padding:0!important; border-left:none!important; width:6px; flex-shrink:0; }
@@ -157,7 +157,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .cell-data.flash-copy::after { content:'✓'; position:absolute; top:8px; right:10px; font-size:0.7rem; color:#22a85a; }
 .cell-data.empty { cursor:default; }
 
-/* ── LSO Email Panel ── */
+/* LSO email panel */
 .lso-panel { margin-top:32px; background:var(--email-bg); border:1px solid var(--email-border); border-radius:16px; overflow:hidden; display:none; }
 .lso-panel.visible { display:block; }
 .lso-panel-header { padding:18px 24px; border-bottom:1px solid var(--email-border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
@@ -178,7 +178,6 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .lso-open-btn:hover { opacity:0.85; }
 .lso-copy-body-btn { background:var(--border); color:var(--text); border:none; font-family:'Outfit',sans-serif; font-size:0.88rem; font-weight:500; padding:11px 20px; border-radius:9px; cursor:pointer; transition:opacity .15s; }
 .lso-copy-body-btn:hover { opacity:0.75; }
-
 .teacher-chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
 .teacher-chip { background:var(--soft); border:1px solid var(--border); border-radius:6px; padding:3px 10px; font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--text); }
 .teacher-chip .arrow { color:var(--muted); margin:0 4px; }
@@ -194,10 +193,8 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   .detail-actions { margin-left:0; width:100%; }
 }
 
-/* ── Map view ── */
+/* Map view */
 .map-view { display:none; flex-direction:column; }
-
-/* ── Desktop map — fills screen, no scroll ── */
 @media (min-width: 769px) {
   .map-view.visible { display:flex; height:calc(100vh - 73px); }
   .map-body { display:flex; flex:1; min-height:0; }
@@ -211,79 +208,34 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
     background-size:30px 30px;
   }
 }
-
-/* ── Mobile map — scrollable, no scaling ── */
 @media (max-width: 768px) {
   .map-view.visible { display:block; }
   .map-body { display:block; }
-  .map-outer {
-    overflow:scroll;
-    -webkit-overflow-scrolling:touch;
-    padding:10px;
-    background:var(--bg);
-    width:100vw;
-    height:calc(100vh - 130px);
-    box-sizing:border-box;
-  }
-  .map-canvas {
-    position:relative;
-    display:block;
-    width:1100px;
-    height:660px;
-    transform:none !important;
-    background:var(--surface2);
-    border:1px solid var(--border);
-    border-radius:8px;
-    background-image: linear-gradient(var(--grid-line,rgba(0,0,0,.05)) 1px,transparent 1px),
-                      linear-gradient(90deg,var(--grid-line,rgba(0,0,0,.05)) 1px,transparent 1px);
-    background-size:30px 30px;
-  }
+  .map-outer { overflow:scroll; -webkit-overflow-scrolling:touch; padding:10px; background:var(--bg); width:100vw; height:calc(100vh - 130px); box-sizing:border-box; }
+  .map-canvas { position:relative; display:block; width:1100px; height:660px; transform:none !important; background:var(--surface2); border:1px solid var(--border); border-radius:8px; background-image: linear-gradient(var(--grid-line,rgba(0,0,0,.05)) 1px,transparent 1px), linear-gradient(90deg,var(--grid-line,rgba(0,0,0,.05)) 1px,transparent 1px); background-size:30px 30px; }
 }
 [data-theme="dark"] .map-canvas { --grid-line:rgba(255,255,255,.04); }
-.map-room {
-  background:var(--soft); border:1.5px solid var(--border);
-  border-radius:6px; padding:4px 8px 5px;
-  box-shadow:none; transition:border-color .15s;
-  min-width:0;
-}
+.map-room { background:var(--soft); border:1.5px solid var(--border); border-radius:6px; padding:4px 8px 5px; box-shadow:none; transition:border-color .15s; min-width:0; }
 .map-room.occupied { border-color:var(--text); background:var(--surface); box-shadow:var(--shadow); }
 .map-room-code { font-family:'DM Mono',monospace; font-size:0.62rem; font-weight:600; color:var(--muted); margin-bottom:2px; display:flex; align-items:center; justify-content:space-between; }
 .map-room.occupied .map-room-code { color:var(--text); }
-.map-room-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.6rem; padding:0 0 0 3px; opacity:0; transition:opacity .15s; line-height:1; }
-.map-room:hover .map-room-del { opacity:1; }
-.map-room-del:hover { color:#ef4444; }
 .map-students { display:flex; flex-direction:column; gap:2px; }
 .map-badge { font-size:0.6rem; font-weight:700; padding:1px 5px; border-radius:4px; color:#fff; white-space:nowrap; line-height:1.5; overflow:hidden; text-overflow:ellipsis; max-width:140px; }
 .map-dc-tag { font-size:0.52rem; font-weight:700; padding:1px 4px; border-radius:3px; font-family:'DM Mono',monospace; margin-top:1px; display:inline-block; white-space:normal; }
-/* Map toolbar */
 .map-toolbar { padding:8px 16px; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
 .map-tab-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:0.75rem; font-weight:600; padding:5px 14px; border-radius:7px; cursor:pointer; transition:all .15s; display:flex; align-items:center; gap:6px; }
 .map-tab-btn.active { background:var(--text); color:var(--bg); border-color:var(--text); }
 .map-tab-btn:not(.active):hover { border-color:var(--text); color:var(--text); }
 .map-badge-count { font-family:'DM Mono',monospace; font-size:0.6rem; padding:1px 6px; border-radius:8px; background:var(--soft); border:1px solid var(--border); }
 .map-tab-btn.active .map-badge-count { background:rgba(255,255,255,.2); border-color:transparent; }
-/* Map footer */
 .map-footer { background:var(--surface); border-top:1px solid var(--border); padding:6px 16px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); }
 .map-unplaced { display:flex; gap:5px; flex-wrap:wrap; align-items:center; }
 .map-empty { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; pointer-events:none; }
 .map-empty .icon { font-size:2.5rem; opacity:.25; }
 .map-empty p { font-size:.85rem; color:var(--muted); text-align:center; line-height:1.7; max-width:300px; }
-
-/* ── Map group zones ── */
-.map-group {
-  position:absolute; border:1.5px solid var(--border); border-radius:8px;
-  background:var(--surface); padding:0; box-shadow:var(--shadow);
-  width:220px;
-}
-.map-group-label {
-  font-family:'DM Mono',monospace; font-size:0.55rem; font-weight:700;
-  color:var(--muted); letter-spacing:0.07em; text-transform:uppercase;
-  padding:4px 7px 3px; border-bottom:1px solid var(--border);
-  cursor:default; user-select:none; border-radius:6px 6px 0 0;
-}
-.map-group-rooms {
-  padding:4px; display:grid; grid-template-columns:repeat(3,1fr); gap:3px;
-}
+.map-group { position:absolute; border:1.5px solid var(--border); border-radius:8px; background:var(--surface); padding:0; box-shadow:var(--shadow); width:220px; }
+.map-group-label { font-family:'DM Mono',monospace; font-size:0.55rem; font-weight:700; color:var(--muted); letter-spacing:0.07em; text-transform:uppercase; padding:4px 7px 3px; border-bottom:1px solid var(--border); cursor:default; user-select:none; border-radius:6px 6px 0 0; }
+.map-group-rooms { padding:4px; display:grid; grid-template-columns:repeat(3,1fr); gap:3px; }
 </style>
 </head>
 <body>
@@ -322,22 +274,15 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 
 <!-- Daily Changes Banner -->
 <div id="dailyChangesPanel" style="display:none;">
-  <div id="dcBanner" style="
-    background:var(--surface);border-bottom:1px solid var(--border);
-    max-width:100%;overflow:hidden;
-  ">
+  <div id="dcBanner" style="background:var(--surface);border-bottom:1px solid var(--border);max-width:100%;overflow:hidden;">
     <div style="max-width:1100px;margin:0 auto;padding:0 28px;">
-      <!-- Header row - always visible, click to expand -->
-      <div id="dcToggleRow" style="
-        display:flex;align-items:center;gap:12px;padding:10px 0;cursor:pointer;user-select:none;
-      ">
+      <div id="dcToggleRow" style="display:flex;align-items:center;gap:12px;padding:10px 0;cursor:pointer;user-select:none;">
         <span style="font-size:1rem;">📌</span>
         <span style="font-weight:700;font-size:0.88rem;">Today's Changes</span>
         <span id="dcAbsentPill" style="display:none;background:#fef3c7;border:1px solid #fcd34d;color:#92400e;font-size:0.72rem;font-weight:600;padding:2px 9px;border-radius:10px;font-family:'DM Mono',monospace;"></span>
         <span id="dcDatePill" style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--muted);"></span>
         <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--muted);" id="dcChevron">▼ show</span>
       </div>
-      <!-- Expandable table -->
       <div id="dcTableWrap" style="display:none;padding-bottom:14px;overflow-x:auto;">
         <div id="dcNotes" style="display:none;font-size:0.82rem;color:var(--muted);margin-bottom:10px;font-style:italic;"></div>
         <table id="dcTable" style="border-collapse:collapse;width:100%;font-size:0.8rem;min-width:560px;"></table>
@@ -374,7 +319,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   <div class="detail-inner" id="detailInner"></div>
 </div>
 
-<!-- ── MAP VIEW ── -->
+<!-- MAP VIEW -->
 <div class="map-view" id="mapView">
   <div class="map-toolbar">
     <button class="map-tab-btn active" data-maptab="now">Now <span class="map-badge-count" id="mapNowBadge">0</span></button>
@@ -410,776 +355,358 @@ const SCHOOL_SCHEDULE = [
   { label:'Period 5',    start:'13:37', end:'14:27', period:5 },
   { label:'Period 6',    start:'14:30', end:'15:20', period:6 },
 ];
+function timeToMinutes(t){const[h,m]=t.split(':').map(Number);return h*60+m;}
+function nowMinutes(){const n=new Date();return n.getHours()*60+n.getMinutes()+n.getSeconds()/60;}
+function getCurrentAndNext(){const nm=nowMinutes();let current=null,next=null;for(const slot of SCHOOL_SCHEDULE){const s=timeToMinutes(slot.start),e=timeToMinutes(slot.end);if(nm>=s&&nm<e)current=slot;else if(nm<s&&!next)next=slot;}return{current,next};}
+function getRoomForPeriod(slots,periodNum){if(!periodNum||!slots[periodNum]||!slots[periodNum].length)return null;return slots[periodNum][0].d2||slots[periodNum][0].d1||null;}
+function getTileStatus(slots){const{current,next}=getCurrentAndNext();function resolveSlot(slot){if(!slot)return null;if(slot.break)return slot.break;if(slot.label==='Tutor Group')return'Tutor';if(!slot.period)return null;const room=getRoomForPeriod(slots,slot.period);return room||null;}return{nowText:resolveSlot(current),nextText:resolveSlot(next)};}
 
-function timeToMinutes(t) {
-  const [h, m] = t.split(':').map(Number);
-  return h * 60 + m;
-}
-function nowMinutes() {
-  const n = new Date();
-  return n.getHours() * 60 + n.getMinutes() + n.getSeconds() / 60;
-}
-
-// Returns { current, next } where each is a SCHOOL_SCHEDULE slot (or null)
-function getCurrentAndNext() {
-  const nm = nowMinutes();
-  let current = null, next = null;
-  for (const slot of SCHOOL_SCHEDULE) {
-    const s = timeToMinutes(slot.start), e = timeToMinutes(slot.end);
-    if (nm >= s && nm < e) current = slot;
-    else if (nm < s && !next) next = slot;
-  }
-  return { current, next };
-}
-
-// For a given person's slots, return the room value (d2) for a period number, or null
-function getRoomForPeriod(slots, periodNum) {
-  if (!periodNum || !slots[periodNum] || !slots[periodNum].length) return null;
-  return slots[periodNum][0].d2 || slots[periodNum][0].d1 || null;
-}
-
-// Returns { nowText, nextText } strings to show on the tile
-// nowText / nextText = room like "BR2", or "Recess"/"Lunch", or null (free/before school)
-function getTileStatus(slots) {
-  const { current, next } = getCurrentAndNext();
-
-  function resolveSlot(slot) {
-    if (!slot) return null;
-    if (slot.break) return slot.break;           // "Recess" or "Lunch"
-    if (slot.label === 'Tutor Group') return 'Tutor';
-    if (!slot.period) return null;
-    const room = getRoomForPeriod(slots, slot.period);
-    return room || null;                         // null = this person is free this period
-  }
-
-  return {
-    nowText:  resolveSlot(current),
-    nextText: resolveSlot(next),
-  };
-}
-
-let tileRefreshTimer = null;
-function startTileRefresh() {
-  if (tileRefreshTimer) clearInterval(tileRefreshTimer);
-  tileRefreshTimer = setInterval(() => {
-    if (currentGroupMap) renderTiles(currentGroupMap, currentNames);
-  }, 30000); // refresh tiles every 30s
-}
+let tileRefreshTimer=null;
+function startTileRefresh(){if(tileRefreshTimer)clearInterval(tileRefreshTimer);tileRefreshTimer=setInterval(()=>{if(currentGroupMap)renderTiles(currentGroupMap,currentNames);},30000);}
 
 // ── Period strip ──────────────────────────────────────────────────────────
-function formatTime12(t) {
-  const [h, m] = t.split(':').map(Number);
-  return `${h % 12 || 12}:${String(m).padStart(2,'0')}${h >= 12 ? 'pm' : 'am'}`;
-}
-
-function formatCountdown(secsRemaining) {
-  const s = Math.max(0, Math.round(secsRemaining));
-  const m = Math.floor(s / 60), r = s % 60;
-  if (m === 0) return `${r}s`;
-  return `${m}m ${String(r).padStart(2,'0')}s`;
-}
-
-function updateStrip() {
-  const strip = document.getElementById('periodStrip');
-  // Only show on tile view, weekdays during school hours
-  const tileVisible = document.getElementById('tileView').classList.contains('visible');
-  if (isWeekend || !tileVisible) { strip.classList.remove('visible'); return; }
-
-  const now2 = new Date();
-  const nmSecs = now2.getHours()*3600 + now2.getMinutes()*60 + now2.getSeconds();
-  const schoolStartSecs = timeToMinutes('08:40') * 60;
-  const schoolEndSecs   = timeToMinutes('15:30') * 60;
-  if (nmSecs < schoolStartSecs || nmSecs > schoolEndSecs) {
-    strip.classList.remove('visible'); return;
-  }
-
-  strip.classList.add('visible');
-
-  // Find current and next using seconds precision
-  let current = null, next = null;
-  for (const slot of SCHOOL_SCHEDULE) {
-    const s = timeToMinutes(slot.start) * 60;
-    const e = timeToMinutes(slot.end)   * 60;
-    if (nmSecs >= s && nmSecs < e) current = { ...slot, startSecs: s, endSecs: e };
-    else if (nmSecs < s && !next)  next    = { ...slot, startSecs: s, endSecs: e };
-  }
-
-  const dot       = document.getElementById('stripDot');
-  const nameEl    = document.getElementById('stripName');
-  const timeEl    = document.getElementById('stripTime');
-  const bar       = document.getElementById('stripBar');
-  const countdown = document.getElementById('stripCountdown');
-  const nextEl    = document.getElementById('stripNext');
-
-  if (current) {
-    const isBreak = !!current.break;
-    const remaining = current.endSecs - nmSecs;
-    const total = current.endSecs - current.startSecs;
-    const pct = Math.min(100, ((nmSecs - current.startSecs) / total) * 100);
-
-    dot.className = 'period-strip-dot' + (isBreak ? ' is-break' : '');
-    nameEl.textContent = current.label;
-    timeEl.textContent = `${formatTime12(current.start)} – ${formatTime12(current.end)}`;
-    bar.style.width = pct + '%';
-    bar.className = 'period-strip-bar' + (isBreak ? ' is-break' : '');
-    countdown.textContent = formatCountdown(remaining) + ' left';
-  } else {
-    // Between slots — show time until next
-    dot.className = 'period-strip-dot is-break';
-    nameEl.textContent = 'Between periods';
-    timeEl.textContent = '';
-    bar.style.width = '0%';
-    bar.className = 'period-strip-bar is-break';
-    const until = next ? (next.startSecs - nmSecs) : 0;
-    countdown.textContent = next ? formatCountdown(until) + ' until' : '';
-  }
-
-  if (next) {
-    nextEl.innerHTML = `Next: <strong>${next.label}</strong> ${formatTime12(next.start)}`;
-  } else {
-    nextEl.textContent = 'Last period done';
-  }
-}
-
-let stripTimer = null;
-function startStrip() {
-  updateStrip();
-  if (stripTimer) clearInterval(stripTimer);
-  stripTimer = setInterval(updateStrip, 1000);
-}
+function formatTime12(t){const[h,m]=t.split(':').map(Number);return`${h%12||12}:${String(m).padStart(2,'0')}${h>=12?'pm':'am'}`;}
+function formatCountdown(secsRemaining){const s=Math.max(0,Math.round(secsRemaining));const m=Math.floor(s/60),r=s%60;if(m===0)return`${r}s`;return`${m}m ${String(r).padStart(2,'0')}s`;}
+function updateStrip(){const strip=document.getElementById('periodStrip');const tileVisible=document.getElementById('tileView').classList.contains('visible');if(isWeekend||!tileVisible){strip.classList.remove('visible');return;}const now2=new Date();const nmSecs=now2.getHours()*3600+now2.getMinutes()*60+now2.getSeconds();const schoolStartSecs=timeToMinutes('08:40')*60;const schoolEndSecs=timeToMinutes('15:30')*60;if(nmSecs<schoolStartSecs||nmSecs>schoolEndSecs){strip.classList.remove('visible');return;}strip.classList.add('visible');let current=null,next=null;for(const slot of SCHOOL_SCHEDULE){const s=timeToMinutes(slot.start)*60;const e=timeToMinutes(slot.end)*60;if(nmSecs>=s&&nmSecs<e)current={...slot,startSecs:s,endSecs:e};else if(nmSecs<s&&!next)next={...slot,startSecs:s,endSecs:e};}const dot=document.getElementById('stripDot');const nameEl=document.getElementById('stripName');const timeEl=document.getElementById('stripTime');const bar=document.getElementById('stripBar');const countdown=document.getElementById('stripCountdown');const nextEl=document.getElementById('stripNext');if(current){const isBreak=!!current.break;const remaining=current.endSecs-nmSecs;const total=current.endSecs-current.startSecs;const pct=Math.min(100,((nmSecs-current.startSecs)/total)*100);dot.className='period-strip-dot'+(isBreak?' is-break':'');nameEl.textContent=current.label;timeEl.textContent=`${formatTime12(current.start)} – ${formatTime12(current.end)}`;bar.style.width=pct+'%';bar.className='period-strip-bar'+(isBreak?' is-break':'');countdown.textContent=formatCountdown(remaining)+' left';}else{dot.className='period-strip-dot is-break';nameEl.textContent='Between periods';timeEl.textContent='';bar.style.width='0%';bar.className='period-strip-bar is-break';const until=next?(next.startSecs-nmSecs):0;countdown.textContent=next?formatCountdown(until)+' until':'';}if(next){nextEl.innerHTML=`Next: <strong>${next.label}</strong> ${formatTime12(next.start)}`;}else{nextEl.textContent='Last period done';}}
+let stripTimer=null;
+function startStrip(){updateStrip();if(stripTimer)clearInterval(stripTimer);stripTimer=setInterval(updateStrip,1000);}
 
 // ── Cycle ──────────────────────────────────────────────────────────────────
 const CYCLE_START = new Date('2026-02-23T00:00:00');
-function getTodayDayNumber() {
-  const today = new Date(); today.setHours(0,0,0,0);
-  const start = new Date(CYCLE_START); start.setHours(0,0,0,0);
-  let count = 0; const d = new Date(start);
-  while (d <= today) { if (d.getDay()!==0&&d.getDay()!==6) count++; d.setDate(d.getDate()+1); }
-  return count > 0 ? ((count-1)%10)+1 : null;
-}
-const DAYS_LONG = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-const now = new Date();
-const dow = now.getDay();
-const isWeekend = dow===0||dow===6;
-const dayNum = getTodayDayNumber();
-const siteTitle = document.getElementById('siteTitle');
-const siteSub   = document.getElementById('siteSubtitle');
-if (!isWeekend&&dayNum) {
-  siteTitle.textContent = `Timetable (Day ${dayNum})`;
-  siteSub.textContent = DAYS_LONG[dow]+' · '+now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-} else {
-  siteTitle.textContent = 'Timetable';
-  siteSub.textContent = DAYS_LONG[dow]+' · '+now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-}
+function getTodayDayNumber(){const today=new Date();today.setHours(0,0,0,0);const start=new Date(CYCLE_START);start.setHours(0,0,0,0);let count=0;const d=new Date(start);while(d<=today){if(d.getDay()!==0&&d.getDay()!==6)count++;d.setDate(d.getDate()+1);}return count>0?((count-1)%10)+1:null;}
+const DAYS_LONG=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const now=new Date();const dow=now.getDay();const isWeekend=dow===0||dow===6;const dayNum=getTodayDayNumber();
+const siteTitle=document.getElementById('siteTitle');const siteSub=document.getElementById('siteSubtitle');
+if(!isWeekend&&dayNum){siteTitle.textContent=`Timetable (Day ${dayNum})`;siteSub.textContent=DAYS_LONG[dow]+' · '+now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}
+else{siteTitle.textContent='Timetable';siteSub.textContent=DAYS_LONG[dow]+' · '+now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}
 
 // ── Theme ──────────────────────────────────────────────────────────────────
-const html = document.documentElement;
-const savedTheme = localStorage.getItem('tt-theme') || 'light';
-html.setAttribute('data-theme', savedTheme);
-document.getElementById('toggleLabel').textContent = savedTheme==='dark'?'Dark':'Light';
-document.getElementById('themeToggle').addEventListener('click', () => {
-  const next = html.getAttribute('data-theme')==='dark'?'light':'dark';
-  html.setAttribute('data-theme', next);
-  document.getElementById('toggleLabel').textContent = next==='dark'?'Dark':'Light';
-  localStorage.setItem('tt-theme', next);
-});
+const html=document.documentElement;const savedTheme=localStorage.getItem('tt-theme')||'light';html.setAttribute('data-theme',savedTheme);document.getElementById('toggleLabel').textContent=savedTheme==='dark'?'Dark':'Light';
+document.getElementById('themeToggle').addEventListener('click',()=>{const next=html.getAttribute('data-theme')==='dark'?'light':'dark';html.setAttribute('data-theme',next);document.getElementById('toggleLabel').textContent=next==='dark'?'Dark':'Light';localStorage.setItem('tt-theme',next);});
 
-// ── Compact / Expanded toggle ──────────────────────────────────────────────
-let isCompact = localStorage.getItem('tt-compact') === 'true';
-function applyCompactMode() {
-  const grid = document.getElementById('tileGrid');
-  const btn  = document.getElementById('viewToggleBtn');
-  if (isCompact) {
-    grid.classList.add('compact');
-    btn.textContent = '⊟ Expanded';
-  } else {
-    grid.classList.remove('compact');
-    btn.textContent = '⊞ Compact';
-  }
-}
-document.getElementById('viewToggleBtn').addEventListener('click', () => {
-  isCompact = !isCompact;
-  localStorage.setItem('tt-compact', isCompact);
-  applyCompactMode();
-});
+// ── Compact toggle ─────────────────────────────────────────────────────────
+let isCompact=localStorage.getItem('tt-compact')==='true';
+function applyCompactMode(){const grid=document.getElementById('tileGrid');const btn=document.getElementById('viewToggleBtn');if(isCompact){grid.classList.add('compact');btn.textContent='⊟ Expanded';}else{grid.classList.remove('compact');btn.textContent='⊞ Compact';}}
+document.getElementById('viewToggleBtn').addEventListener('click',()=>{isCompact=!isCompact;localStorage.setItem('tt-compact',isCompact);applyCompactMode();});
 applyCompactMode();
 
 // ── Server ─────────────────────────────────────────────────────────────────
-function getServerUrl() { return 'https://timetable-server-r6nb.onrender.com'; }
-document.getElementById('connectBtn').addEventListener('click', () => {
-  const url = document.getElementById('serverUrlInput').value.trim().replace(/\/$/,'');
-  if (!url) return;
-  localStorage.setItem('tt-viewer-server', url);
-  loadTimetable();
-});
+function getServerUrl(){return'https://timetable-server-r6nb.onrender.com';}
+document.getElementById('connectBtn').addEventListener('click',()=>{const url=document.getElementById('serverUrlInput').value.trim().replace(/\/$/,'');if(!url)return;localStorage.setItem('tt-viewer-server',url);loadTimetable();});
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 function getLuminance(c){const n=(c||'').match(/\d+/g);return(!n||n.length<3)?999:0.299*+n[0]+0.587*+n[1]+0.114*+n[2];}
 function escapeHTML(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
-// ── LSO Name per person ─────────────────────────────────────────────────────
-// Stored in localStorage as { [colourKey]: "Mr. Smith" }
-// The global fallback is also stored: lso-name (legacy)
-function getLSONames() {
-  try { return JSON.parse(localStorage.getItem('tt-lso-names') || '{}'); }
-  catch(e) { return {}; }
-}
-function saveLSONames(obj) {
-  localStorage.setItem('tt-lso-names', JSON.stringify(obj));
-}
-function getLSONameForKey(key) {
-  const names = getLSONames();
-  // per-person name takes priority, then global fallback
-  return names[key] || localStorage.getItem('lso-name') || 'Mr. Chew';
-}
-
-// ── Email helpers ──────────────────────────────────────────────────────────
-function getToday_ddmmyy() {
-  const d = new Date();
-  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getFullYear()).slice(-2)}`;
-}
-
-function getEmailOverrides() {
-  try { return JSON.parse(localStorage.getItem('tt-email-overrides') || '{}'); }
-  catch(e) { return {}; }
-}
-
-function codeToEmailPrefix(code, overrides) {
-  const upper = code.toUpperCase().trim();
-  if (overrides[upper]) return { prefix: overrides[upper], isOverride: true };
-  const lower = upper.toLowerCase();
-  return { prefix: lower[lower.length-1] + lower.slice(0, lower.length-1), isOverride: false };
-}
-
-function buildLSOEmail(slots, lsoSettings) {
-  const { domain, yourName, cc } = lsoSettings;
-  const overrides = getEmailOverrides();
-  const dd = getToday_ddmmyy();
-  const subject = `LSO ${dd}`;
-
-  const periodLines = [];
-  const teacherMap = new Map();
-
-  for (let p = 1; p <= 6; p++) {
-    const entries = slots[p];
-    if (entries && entries.length > 0) {
-      entries.forEach(({d1, d2, d3}) => {
-        if (d1 || d2 || d3) {
-          periodLines.push(`P${p} - ${d1 || ''}   ${d2 || ''}   ${d3 || ''}`.trimEnd());
-          if (d3) {
-            const code = d3.trim().toUpperCase();
-            if (!teacherMap.has(code)) {
-              teacherMap.set(code, codeToEmailPrefix(code, overrides));
-            }
-          }
-        }
-      });
-    }
-  }
-
-  const teacherEntries = [...teacherMap.entries()];
-  const teacherEmails = teacherEntries.map(([code, {prefix}]) => `${prefix}@${domain}`);
-
-  const body = [
-    'Good morning teachers,',
-    '',
-    'Today I will be attending and supporting the students within your classes.',
-    '',
-    ...periodLines,
-    '',
-    `Please introduce me to the students as ${yourName}.`,
-    'I look forward to working with you today and providing effective support to our students.',
-    '',
-    'Kind regards,',
-    yourName
-  ].join('\n');
-
-  return { subject, body, teacherEmails, teacherEntries, cc };
-}
-
-function getLSOSettings(key) {
-  return {
-    domain:   localStorage.getItem('lso-domain') || 'stpeters.vic.edu.au',
-    yourName: getLSONameForKey(key),
-    cc:       localStorage.getItem('lso-cc') || 'kmcmellon@stpeters.vic.edu.au'
-  };
-}
-function saveLSOGlobalSettings(s) {
-  localStorage.setItem('lso-domain', s.domain);
-  localStorage.setItem('lso-cc', s.cc);
-  // yourName is saved per-person separately via saveLSONames
-}
+// ── LSO name helpers ──────────────────────────────────────────────────────
+function getLSONames(){try{return JSON.parse(localStorage.getItem('tt-lso-names')||'{}');}catch(e){return{};}}
+function saveLSONames(obj){localStorage.setItem('tt-lso-names',JSON.stringify(obj));}
+function getLSONameForKey(key){const names=getLSONames();return names[key]||localStorage.getItem('lso-name')||'Mr. Chew';}
+function getToday_ddmmyy(){const d=new Date();return`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getFullYear()).slice(-2)}`;}
+function getEmailOverrides(){try{return JSON.parse(localStorage.getItem('tt-email-overrides')||'{}');}catch(e){return{};}}
+function codeToEmailPrefix(code,overrides){const upper=code.toUpperCase().trim();if(overrides[upper])return{prefix:overrides[upper],isOverride:true};const lower=upper.toLowerCase();return{prefix:lower[lower.length-1]+lower.slice(0,lower.length-1),isOverride:false};}
+function buildLSOEmail(slots,lsoSettings){const{domain,yourName,cc}=lsoSettings;const overrides=getEmailOverrides();const dd=getToday_ddmmyy();const subject=`LSO ${dd}`;const periodLines=[];const teacherMap=new Map();for(let p=1;p<=6;p++){const entries=slots[p];if(entries&&entries.length>0){entries.forEach(({d1,d2,d3})=>{if(d1||d2||d3){periodLines.push(`P${p} - ${d1||''}   ${d2||''}   ${d3||''}`.trimEnd());if(d3){const code=d3.trim().toUpperCase();if(!teacherMap.has(code))teacherMap.set(code,codeToEmailPrefix(code,overrides));}}});}}const teacherEntries=[...teacherMap.entries()];const teacherEmails=teacherEntries.map(([code,{prefix}])=>`${prefix}@${domain}`);const body=['Good morning teachers,','','Today I will be attending and supporting the students within your classes.','',...periodLines,'',`Please introduce me to the students as ${yourName}.`,'I look forward to working with you today and providing effective support to our students.','','Kind regards,',yourName].join('\n');return{subject,body,teacherEmails,teacherEntries,cc};}
+function getLSOSettings(key){return{domain:localStorage.getItem('lso-domain')||'stpeters.vic.edu.au',yourName:getLSONameForKey(key),cc:localStorage.getItem('lso-cc')||'kmcmellon@stpeters.vic.edu.au'};}
+function saveLSOGlobalSettings(s){localStorage.setItem('lso-domain',s.domain);localStorage.setItem('lso-cc',s.cc);}
 
 // ── State ──────────────────────────────────────────────────────────────────
-let currentGroupMap = null;
-let currentNames    = {};
-let activeDetailKey = null; // tracks which person is open
-
-function showScreen(id) {
-  ['loadingState','emptyState','noServerState','tileView','detailView'].forEach(s => {
-    const el = document.getElementById(s);
-    el.style.display = 'none'; el.classList.remove('visible');
-  });
-  document.getElementById('serverSetup').classList.toggle('visible', id==='noServerState');
-  const target = document.getElementById(id);
-  target.style.display = '';
-  requestAnimationFrame(() => target.classList.add('visible'));
-  if (id === 'tileView') { startTileRefresh(); startStrip(); }
-  else { document.getElementById('periodStrip').classList.remove('visible'); }
-}
-
-const backBtn = document.getElementById('backBtn');
-
-function goHome() {
-  activeDetailKey = null;
-  backBtn.classList.remove('visible');
-  siteTitle.textContent = dayNum&&!isWeekend?`Timetable (Day ${dayNum})`:'Timetable';
-  showScreen('tileView');
-}
-
-function openDetail(key) {
-  if (!currentGroupMap) return;
-  const grp = currentGroupMap.get(key); if (!grp) return;
-  const name = currentNames[key] || '—';
-  activeDetailKey = key;
-  siteTitle.textContent = name;
-  backBtn.classList.add('visible');
-  renderDetail(key, grp, name);
-  showScreen('detailView');
-  window.scrollTo({ top:0, behavior:'smooth' });
-}
-
-backBtn.addEventListener('click', goHome);
+let currentGroupMap=null,currentNames={},activeDetailKey=null;
+function showScreen(id){['loadingState','emptyState','noServerState','tileView','detailView'].forEach(s=>{const el=document.getElementById(s);el.style.display='none';el.classList.remove('visible');});document.getElementById('serverSetup').classList.toggle('visible',id==='noServerState');const target=document.getElementById(id);target.style.display='';requestAnimationFrame(()=>target.classList.add('visible'));if(id==='tileView'){startTileRefresh();startStrip();}else{document.getElementById('periodStrip').classList.remove('visible');}}
+const backBtn=document.getElementById('backBtn');
+function goHome(){activeDetailKey=null;backBtn.classList.remove('visible');siteTitle.textContent=dayNum&&!isWeekend?`Timetable (Day ${dayNum})`:'Timetable';showScreen('tileView');}
+function openDetail(key){if(!currentGroupMap)return;const grp=currentGroupMap.get(key);if(!grp)return;const name=currentNames[key]||'—';activeDetailKey=key;siteTitle.textContent=name;backBtn.classList.add('visible');renderDetail(key,grp,name);showScreen('detailView');window.scrollTo({top:0,behavior:'smooth'});}
+backBtn.addEventListener('click',goHome);
 
 // ── Load timetable ─────────────────────────────────────────────────────────
-async function loadTimetable() {
-  const url = getServerUrl();
-  if (!url) { showScreen('noServerState'); return; }
-  showScreen('loadingState');
-  try {
-    const res = await fetch(`${url}/timetable`);
-    if (res.status===404) { showScreen('emptyState'); return; }
-    if (!res.ok) { showScreen('emptyState'); return; }
-    const state = await res.json();
-    if (!state.map) { showScreen('emptyState'); return; }
-    const groupMap = new Map();
-    for (const [k,v] of Object.entries(state.map)) groupMap.set(k,v);
-    currentGroupMap = groupMap;
-    currentNames    = state.names || {};
-    try {
-      localStorage.setItem('tt-cached-data', JSON.stringify(state));
-      localStorage.setItem('tt-cached-time', Date.now().toString());
-    } catch(e) {}
-    renderTiles(groupMap, currentNames);
-    loadDailyChanges();
-    // If a detail was open, silently re-render it in place; otherwise go to tiles
-    if (activeDetailKey && groupMap.has(activeDetailKey)) {
-      const grp = groupMap.get(activeDetailKey);
-      const name = currentNames[activeDetailKey] || '—';
-      siteTitle.textContent = name;
-      backBtn.classList.add('visible');
-      renderDetail(activeDetailKey, grp, name);
-      showScreen('detailView');
-    } else {
-      activeDetailKey = null;
-      showScreen('tileView');
-    }
-  } catch(e) {
-    const cached = localStorage.getItem('tt-cached-data');
-    const cachedTime = parseInt(localStorage.getItem('tt-cached-time')||'0');
-    const ageHours = (Date.now()-cachedTime)/3600000;
-    if (cached && ageHours < 20) {
-      try {
-        const state = JSON.parse(cached);
-        const groupMap = new Map();
-        for (const [k,v] of Object.entries(state.map)) groupMap.set(k,v);
-        currentGroupMap = groupMap;
-        currentNames    = state.names || {};
-        renderTiles(groupMap, currentNames);
-        if (activeDetailKey && groupMap.has(activeDetailKey)) {
-          const grp = groupMap.get(activeDetailKey);
-          const name = currentNames[activeDetailKey] || '—';
-          siteTitle.textContent = name;
-          backBtn.classList.add('visible');
-          renderDetail(activeDetailKey, grp, name);
-          showScreen('detailView');
-        } else {
-          activeDetailKey = null;
-          showScreen('tileView');
-        }
-        showStaleBanner();
-        return;
-      } catch(e2) {}
-    }
-    showScreen('noServerState');
-  }
-}
+async function loadTimetable(){const url=getServerUrl();if(!url){showScreen('noServerState');return;}showScreen('loadingState');try{const res=await fetch(`${url}/timetable`);if(res.status===404){showScreen('emptyState');return;}if(!res.ok){showScreen('emptyState');return;}const state=await res.json();if(!state.map){showScreen('emptyState');return;}const groupMap=new Map();for(const[k,v]of Object.entries(state.map))groupMap.set(k,v);currentGroupMap=groupMap;currentNames=state.names||{};try{localStorage.setItem('tt-cached-data',JSON.stringify(state));localStorage.setItem('tt-cached-time',Date.now().toString());}catch(e){}renderTiles(groupMap,currentNames);loadDailyChanges();if(activeDetailKey&&groupMap.has(activeDetailKey)){const grp=groupMap.get(activeDetailKey);const name=currentNames[activeDetailKey]||'—';siteTitle.textContent=name;backBtn.classList.add('visible');renderDetail(activeDetailKey,grp,name);showScreen('detailView');}else{activeDetailKey=null;showScreen('tileView');}}catch(e){const cached=localStorage.getItem('tt-cached-data');const cachedTime=parseInt(localStorage.getItem('tt-cached-time')||'0');const ageHours=(Date.now()-cachedTime)/3600000;if(cached&&ageHours<20){try{const state=JSON.parse(cached);const groupMap=new Map();for(const[k,v]of Object.entries(state.map))groupMap.set(k,v);currentGroupMap=groupMap;currentNames=state.names||{};renderTiles(groupMap,currentNames);if(activeDetailKey&&groupMap.has(activeDetailKey)){const grp=groupMap.get(activeDetailKey);const name=currentNames[activeDetailKey]||'—';siteTitle.textContent=name;backBtn.classList.add('visible');renderDetail(activeDetailKey,grp,name);showScreen('detailView');}else{activeDetailKey=null;showScreen('tileView');}showStaleBanner();return;}catch(e2){}}showScreen('noServerState');}}
+function showStaleBanner(){if(document.getElementById('staleBanner'))return;const b=document.createElement('div');b.id='staleBanner';b.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#b45309;color:#fff;padding:10px 20px;border-radius:10px;font-size:0.82rem;font-family:Outfit,sans-serif;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,0.3);';b.textContent='⚠️ Showing cached data — server unreachable';document.body.appendChild(b);setTimeout(()=>b.remove(),6000);}
+document.getElementById('refreshBtn').addEventListener('click',loadTimetable);
+setInterval(loadTimetable,600000);
 
-function showStaleBanner() {
-  if (document.getElementById('staleBanner')) return;
-  const b = document.createElement('div');
-  b.id = 'staleBanner';
-  b.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#b45309;color:#fff;padding:10px 20px;border-radius:10px;font-size:0.82rem;font-family:Outfit,sans-serif;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,0.3);';
-  b.textContent = '⚠️ Showing cached data — server unreachable';
-  document.body.appendChild(b);
-  setTimeout(() => b.remove(), 6000);
-}
+// ── Daily Changes (Toggle) ─────────────────────────────────────────────────
+let dcExpanded=false;
+document.getElementById('dcToggleRow').addEventListener('click',()=>{dcExpanded=!dcExpanded;document.getElementById('dcTableWrap').style.display=dcExpanded?'':'none';document.getElementById('dcChevron').textContent=dcExpanded?'▲ hide':'▼ show';});
 
-document.getElementById('refreshBtn').addEventListener('click', loadTimetable);
-setInterval(loadTimetable, 600000);
+async function loadDailyChanges(){const url=getServerUrl();if(!url)return;try{const res=await fetch(`${url}/daily-changes`);if(!res.ok){document.getElementById('dailyChangesPanel').style.display='none';return;}const data=await res.json();renderDailyChanges(data);if(mainView==='map')renderMapView();}catch(e){document.getElementById('dailyChangesPanel').style.display='none';}}
 
-// ── Daily Changes Panel ────────────────────────────────────────────────────
-let dcExpanded = false;
+let currentDailyChanges=null;
 
-document.getElementById('dcToggleRow').addEventListener('click', () => {
-  dcExpanded = !dcExpanded;
-  document.getElementById('dcTableWrap').style.display = dcExpanded ? '' : 'none';
-  document.getElementById('dcChevron').textContent = dcExpanded ? '▲ hide' : '▼ show';
-});
-
-async function loadDailyChanges() {
-  const url = getServerUrl();
-  if (!url) return;
-  try {
-    const res = await fetch(`${url}/daily-changes`);
-    if (!res.ok) { document.getElementById('dailyChangesPanel').style.display = 'none'; return; }
-    const data = await res.json();
-    renderDailyChanges(data);
-  } catch(e) {
-    document.getElementById('dailyChangesPanel').style.display = 'none';
-  }
-}
-
-// currentDailyChanges holds the latest fetched data so tiles can reference it
-let currentDailyChanges = null;
-
-function renderDailyChanges(data) {
-  currentDailyChanges = data;
-  const panel = document.getElementById('dailyChangesPanel');
-  if (!data || !data.lsos || !Object.keys(data.lsos).length) {
-    panel.style.display = 'none';
-    currentDailyChanges = null;
-    applyChangesToTiles();
-    return;
-  }
-  panel.style.display = '';
-
-  // Absent pill
-  const absentPill = document.getElementById('dcAbsentPill');
-  if (data.absent && data.absent.length) {
-    absentPill.style.display = '';
-    absentPill.textContent = '⚠ Absent: ' + data.absent.join(', ');
-  } else {
-    absentPill.style.display = 'none';
-  }
-
-  // Date pill
-  if (data.date) document.getElementById('dcDatePill').textContent = data.date;
-
-  // Notes
-  const notesEl = document.getElementById('dcNotes');
-  if (data.notes) { notesEl.style.display=''; notesEl.textContent = data.notes; }
-  else notesEl.style.display = 'none';
-
-  // Build table
-  const lsos = data.lsos;
-  const names = Object.keys(lsos);
-  const periods = ['p1','p2','p3','p4','p5','p6'];
-  const absent = new Set(data.absent || []);
-
-  const headerStyle = `padding:7px 12px;text-align:left;border:1px solid var(--border);
-    font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:.06em;
-    text-transform:uppercase;color:var(--muted);background:var(--soft);`;
-  const cellStyle = `padding:7px 12px;border:1px solid var(--border);vertical-align:top;`;
-
-  let html = `<thead><tr>
-    <th style="${headerStyle}">LSO</th>
-    ${periods.map(p=>`<th style="${headerStyle}">${p.toUpperCase()}</th>`).join('')}
-  </tr></thead><tbody>`;
-
-  names.forEach(name => {
-    const isAbsent = absent.has(name);
-    const rowBg = isAbsent ? 'background:#fef3c7;' : '';
-    html += `<tr style="${rowBg}">
-      <td style="${cellStyle}font-weight:700;">
-        ${name}${isAbsent ? ' <span style="font-size:0.68rem;color:#92400e;font-weight:400;">(absent)</span>' : ''}
-      </td>
-      ${periods.map(p => {
-        const val = (lsos[name] && lsos[name][p]) || '';
-        const changed = !!val;
-        return `<td style="${cellStyle}font-size:0.78rem;${changed ? 'font-weight:600;color:var(--text);' : 'color:var(--muted);'}">${val || '—'}</td>`;
-      }).join('')}
-    </tr>`;
+// ── Normalise DC data (handles both old lsos format and new changes[] format) ──
+function normaliseDC(data){
+  if(!data)return null;
+  // Already new format
+  if(data.changes)return{...data,absent:(data.absent||[]).map(a=>typeof a==='string'?{name:a,periods:null}:a)};
+  // Convert old lsos format
+  const changes=[];
+  const lsos=data.lsos||{};
+  Object.entries(lsos).forEach(([name,periods])=>{
+    ['p1','p2','p3','p4','p5','p6'].forEach(p=>{
+      if(periods[p])changes.push({lso:name,period:p,type:'other',description:periods[p],classCode:null,room:null,teacherCode:null});
+    });
   });
-  html += '</tbody>';
-  document.getElementById('dcTable').innerHTML = html;
-
-  // Apply change badges to tiles
-  applyChangesToTiles();
+  const absent=(data.absent||[]).map(a=>typeof a==='string'?{name:a,periods:null}:a);
+  return{...data,absent,changes};
 }
 
-// Build a lookup: lowercase LSO name → their changes data
-function getDcLookup() {
-  if (!currentDailyChanges || !currentDailyChanges.lsos) return {};
-  const lookup = {};
-  for (const [name, periods] of Object.entries(currentDailyChanges.lsos)) {
-    lookup[name.toLowerCase()] = { name, periods };
-  }
+// ── getDcLookup: by lso name → { name, changes[], absentPeriods } ──────────
+function getDcLookup(){
+  if(!currentDailyChanges)return{};
+  const dc=normaliseDC(currentDailyChanges);
+  const lookup={};
+  (dc.changes||[]).forEach(ch=>{
+    const key=(ch.lso||'').toLowerCase();
+    if(!lookup[key])lookup[key]={name:ch.lso,changes:[],absentPeriods:null};
+    lookup[key].changes.push(ch);
+  });
+  (dc.absent||[]).forEach(a=>{
+    const key=(a.name||'').toLowerCase();
+    if(!lookup[key])lookup[key]={name:a.name,changes:[],absentPeriods:null};
+    lookup[key].absentPeriods=a.periods&&a.periods.length?a.periods:'all';
+  });
   return lookup;
 }
 
-// After tiles are rendered, stamp a "changes today" ribbon onto matching tiles
-function applyChangesToTiles() {
-  // Remove any existing change overlays first
-  document.querySelectorAll('.dc-overlay').forEach(el => el.remove());
-  if (!currentDailyChanges) return;
+// ── renderDailyChanges ────────────────────────────────────────────────────
+function renderDailyChanges(data){
+  currentDailyChanges=data?normaliseDC(data):null;
+  const panel=document.getElementById('dailyChangesPanel');
+  const dc=currentDailyChanges;
+  if(!dc||(!dc.changes?.length&&!dc.absent?.length)){panel.style.display='none';currentDailyChanges=null;applyChangesToTiles();return;}
+  panel.style.display='';
 
-  const absent = new Set((currentDailyChanges.absent || []).map(n => n.toLowerCase()));
-  const lookup = getDcLookup();
+  // Absent pill
+  const absentPill=document.getElementById('dcAbsentPill');
+  const absentNames=(dc.absent||[]).map(a=>{
+    if(!a.periods||a.periods==='all')return a.name;
+    const pArr=Array.isArray(a.periods)?a.periods:[a.periods];
+    return`${a.name} (${pArr.map(p=>p.toUpperCase()).join('&')})`;
+  });
+  if(absentNames.length){absentPill.style.display='';absentPill.textContent='⚠ Absent: '+absentNames.join(', ');}
+  else absentPill.style.display='none';
 
-  document.querySelectorAll('.tile[data-name]').forEach(tile => {
-    const tileName = (tile.dataset.name || '').toLowerCase();
-    const match = lookup[tileName];
-    const isAbsent = absent.has(tileName);
+  if(dc.date)document.getElementById('dcDatePill').textContent=dc.date;
+  const notesEl=document.getElementById('dcNotes');
+  if(dc.notes){notesEl.style.display='';notesEl.textContent=dc.notes;}else notesEl.style.display='none';
 
-    if (!match && !isAbsent) return;
+  // Build overview table grouped by LSO
+  const periods=['p1','p2','p3','p4','p5','p6'];
+  const allDayAbsent=new Set((dc.absent||[]).filter(a=>!a.periods||a.periods==='all').map(a=>a.name.toLowerCase()));
+  const allLsos=new Set([...(dc.changes||[]).map(c=>c.lso),...(dc.absent||[]).map(a=>a.name)]);
 
-    // Count how many periods have changes
-    const changeCount = match
-      ? Object.values(match.periods).filter(v => v).length
-      : 0;
+  if(!allLsos.size){document.getElementById('dcTable').innerHTML='';return;}
 
-    const ribbon = document.createElement('div');
-    ribbon.className = 'dc-overlay';
-    ribbon.style.cssText = `
-      position:absolute;top:7px;right:7px;
-      font-family:'DM Mono',monospace;font-size:0.6rem;font-weight:700;
-      padding:2px 7px;border-radius:6px;letter-spacing:0.04em;
-      pointer-events:none;z-index:2;
-    `;
-    if (isAbsent) {
-      ribbon.style.background = '#fef3c7';
-      ribbon.style.color = '#92400e';
-      ribbon.style.border = '1px solid #fcd34d';
-      ribbon.textContent = 'ABSENT';
-    } else {
-      ribbon.style.background = '#dbeafe';
-      ribbon.style.color = '#1e40af';
-      ribbon.style.border = '1px solid #93c5fd';
-      ribbon.textContent = changeCount + (changeCount === 1 ? ' change' : ' changes');
-    }
-    // Tile needs position:relative — add it if missing
-    if (getComputedStyle(tile).position === 'static') tile.style.position = 'relative';
+  const ths=`padding:7px 12px;text-align:left;border:1px solid var(--border);font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--soft);`;
+  const tds=`padding:6px 10px;border:1px solid var(--border);vertical-align:top;`;
+
+  let html=`<thead><tr><th style="${ths}">LSO</th>${periods.map(p=>`<th style="${ths}">${p.toUpperCase()}</th>`).join('')}</tr></thead><tbody>`;
+
+  allLsos.forEach(lso=>{
+    const isAbsent=allDayAbsent.has(lso.toLowerCase());
+    const absentEntry=(dc.absent||[]).find(a=>a.name.toLowerCase()===lso.toLowerCase());
+    const partialAbsent=absentEntry&&Array.isArray(absentEntry.periods)?new Set(absentEntry.periods):null;
+    const rowBg=isAbsent?'background:#fef3c7;':'';
+    html+=`<tr style="${rowBg}"><td style="${tds}font-weight:700;">${lso}${isAbsent?' <span style="font-size:.68rem;color:#92400e;">(absent)</span>':''}</td>`;
+    html+=periods.map(p=>{
+      const chgs=(dc.changes||[]).filter(c=>c.lso===lso&&c.period===p);
+      const isPAbsent=partialAbsent&&partialAbsent.has(p);
+      if(isPAbsent)return`<td style="${tds}background:#fef3c7;"><span style="font-size:.7rem;color:#92400e;font-style:italic;">absent</span></td>`;
+      if(!chgs.length)return`<td style="${tds}"><span style="color:var(--muted);">—</span></td>`;
+      const content=chgs.map(ch=>{
+        let parts=[];
+        if(ch.description)parts.push(`<div style="font-weight:600;font-size:.78rem;">${ch.description}</div>`);
+        if(ch.classCode)parts.push(`<div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--muted);">${ch.classCode}</div>`);
+        if(ch.room||ch.teacherCode){
+          parts.push(`<div style="display:flex;gap:3px;margin-top:2px;">`
+            +(ch.room?`<span style="background:#1e40af;color:#fff;border-radius:3px;padding:1px 5px;font-family:'DM Mono',monospace;font-size:.62rem;">${ch.room}</span>`:'')
+            +(ch.teacherCode?`<span style="background:#374151;color:#fff;border-radius:3px;padding:1px 5px;font-family:'DM Mono',monospace;font-size:.62rem;">${ch.teacherCode}</span>`:'')
+            +`</div>`);
+        }
+        return parts.join('');
+      }).join('<hr style="margin:4px 0;border:none;border-top:1px solid var(--border);">');
+      return`<td style="${tds}background:rgba(219,234,254,.25);">${content}</td>`;
+    }).join('');
+    html+='</tr>';
+  });
+
+  html+='</tbody>';
+  document.getElementById('dcTable').innerHTML=html;
+  applyChangesToTiles();
+}
+
+// ── applyChangesToTiles ───────────────────────────────────────────────────
+function applyChangesToTiles(){
+  document.querySelectorAll('.dc-overlay').forEach(el=>el.remove());
+  if(!currentDailyChanges)return;
+  const lookup=getDcLookup();
+  document.querySelectorAll('.tile[data-name]').forEach(tile=>{
+    const tileName=(tile.dataset.name||'').toLowerCase();
+    const entry=lookup[tileName];
+    if(!entry)return;
+    const isAllAbsent=entry.absentPeriods==='all';
+    const changeCount=(entry.changes||[]).length;
+    const partialAbsent=Array.isArray(entry.absentPeriods)&&entry.absentPeriods.length>0;
+    const ribbon=document.createElement('div');
+    ribbon.className='dc-overlay';
+    ribbon.style.cssText=`position:absolute;top:7px;right:7px;font-family:'DM Mono',monospace;font-size:0.6rem;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:0.04em;pointer-events:none;z-index:2;`;
+    if(isAllAbsent){ribbon.style.background='#fef3c7';ribbon.style.color='#92400e';ribbon.style.border='1px solid #fcd34d';ribbon.textContent='ABSENT';}
+    else if(partialAbsent){ribbon.style.background='#fef3c7';ribbon.style.color='#92400e';ribbon.style.border='1px solid #fcd34d';ribbon.textContent='ABSENT '+entry.absentPeriods.map(p=>p.toUpperCase()).join('+');}
+    else if(changeCount){ribbon.style.background='#dbeafe';ribbon.style.color='#1e40af';ribbon.style.border='1px solid #93c5fd';ribbon.textContent=changeCount+(changeCount===1?' change':' changes');}
+    else return;
+    if(getComputedStyle(tile).position==='static')tile.style.position='relative';
     tile.appendChild(ribbon);
   });
 }
 
-// Inject change rows into detail view when it's open for an LSO with changes
-function injectDcIntoDetail(name) {
-  if (!currentDailyChanges) return;
-  const lookup = getDcLookup();
-  const match = lookup[(name || '').toLowerCase()];
-  const absent = new Set((currentDailyChanges.absent || []).map(n => n.toLowerCase()));
-  const isAbsent = absent.has((name || '').toLowerCase());
-  if (!match && !isAbsent) return;
+// ── injectDcIntoDetail ────────────────────────────────────────────────────
+function injectDcIntoDetail(name){
+  if(!currentDailyChanges)return;
+  const lookup=getDcLookup();
+  const entry=lookup[(name||'').toLowerCase()];
+  if(!entry)return;
 
-  const inner = document.getElementById('detailInner');
-  if (!inner) return;
-  if (inner.querySelector('.dc-detail-block')) return;
+  const inner=document.getElementById('detailInner');
+  if(!inner||inner.querySelector('.dc-detail-block'))return;
 
-  const block = document.createElement('div');
-  block.className = 'dc-detail-block';
-  block.style.cssText = `
-    margin:16px 0 0;padding:14px 18px;
-    background:${isAbsent ? '#fef3c7' : '#eff6ff'};
-    border:1px solid ${isAbsent ? '#fcd34d' : '#93c5fd'};
-    border-radius:12px;
-  `;
+  const isAllAbsent=entry.absentPeriods==='all';
+  const partialAbsentPeriods=Array.isArray(entry.absentPeriods)?new Set(entry.absentPeriods):null;
+  const changes=entry.changes||[];
+  const dc=normaliseDC(currentDailyChanges);
 
-  let inner2 = `<div style="font-weight:700;font-size:0.82rem;margin-bottom:${isAbsent && (!match || !Object.values(match.periods||{}).some(Boolean)) ? '0' : '10px'};color:${isAbsent ? '#92400e' : '#1e40af'};">
-    📌 Today's Changes${isAbsent ? ' — <span style="color:#b45309;">ABSENT TODAY</span>' : ''}
+  // ── Step 1: Inject change strips below each affected period row ───────────
+  const periodRows=inner.querySelectorAll('.period-row');
+  periodRows.forEach(row=>{
+    const periodCell=row.querySelector('.cell-period');
+    if(!periodCell)return;
+    const pKey=periodCell.textContent.trim().toLowerCase(); // "P1" → "p1"
+    const rowChanges=changes.filter(c=>c.period===pKey);
+    const isPAbsent=partialAbsentPeriods&&partialAbsentPeriods.has(pKey);
+    if(!rowChanges.length&&!isPAbsent&&!isAllAbsent)return;
+
+    // Remove previously injected strip for this row
+    const existing=row.nextElementSibling;
+    if(existing&&(existing.classList.contains('dc-change-strip')||existing.classList.contains('dc-absent-strip')))existing.remove();
+
+    const strip=document.createElement('div');
+    if(isAllAbsent||isPAbsent){
+      strip.className='dc-absent-strip';
+      strip.innerHTML=`<span style="font-weight:700;color:#92400e;font-size:0.8rem;">⚠ ABSENT this period</span>`;
+    } else {
+      strip.className='dc-change-strip';
+      rowChanges.forEach(ch=>{
+        const div=document.createElement('div');
+        div.style.cssText='display:flex;align-items:center;gap:6px;flex-wrap:wrap;';
+        let html=`<span style="font-family:'DM Mono',monospace;font-size:0.68rem;font-weight:700;background:#1e40af;color:#fff;border-radius:4px;padding:2px 8px;">📌 CHANGE</span>`;
+        if(ch.description)html+=`<span style="font-weight:600;font-size:0.82rem;">${ch.description}</span>`;
+        if(ch.classCode)html+=`<span style="font-family:'DM Mono',monospace;font-size:0.72rem;background:#e5e7eb;color:#374151;border-radius:4px;padding:2px 8px;">${ch.classCode}</span>`;
+        if(ch.room)html+=`<span style="font-family:'DM Mono',monospace;font-size:0.75rem;font-weight:700;background:#1d4ed8;color:#fff;border-radius:4px;padding:3px 10px;">${ch.room}</span>`;
+        if(ch.teacherCode)html+=`<span style="font-family:'DM Mono',monospace;font-size:0.72rem;background:#374151;color:#fff;border-radius:4px;padding:2px 8px;">${ch.teacherCode}</span>`;
+        div.innerHTML=html;
+        strip.appendChild(div);
+      });
+    }
+    row.parentNode.insertBefore(strip,row.nextSibling);
+  });
+
+  // ── Step 2: Summary block below the period grid ───────────────────────────
+  const block=document.createElement('div');
+  block.className='dc-detail-block';
+  block.style.cssText=`margin-top:20px;border-radius:12px;overflow:hidden;border:1px solid ${isAllAbsent?'#fcd34d':'#bfdbfe'};`;
+
+  const absentLabel=isAllAbsent?' — ABSENT ALL DAY':partialAbsentPeriods?` — ABSENT ${[...partialAbsentPeriods].map(p=>p.toUpperCase()).join('+')}` :'';
+  let headerHtml=`<div style="background:${isAllAbsent?'#fef3c7':'#dbeafe'};padding:12px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid ${isAllAbsent?'#fcd34d':'#93c5fd'};">
+    <span style="font-size:1rem;">📌</span>
+    <span style="font-weight:700;font-size:0.88rem;color:${isAllAbsent?'#92400e':'#1e40af'};">Today's Changes${absentLabel}</span>
   </div>`;
 
-  if (match) {
-    const periods = ['p1','p2','p3','p4','p5','p6'];
-    const hasPeriods = periods.some(p => match.periods[p]);
-    if (hasPeriods) {
-      inner2 += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">`;
-      periods.forEach(p => {
-        const val = match.periods[p];
-        inner2 += `<div style="background:white;border:1px solid ${isAbsent ? '#fcd34d' : '#bfdbfe'};border-radius:8px;padding:8px 10px;">
-          <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:#6b7280;margin-bottom:3px;">${p.toUpperCase()}</div>
-          <div style="font-size:0.78rem;font-weight:${val?'600':'400'};color:${val?'#111':'#9ca3af'};">${val || '—'}</div>
-        </div>`;
-      });
-      inner2 += `</div>`;
-    }
+  let bodyHtml='';
+  if(changes.length){
+    bodyHtml='<div style="padding:14px 18px;display:flex;flex-direction:column;gap:10px;background:var(--surface);">';
+    changes.forEach(ch=>{
+      bodyHtml+=`<div style="display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:${ch.type==='cancelled'?'#fee2e2':ch.type==='cover'?'#f0fdf4':'#f8fafc'};border-radius:8px;border:1px solid ${ch.type==='cancelled'?'#fca5a5':ch.type==='cover'?'#bbf7d0':'#e2e8f0'};">
+        <span style="font-family:'DM Mono',monospace;font-size:0.72rem;font-weight:700;background:var(--text);color:var(--bg);border-radius:4px;padding:3px 8px;flex-shrink:0;">${ch.period.toUpperCase()}</span>
+        <div style="flex:1;min-width:0;">
+          ${ch.description?`<div style="font-weight:700;font-size:0.85rem;margin-bottom:5px;">${ch.description}</div>`:''}
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            ${ch.classCode?`<span style="font-family:'DM Mono',monospace;font-size:0.72rem;background:#e5e7eb;color:#374151;border-radius:4px;padding:2px 8px;">${ch.classCode}</span>`:''}
+            ${ch.room?`<span style="font-family:'DM Mono',monospace;font-size:0.75rem;font-weight:700;background:#1d4ed8;color:#fff;border-radius:4px;padding:3px 10px;">${ch.room}</span>`:''}
+            ${ch.teacherCode?`<span style="font-family:'DM Mono',monospace;font-size:0.72rem;background:#374151;color:#fff;border-radius:4px;padding:2px 8px;">${ch.teacherCode}</span>`:''}
+            <span style="font-family:'DM Mono',monospace;font-size:0.65rem;padding:2px 7px;border-radius:4px;background:${ch.type==='cover'?'#dcfce7':ch.type==='cancelled'?'#fee2e2':'#e5e7eb'};color:${ch.type==='cover'?'#166534':ch.type==='cancelled'?'#991b1b':'#374151'};">${ch.type}</span>
+          </div>
+        </div>
+      </div>`;
+    });
+    bodyHtml+='</div>';
   }
 
-  block.innerHTML = inner2;
-
-  // Insert after the period-grid
-  const periodGrid = inner.querySelector('.period-grid');
-  if (periodGrid && periodGrid.nextSibling) {
-    inner.insertBefore(block, periodGrid.nextSibling);
-  } else if (periodGrid) {
-    inner.appendChild(block);
-  } else {
-    inner.insertBefore(block, inner.firstChild);
-  }
+  block.innerHTML=headerHtml+bodyHtml;
+  const periodGrid=inner.querySelector('.period-grid');
+  if(periodGrid)periodGrid.parentNode.insertBefore(block,periodGrid.nextSibling);
+  else inner.appendChild(block);
 }
 
-// Load daily changes on startup and every 5 minutes
 loadDailyChanges();
-setInterval(loadDailyChanges, 300000);
+setInterval(loadDailyChanges,300000);
 
 // ── Tiles ──────────────────────────────────────────────────────────────────
-function renderTiles(groupMap, names) {
-  const grid = document.getElementById('tileGrid');
-  grid.innerHTML = '';
-  const lsoNames = getLSONames();
-  const duringSchool = !isWeekend && (() => {
-    const nm = nowMinutes();
-    return nm >= timeToMinutes('08:50') && nm <= timeToMinutes('15:30');
-  })();
-  const sorted = [...groupMap.entries()].sort((a,b)=>getLuminance(a[1].bg)-getLuminance(b[1].bg));
-  sorted.forEach(([key,{bg,fg,slots}],gi) => {
-    const name = names[key]||`Name ${gi+1}`;
-    const lsoName = lsoNames[key] || null;
-    const activePeriods = [1,2,3,4,5,6].filter(p=>slots[p]&&slots[p].length>0);
-    const tile = document.createElement('div'); tile.className='tile';
-    tile.dataset.name = name;
+function renderTiles(groupMap,names){
+  const grid=document.getElementById('tileGrid');grid.innerHTML='';
+  const lsoNames=getLSONames();
+  const duringSchool=!isWeekend&&(()=>{const nm=nowMinutes();return nm>=timeToMinutes('08:50')&&nm<=timeToMinutes('15:30');})();
+  const sorted=[...groupMap.entries()].sort((a,b)=>getLuminance(a[1].bg)-getLuminance(b[1].bg));
+  sorted.forEach(([key,{bg,fg,slots}],gi)=>{
+    const name=names[key]||`Name ${gi+1}`;
+    const lsoName=lsoNames[key]||null;
+    const activePeriods=[1,2,3,4,5,6].filter(p=>slots[p]&&slots[p].length>0);
+    const tile=document.createElement('div');tile.className='tile';tile.dataset.name=name;
     tile.addEventListener('click',()=>openDetail(key));
-    const bar = document.createElement('div'); bar.className='tile-colour-bar'; bar.style.background=bg;
-    const body = document.createElement('div'); body.className='tile-body';
-    const nameEl = document.createElement('div'); nameEl.className='tile-name'; nameEl.textContent=name;
-    const lsoEl  = document.createElement('div'); lsoEl.className='tile-lso-name';
-    lsoEl.textContent = lsoName ? `✉ ${lsoName}` : '';
-
-    body.appendChild(nameEl);
-    body.appendChild(lsoEl);
-
-    if (activePeriods.length===0) {
-      const empty = document.createElement('div'); empty.className='tile-empty-label'; empty.textContent='No periods today';
-      body.appendChild(empty);
-    } else {
-      const periods = document.createElement('div'); periods.className='tile-periods';
-      [1,2,3,4,5,6].forEach(p=>{
-        const chip=document.createElement('div');
-        chip.className='tile-period-chip'+(activePeriods.includes(p)?' has-data':'');
-        chip.textContent=`P${p}`; periods.appendChild(chip);
-      });
-      body.appendChild(periods);
-    }
-
-    // ── Current / Next status ──────────────────────────────────────────────
-    if (duringSchool) {
-      const { nowText, nextText } = getTileStatus(slots);
-      // Only show the section if at least one has something to say
-      if (nowText !== undefined || nextText !== undefined) {
-        const statusEl = document.createElement('div'); statusEl.className='tile-status';
-
-        function makeRow(label, text) {
-          const row = document.createElement('div'); row.className='tile-status-row';
-          const lbl = document.createElement('div'); lbl.className='tile-status-label'; lbl.textContent=label;
-          const val = document.createElement('div');
-          if (text === null) {
-            // person has no class in this slot (free period)
-            val.className='tile-status-value is-free'; val.textContent='free';
-          } else if (text === 'Recess' || text === 'Lunch') {
-            val.className='tile-status-value is-break'; val.textContent=text;
-          } else {
-            val.className='tile-status-value'; val.textContent=text;
-          }
-          row.appendChild(lbl); row.appendChild(val);
-          return row;
-        }
-
-        // "now" row — only show during school hours (not before school starts)
-        const { current } = getCurrentAndNext();
-        if (current) statusEl.appendChild(makeRow('now', nowText));
-        if (nextText !== undefined) statusEl.appendChild(makeRow('next', nextText));
-
-        body.appendChild(statusEl);
-      }
-    }
-
-    tile.appendChild(bar); tile.appendChild(body); grid.appendChild(tile);
+    const bar=document.createElement('div');bar.className='tile-colour-bar';bar.style.background=bg;
+    const body=document.createElement('div');body.className='tile-body';
+    const nameEl=document.createElement('div');nameEl.className='tile-name';nameEl.textContent=name;
+    const lsoEl=document.createElement('div');lsoEl.className='tile-lso-name';lsoEl.textContent=lsoName?`✉ ${lsoName}`:'';
+    body.appendChild(nameEl);body.appendChild(lsoEl);
+    if(activePeriods.length===0){const empty=document.createElement('div');empty.className='tile-empty-label';empty.textContent='No periods today';body.appendChild(empty);}
+    else{const periods=document.createElement('div');periods.className='tile-periods';[1,2,3,4,5,6].forEach(p=>{const chip=document.createElement('div');chip.className='tile-period-chip'+(activePeriods.includes(p)?' has-data':'');chip.textContent=`P${p}`;periods.appendChild(chip);});body.appendChild(periods);}
+    if(duringSchool){const{nowText,nextText}=getTileStatus(slots);if(nowText!==undefined||nextText!==undefined){const statusEl=document.createElement('div');statusEl.className='tile-status';function makeRow(label,text){const row=document.createElement('div');row.className='tile-status-row';const lbl=document.createElement('div');lbl.className='tile-status-label';lbl.textContent=label;const val=document.createElement('div');if(text===null){val.className='tile-status-value is-free';val.textContent='free';}else if(text==='Recess'||text==='Lunch'){val.className='tile-status-value is-break';val.textContent=text;}else{val.className='tile-status-value';val.textContent=text;}row.appendChild(lbl);row.appendChild(val);return row;}const{current}=getCurrentAndNext();if(current)statusEl.appendChild(makeRow('now',nowText));if(nextText!==undefined)statusEl.appendChild(makeRow('next',nextText));body.appendChild(statusEl);}}
+    tile.appendChild(bar);tile.appendChild(body);grid.appendChild(tile);
   });
-  // Stamp daily-changes badges on tiles if changes are loaded
   applyChangesToTiles();
 }
 
 // ── Detail ─────────────────────────────────────────────────────────────────
-function renderDetail(key, grp, name) {
-  const inner = document.getElementById('detailInner');
-  const { bg, fg, slots } = grp;
+function renderDetail(key,grp,name){
+  const inner=document.getElementById('detailInner');
+  const{bg,fg,slots}=grp;
+  const periodRows=[1,2,3,4,5,6].map(p=>{const entries=slots[p];if(!entries||entries.length===0)return`<div class="period-row empty-row"><div class="accent-bar" style="background:${bg}"></div><div class="cell-period">P${p}</div><div class="cell-dash">—</div><div class="cell-data empty" style="grid-column:4/-1"></div></div>`;return entries.map(({d1,d2,d3})=>`<div class="period-row"><div class="accent-bar" style="background:${bg}"></div><div class="cell-period has-data">P${p}</div><div class="cell-dash">—</div><div class="cell-data${d1?'':' empty'}" data-copy="${escapeHTML(d1||'')}">${escapeHTML(d1||'')}</div><div class="cell-data${d2?'':' empty'}" data-copy="${escapeHTML(d2||'')}">${escapeHTML(d2||'')}</div><div class="cell-data${d3?'':' empty'}" data-copy="${escapeHTML(d3||'')}">${escapeHTML(d3||'')}</div></div>`).join('');}).join('');
 
-  const periodRows = [1,2,3,4,5,6].map(p => {
-    const entries = slots[p];
-    if (!entries||entries.length===0) return `<div class="period-row empty-row"><div class="accent-bar" style="background:${bg}"></div><div class="cell-period">P${p}</div><div class="cell-dash">—</div><div class="cell-data empty" style="grid-column:4/-1"></div></div>`;
-    return entries.map(({d1,d2,d3})=>`<div class="period-row"><div class="accent-bar" style="background:${bg}"></div><div class="cell-period has-data">P${p}</div><div class="cell-dash">—</div><div class="cell-data${d1?'':' empty'}" data-copy="${escapeHTML(d1||'')}">${escapeHTML(d1||'')}</div><div class="cell-data${d2?'':' empty'}" data-copy="${escapeHTML(d2||'')}">${escapeHTML(d2||'')}</div><div class="cell-data${d3?'':' empty'}" data-copy="${escapeHTML(d3||'')}">${escapeHTML(d3||'')}</div></div>`).join('');
-  }).join('');
-
-  const lsoSettings = getLSOSettings(key);
-  const currentLSOName = lsoSettings.yourName;
-
-  inner.innerHTML = `
+  const lsoSettings=getLSOSettings(key);
+  inner.innerHTML=`
     <div class="detail-header">
       <div class="detail-colour-bar" style="background:${bg}"></div>
-      <div>
-        <div class="detail-title">${escapeHTML(name)}</div>
-        <div class="detail-sub">${escapeHTML(bg)}${fg?' · '+escapeHTML(fg):''}</div>
-      </div>
+      <div><div class="detail-title">${escapeHTML(name)}</div><div class="detail-sub">${escapeHTML(bg)}${fg?' · '+escapeHTML(fg):''}</div></div>
       <div class="detail-actions">
         <button class="copy-btn" id="copyAllBtn">Copy P1–P6</button>
         <button class="email-lso-btn" id="emailLSOToggle">✉ Email LSO</button>
       </div>
     </div>
-    <div class="period-grid">${periodRows}</div>
-
+    <div class="period-grid" id="periodGridEl">${periodRows}</div>
     <div class="lso-panel" id="lsoPanel">
       <div class="lso-panel-header">
         <div class="lso-panel-title"><span>✉</span> LSO Email — <em style="font-weight:400;font-style:normal;color:var(--muted)">${escapeHTML(name)}</em></div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);">Name is saved per person · overrides from Admin page</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);">Name is saved per person</div>
       </div>
       <div class="lso-settings">
-        <div class="lso-input-wrap">
-          <label>Your Name <span style="font-weight:400;color:var(--muted)">(for this person)</span></label>
-          <input class="lso-input" id="lsoName" type="text" value="${escapeHTML(currentLSOName)}" placeholder="Mr. Chew" />
-          <div class="lso-name-hint" id="lsoNameHint">saved for ${escapeHTML(name)}</div>
-        </div>
-        <div class="lso-input-wrap">
-          <label>Email Domain</label>
-          <input class="lso-input" id="lsoDomain" type="text" value="${escapeHTML(lsoSettings.domain)}" placeholder="stpeters.vic.edu.au" />
-        </div>
-        <div class="lso-input-wrap">
-          <label>CC</label>
-          <input class="lso-input" id="lsoCC" type="text" value="${escapeHTML(lsoSettings.cc)}" placeholder="cc@school.edu.au" />
-        </div>
-        <div class="lso-input-wrap" style="display:flex;flex-direction:column;justify-content:flex-end;">
-          <button class="lso-copy-body-btn" id="lsoSaveNameBtn" style="width:100%;margin-top:auto;">💾 Save name for ${escapeHTML(name)}</button>
-        </div>
+        <div class="lso-input-wrap"><label>Your Name <span style="font-weight:400;color:var(--muted)">(for this person)</span></label><input class="lso-input" id="lsoName" type="text" value="${escapeHTML(lsoSettings.yourName)}" /><div class="lso-name-hint" id="lsoNameHint">saved for ${escapeHTML(name)}</div></div>
+        <div class="lso-input-wrap"><label>Email Domain</label><input class="lso-input" id="lsoDomain" type="text" value="${escapeHTML(lsoSettings.domain)}" /></div>
+        <div class="lso-input-wrap"><label>CC</label><input class="lso-input" id="lsoCC" type="text" value="${escapeHTML(lsoSettings.cc)}" /></div>
+        <div class="lso-input-wrap" style="display:flex;flex-direction:column;justify-content:flex-end;"><button class="lso-copy-body-btn" id="lsoSaveNameBtn" style="width:100%;margin-top:auto;">💾 Save name for ${escapeHTML(name)}</button></div>
       </div>
       <div class="lso-panel-body">
         <div class="lso-row2">
-          <div class="lso-field">
-            <span class="lso-label">Subject</span>
-            <div class="lso-value" id="lsoSubject"></div>
-          </div>
-          <div class="lso-field">
-            <span class="lso-label">To (Teachers)</span>
-            <div id="lsoTeacherChips" class="teacher-chips"></div>
-          </div>
+          <div class="lso-field"><span class="lso-label">Subject</span><div class="lso-value" id="lsoSubject"></div></div>
+          <div class="lso-field"><span class="lso-label">To (Teachers)</span><div id="lsoTeacherChips" class="teacher-chips"></div></div>
         </div>
-        <div class="lso-field">
-          <span class="lso-label">CC</span>
-          <div class="lso-value" id="lsoCCVal"></div>
-        </div>
-        <div class="lso-field">
-          <span class="lso-label">Body Preview</span>
-          <div class="lso-value" id="lsoBodyPreview" style="font-size:0.78rem;line-height:1.8;"></div>
-        </div>
+        <div class="lso-field"><span class="lso-label">CC</span><div class="lso-value" id="lsoCCVal"></div></div>
+        <div class="lso-field"><span class="lso-label">Body Preview</span><div class="lso-value" id="lsoBodyPreview" style="font-size:0.78rem;line-height:1.8;"></div></div>
       </div>
       <div class="lso-actions">
         <button class="lso-open-btn" id="lsoOpenBtn">📧 Open in Outlook</button>
@@ -1187,325 +714,156 @@ function renderDetail(key, grp, name) {
         <button class="lso-copy-body-btn" id="lsoCopyBodyBtn">📋 Copy Body</button>
         <button class="lso-copy-body-btn" id="lsoCopySubjectBtn">📋 Copy Subject</button>
       </div>
-    </div>
-  `;
+    </div>`;
 
-  let lastEmail = null;
+  let lastEmail=null;
+  function refreshEmail(){const settings={domain:document.getElementById('lsoDomain').value.trim()||'stpeters.vic.edu.au',yourName:document.getElementById('lsoName').value.trim()||'Mr. Chew',cc:document.getElementById('lsoCC').value.trim()};saveLSOGlobalSettings(settings);lastEmail=buildLSOEmail(slots,settings);document.getElementById('lsoSubject').textContent=lastEmail.subject;document.getElementById('lsoCCVal').textContent=lastEmail.cc;document.getElementById('lsoBodyPreview').textContent=lastEmail.body;const chipsEl=document.getElementById('lsoTeacherChips');if(lastEmail.teacherEntries.length===0){chipsEl.innerHTML='<span style="color:var(--muted);font-size:0.8rem;font-style:italic;">No teachers found in timetable data</span>';}else{chipsEl.innerHTML=lastEmail.teacherEntries.map(([code,{prefix,isOverride}],i)=>`<div class="teacher-chip">${escapeHTML(code)}<span class="arrow">→</span><span class="email-part">${escapeHTML(lastEmail.teacherEmails[i])}</span>${isOverride?'<span class="override-badge">override</span>':''}</div>`).join('');}}
 
-  function refreshEmail() {
-    const settings = {
-      domain:   document.getElementById('lsoDomain').value.trim() || 'stpeters.vic.edu.au',
-      yourName: document.getElementById('lsoName').value.trim() || 'Mr. Chew',
-      cc:       document.getElementById('lsoCC').value.trim()
-    };
-    saveLSOGlobalSettings(settings);
-    lastEmail = buildLSOEmail(slots, settings);
+  inner.querySelector('#lsoSaveNameBtn').addEventListener('click',function(){const lsoNames=getLSONames();const val=document.getElementById('lsoName').value.trim();if(val)lsoNames[key]=val;else delete lsoNames[key];saveLSONames(lsoNames);const hint=document.getElementById('lsoNameHint');hint.textContent=`✓ saved for ${name}`;hint.style.color='#22a85a';setTimeout(()=>{hint.textContent=`saved for ${name}`;hint.style.color='';},2000);renderTiles(currentGroupMap,currentNames);});
+  inner.querySelector('#emailLSOToggle').addEventListener('click',function(){const panel=document.getElementById('lsoPanel');const isVisible=panel.classList.toggle('visible');this.textContent=isVisible?'✕ Close':'✉ Email LSO';if(isVisible){refreshEmail();panel.scrollIntoView({behavior:'smooth',block:'nearest'});}});
+  ['lsoName','lsoDomain','lsoCC'].forEach(id=>{inner.querySelector('#'+id).addEventListener('input',refreshEmail);});
+  inner.querySelector('#lsoOpenBtn').addEventListener('click',()=>{if(!lastEmail)return;const{subject,body,teacherEmails,cc}=lastEmail;const mailto=`mailto:${teacherEmails.join(';')}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;window.location.href=mailto;});
+  inner.querySelector('#lsoCopyLinkBtn').addEventListener('click',function(){if(!lastEmail)return;const{subject,body,teacherEmails,cc}=lastEmail;const mailto=`mailto:${teacherEmails.join(';')}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;navigator.clipboard.writeText(mailto).then(()=>{this.textContent='✅ Copied!';setTimeout(()=>this.textContent='🔗 Copy Outlook Link',1800);});});
+  inner.querySelector('#lsoCopyBodyBtn').addEventListener('click',function(){if(!lastEmail)return;navigator.clipboard.writeText(lastEmail.body).then(()=>{this.textContent='✅ Copied!';setTimeout(()=>this.textContent='📋 Copy Body',1800);});});
+  inner.querySelector('#lsoCopySubjectBtn').addEventListener('click',function(){if(!lastEmail)return;navigator.clipboard.writeText(lastEmail.subject).then(()=>{this.textContent='✅ Copied!';setTimeout(()=>this.textContent='📋 Copy Subject',1800);});});
+  inner.querySelector('#copyAllBtn').addEventListener('click',function(){const btn=this;const text=[1,2,3,4,5,6].map(p=>{const ent=slots[p];if(!ent||ent.length===0)return`P${p} - \t\t`;return ent.map(({d1,d2,d3})=>`P${p} - ${d1}\t${d2}\t${d3}`).join('\n');}).join('\n');navigator.clipboard.writeText(text).then(()=>flash(btn)).catch(()=>{const ta=Object.assign(document.createElement('textarea'),{value:text,style:'position:fixed;opacity:0'});document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);flash(btn);});});
+  inner.addEventListener('click',e=>{const cell=e.target.closest('.cell-data:not(.empty)');if(!cell)return;const text=cell.dataset.copy;if(!text)return;navigator.clipboard.writeText(text).then(()=>{cell.classList.add('flash-copy');setTimeout(()=>cell.classList.remove('flash-copy'),1200);}).catch(()=>{});});
 
-    document.getElementById('lsoSubject').textContent = lastEmail.subject;
-    document.getElementById('lsoCCVal').textContent = lastEmail.cc;
-    document.getElementById('lsoBodyPreview').textContent = lastEmail.body;
-
-    const chipsEl = document.getElementById('lsoTeacherChips');
-    if (lastEmail.teacherEntries.length === 0) {
-      chipsEl.innerHTML = '<span style="color:var(--muted);font-size:0.8rem;font-style:italic;">No teachers found in timetable data</span>';
-    } else {
-      chipsEl.innerHTML = lastEmail.teacherEntries.map(([code, {prefix, isOverride}], i) =>
-        `<div class="teacher-chip">
-          ${escapeHTML(code)}<span class="arrow">→</span>
-          <span class="email-part">${escapeHTML(lastEmail.teacherEmails[i])}</span>
-          ${isOverride ? '<span class="override-badge">override</span>' : ''}
-        </div>`
-      ).join('');
-    }
-  }
-
-  // Save name button — persists this person's LSO name
-  inner.querySelector('#lsoSaveNameBtn').addEventListener('click', function() {
-    const lsoNames = getLSONames();
-    const val = document.getElementById('lsoName').value.trim();
-    if (val) lsoNames[key] = val;
-    else delete lsoNames[key];
-    saveLSONames(lsoNames);
-    // Update tile
-    const hint = document.getElementById('lsoNameHint');
-    hint.textContent = `✓ saved for ${name}`;
-    hint.style.color = '#22a85a';
-    setTimeout(() => { hint.textContent = `saved for ${name}`; hint.style.color = ''; }, 2000);
-    renderTiles(currentGroupMap, currentNames);
-  });
-
-  inner.querySelector('#emailLSOToggle').addEventListener('click', function() {
-    const panel = document.getElementById('lsoPanel');
-    const isVisible = panel.classList.toggle('visible');
-    this.textContent = isVisible ? '✕ Close' : '✉ Email LSO';
-    if (isVisible) { refreshEmail(); panel.scrollIntoView({behavior:'smooth',block:'nearest'}); }
-  });
-
-  ['lsoName','lsoDomain','lsoCC'].forEach(id => {
-    inner.querySelector('#'+id).addEventListener('input', refreshEmail);
-  });
-
-  inner.querySelector('#lsoOpenBtn').addEventListener('click', () => {
-    if (!lastEmail) return;
-    const { subject, body, teacherEmails, cc } = lastEmail;
-    const mailto = `mailto:${teacherEmails.join(';')}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailto;
-  });
-
-  inner.querySelector('#lsoCopyLinkBtn').addEventListener('click', function() {
-    if (!lastEmail) return;
-    const { subject, body, teacherEmails, cc } = lastEmail;
-    const mailto = `mailto:${teacherEmails.join(';')}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    navigator.clipboard.writeText(mailto).then(() => {
-      this.textContent = '✅ Copied!';
-      setTimeout(() => this.textContent = '🔗 Copy Outlook Link', 1800);
-    });
-  });
-
-  inner.querySelector('#lsoCopyBodyBtn').addEventListener('click', function() {
-    if (!lastEmail) return;
-    navigator.clipboard.writeText(lastEmail.body).then(() => {
-      this.textContent = '✅ Copied!';
-      setTimeout(() => this.textContent = '📋 Copy Body', 1800);
-    });
-  });
-
-  inner.querySelector('#lsoCopySubjectBtn').addEventListener('click', function() {
-    if (!lastEmail) return;
-    navigator.clipboard.writeText(lastEmail.subject).then(() => {
-      this.textContent = '✅ Copied!';
-      setTimeout(() => this.textContent = '📋 Copy Subject', 1800);
-    });
-  });
-
-  inner.querySelector('#copyAllBtn').addEventListener('click', function() {
-    const btn = this;
-    const text = [1,2,3,4,5,6].map(p=>{
-      const ent=slots[p];
-      if(!ent||ent.length===0)return`P${p} - \t\t`;
-      return ent.map(({d1,d2,d3})=>`P${p} - ${d1}\t${d2}\t${d3}`).join('\n');
-    }).join('\n');
-    navigator.clipboard.writeText(text).then(()=>flash(btn)).catch(()=>{
-      const ta=Object.assign(document.createElement('textarea'),{value:text,style:'position:fixed;opacity:0'});
-      document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);flash(btn);
-    });
-  });
-
-  inner.addEventListener('click', e => {
-    const cell = e.target.closest('.cell-data:not(.empty)'); if (!cell) return;
-    const text = cell.dataset.copy; if (!text) return;
-    navigator.clipboard.writeText(text).then(() => {
-      cell.classList.add('flash-copy');
-      setTimeout(()=>cell.classList.remove('flash-copy'),1200);
-    }).catch(()=>{});
-  });
-
-  // Inject today's changes panel for this LSO at the top of the detail view
+  // Inject today's changes
   injectDcIntoDetail(name);
 }
 
 function flash(btn){const orig=btn.textContent;btn.textContent='✓ Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copied');},2000);}
 
-// ── Top-level view tabs (Timetable / Map) ──────────────────────────────────
-let mainView = 'timetable'; // 'timetable' | 'map'
-
-document.getElementById('tabTimetable').addEventListener('click', () => switchMainView('timetable'));
-let mapLayoutLoaded = false;
-document.getElementById('tabMap').addEventListener('click', () => {
+// ── Top-level view tabs ────────────────────────────────────────────────────
+let mainView='timetable';
+document.getElementById('tabTimetable').addEventListener('click',()=>switchMainView('timetable'));
+let mapLayoutLoaded=false;
+document.getElementById('tabMap').addEventListener('click',()=>{
   switchMainView('map');
-  if (!mapLayoutLoaded) {
-    mapLayoutLoaded = true;
-    loadMapLayoutFromServer();
-  } else {
-    requestAnimationFrame(() => renderMapView());
-  }
+  if(!mapLayoutLoaded){mapLayoutLoaded=true;loadMapLayoutFromServer();}
+  else{requestAnimationFrame(()=>renderMapView());}
 });
+window.addEventListener('resize',()=>{if(mainView==='map')renderMapView();});
+function switchMainView(view){mainView=view;document.getElementById('tabTimetable').classList.toggle('active',view==='timetable');document.getElementById('tabMap').classList.toggle('active',view==='map');document.getElementById('mapView').classList.toggle('visible',view==='map');const onTimetable=view==='timetable';document.getElementById('viewToggleBtn').style.display=onTimetable?'':'none';if(view==='map'){['loadingState','emptyState','noServerState','tileView','detailView','serverSetup'].forEach(id=>{const el=document.getElementById(id);if(el){el.classList.remove('visible');el.style.display='none';}});document.getElementById('periodStrip').classList.remove('visible');}else{if(currentGroupMap){showScreen(activeDetailKey&&currentGroupMap.has(activeDetailKey)?'detailView':'tileView');}else{showScreen('loadingState');loadTimetable();}}}
 
-window.addEventListener('resize', () => {
-  if (mainView === 'map') renderMapView();
-});
+// ── Map ────────────────────────────────────────────────────────────────────
+let mapRooms=loadMapRooms();let mapTab='now';const mapEditMode=false;
+function loadMapRooms(){try{return JSON.parse(localStorage.getItem('tt-map-rooms')||'[]');}catch(e){return[];}}
+function saveMapRooms(){localStorage.setItem('tt-map-rooms',JSON.stringify(mapRooms));}
+function mapUid(){return Math.random().toString(36).slice(2,9);}
+document.querySelectorAll('[data-maptab]').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('[data-maptab]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');mapTab=btn.dataset.maptab;renderMapView();});});
 
-function switchMainView(view) {
-  mainView = view;
-  document.getElementById('tabTimetable').classList.toggle('active', view === 'timetable');
-  document.getElementById('tabMap').classList.toggle('active', view === 'map');
-  document.getElementById('mapView').classList.toggle('visible', view === 'map');
-  // Hide timetable-specific panels when on map
-  const onTimetable = view === 'timetable';
-  document.getElementById('viewToggleBtn').style.display = onTimetable ? '' : 'none';
-  if (view === 'map') {
-    // Hide all timetable screens
-    ['loadingState','emptyState','noServerState','tileView','detailView','serverSetup'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) { el.classList.remove('visible'); el.style.display = 'none'; }
-    });
-    document.getElementById('periodStrip').classList.remove('visible');
-  } else {
-    // Restore timetable — re-run showScreen for current state
-    if (currentGroupMap) {
-      showScreen(activeDetailKey && currentGroupMap.has(activeDetailKey) ? 'detailView' : 'tileView');
-    } else {
-      showScreen('loadingState');
-      loadTimetable();
-    }
-  }
-}
+async function loadMapLayoutFromServer(){const serverUrl=(localStorage.getItem('tt-server')||'https://timetable-server-r6nb.onrender.com').replace(/\/$/,'');try{const res=await fetch(`${serverUrl}/map-layout`);if(!res.ok)return;const data=await res.json();if(data.rooms&&Array.isArray(data.rooms)){mapRooms=data.rooms;saveMapRooms();}if(data.groups&&typeof data.groups==='object'){mapGroups={...data.groups,__v:MAP_LAYOUT_VERSION};saveMapGroups();}renderMapSidebar();renderMapView();}catch(e){renderMapView();}}
 
-// ── Map state ──────────────────────────────────────────────────────────────
-let mapRooms    = loadMapRooms();
-let mapTab      = 'now'; // 'now' | 'next'
-const mapEditMode = false; // editing is admin-only
-
-function loadMapRooms() {
-  try { return JSON.parse(localStorage.getItem('tt-map-rooms') || '[]'); }
-  catch(e) { return []; }
-}
-function saveMapRooms() { localStorage.setItem('tt-map-rooms', JSON.stringify(mapRooms)); }
-function mapUid() { return Math.random().toString(36).slice(2,9); }
-
-// Map period tabs
-document.querySelectorAll('[data-maptab]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('[data-maptab]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    mapTab = btn.dataset.maptab;
-    renderMapView();
-  });
-});
-
-// Load layout from server on map open, fall back to localStorage
-async function loadMapLayoutFromServer() {
-  const serverUrl = (localStorage.getItem('tt-server') || 'https://timetable-server-r6nb.onrender.com').replace(/\/$/, '');
-  try {
-    const res = await fetch(`${serverUrl}/map-layout`);
-    if (!res.ok) return; // No saved layout yet, keep localStorage
-    const data = await res.json();
-    if (data.rooms && Array.isArray(data.rooms)) {
-      mapRooms = data.rooms;
-      saveMapRooms();
-    }
-    if (data.groups && typeof data.groups === 'object') {
-      mapGroups = { ...data.groups, __v: MAP_LAYOUT_VERSION };
-      saveMapGroups();
-    }
-    renderMapSidebar();
-    renderMapView();
-  } catch(e) {
-    renderMapView();
-  }
-}
-
-// Add/remove rooms is admin-only — no listeners needed in viewer
-// Positions use % of canvas — stored as {xp, yp} and converted at render time
-// Col positions: L1=1.5%, L2=18%, MID=35%, R1=62%, R2=79%
-// Row positions: TOP=3%, MID=36%, BOT=69%
-const MAP_PREFIX_POSITIONS = {
-  TC: { x:  12, y:  18 },  // Top left col1
-  CL: { x: 244, y:  18 },  // Top left col2
-  HC: { x: 420, y:  18 },  // Top mid
-  BE: { x: 760, y:  18 },  // Top right
-  PA: { x:  12, y: 210 },  // Mid left col1
-  BR: { x: 244, y: 210 },  // Mid left col2
-  MC: { x: 420, y: 210 },  // Mid mid
-  DO: { x: 760, y: 210 },  // Mid right
-  FW: { x: 244, y: 400 },  // Bot (under BR)
-  TF: { x: 420, y: 400 },  // Bot mid
-  TA: { x: 760, y: 400 },  // Bot right col1
-  GL: { x: 840, y: 210 },  // Right of DO (stacked, pulled in)
-};
-
-function getRoomPrefix(code) {
-  return code.length >= 2 ? code.slice(0, 2).toUpperCase() : code.toUpperCase();
-}
-
-const MAP_LAYOUT_VERSION = 3; // bump to reset saved positions
-
-// mapGroups: { prefix: { xp, yp } } — percentage positions of group zones
-let mapGroups = loadMapGroups();
-function loadMapGroups() {
-  try {
-    const saved = JSON.parse(localStorage.getItem('tt-map-groups') || 'null');
-    if (!saved || saved.__v !== MAP_LAYOUT_VERSION) return { __v: MAP_LAYOUT_VERSION };
-    return saved;
-  } catch(e) { return { __v: MAP_LAYOUT_VERSION }; }
-}
-function saveMapGroups() { mapGroups.__v = MAP_LAYOUT_VERSION; localStorage.setItem('tt-map-groups', JSON.stringify(mapGroups)); }
-
-// Ensure every prefix from current rooms has a group position
-function seedMapGroups() {
-  let changed = false;
-  const usedPrefixes = [...new Set(mapRooms.map(r => getRoomPrefix(r.code)))];
-  usedPrefixes.forEach(prefix => {
-    if (!mapGroups[prefix]) {
-      const known = MAP_PREFIX_POSITIONS[prefix];
-      const count = Object.keys(mapGroups).length;
-      const px = known || { x: 20 + (count % 5) * 190, y: 20 + Math.floor(count / 5) * 190 };
-      mapGroups[prefix] = { xp: +(px.x / 1080 * 100).toFixed(2), yp: +(px.y / 600 * 100).toFixed(2) };
-      changed = true;
-    }
-  });
-  if (changed) saveMapGroups();
-}
+const MAP_PREFIX_POSITIONS={TC:{x:12,y:18},CL:{x:244,y:18},HC:{x:420,y:18},BE:{x:760,y:18},PA:{x:12,y:210},BR:{x:244,y:210},MC:{x:420,y:210},DO:{x:760,y:210},FW:{x:244,y:400},TF:{x:420,y:400},TA:{x:760,y:400},GL:{x:840,y:210}};
+function getRoomPrefix(code){return code.length>=2?code.slice(0,2).toUpperCase():code.toUpperCase();}
+const MAP_LAYOUT_VERSION=3;
+let mapGroups=loadMapGroups();
+function loadMapGroups(){try{const saved=JSON.parse(localStorage.getItem('tt-map-groups')||'null');if(!saved||saved.__v!==MAP_LAYOUT_VERSION)return{__v:MAP_LAYOUT_VERSION};return saved;}catch(e){return{__v:MAP_LAYOUT_VERSION};}}
+function saveMapGroups(){mapGroups.__v=MAP_LAYOUT_VERSION;localStorage.setItem('tt-map-groups',JSON.stringify(mapGroups));}
+function seedMapGroups(){let changed=false;const usedPrefixes=[...new Set(mapRooms.map(r=>getRoomPrefix(r.code)))];usedPrefixes.forEach(prefix=>{if(!mapGroups[prefix]){const known=MAP_PREFIX_POSITIONS[prefix];const count=Object.keys(mapGroups).length;const px=known||{x:20+(count%5)*190,y:20+Math.floor(count/5)*190};mapGroups[prefix]={xp:+(px.x/1080*100).toFixed(2),yp:+(px.y/600*100).toFixed(2)};changed=true;}});if(changed)saveMapGroups();}
 seedMapGroups();
+function mapAddRoom(code){if(mapRooms.find(r=>r.code===code))return;mapRooms.push({id:mapUid(),code});seedMapGroups();saveMapRooms();renderMapSidebar();renderMapView();}
+function mapRemoveRoom(id){mapRooms=mapRooms.filter(r=>r.id!==id);const usedPrefixes=new Set(mapRooms.map(r=>getRoomPrefix(r.code)));Object.keys(mapGroups).forEach(p=>{if(!usedPrefixes.has(p))delete mapGroups[p];});saveMapRooms();saveMapGroups();renderMapSidebar();renderMapView();}
+function renderMapSidebar(){}
 
-function mapAddRoom(code) {
-  if (mapRooms.find(r => r.code === code)) return;
-  mapRooms.push({ id: mapUid(), code });
-  seedMapGroups();
-  saveMapRooms(); renderMapSidebar(); renderMapView();
+// Check if a person is absent for a given period key (e.g. "p1")
+function isPersonAbsentForPeriod(name, pKey) {
+  if (!currentDailyChanges) return false;
+  const lookup = getDcLookup();
+  const entry = lookup[(name||'').toLowerCase()];
+  if (!entry) return false;
+  if (entry.absentPeriods === 'all') return true;
+  if (Array.isArray(entry.absentPeriods) && pKey && entry.absentPeriods.includes(pKey)) return true;
+  return false;
 }
 
-function mapRemoveRoom(id) {
-  mapRooms = mapRooms.filter(r => r.id !== id);
-  // Remove group if no rooms left in it
-  const usedPrefixes = new Set(mapRooms.map(r => getRoomPrefix(r.code)));
-  Object.keys(mapGroups).forEach(p => { if (!usedPrefixes.has(p)) delete mapGroups[p]; });
-  saveMapRooms(); saveMapGroups(); renderMapSidebar(); renderMapView();
+// Get the effective room for a person this period (DC override takes priority)
+function getEffectiveRoom(name, originalRoom, pKey) {
+  if (!currentDailyChanges || !pKey) return { room: originalRoom, changed: false, change: null };
+  const lookup = getDcLookup();
+  const entry = lookup[(name||'').toLowerCase()];
+  if (!entry) return { room: originalRoom, changed: false, change: null };
+  const ch = (entry.changes||[]).find(c => c.period === pKey && c.room);
+  if (ch) return { room: ch.room.toUpperCase(), changed: true, change: ch };
+  return { room: originalRoom, changed: false, change: null };
 }
 
-// Auto-import
-// Sidebar rendering is admin-only in viewer
-function renderMapSidebar() { /* no-op in viewer */ }
-
-// ── Get placements for current map tab ────────────────────────────────────
+// Build placements map: room → [{name, color, fg, changed, change}]
+// Skips absent people. Redirects people with DC room changes to new room.
 function getMapPlacements(slot) {
   const map = new Map();
   if (!currentGroupMap || !slot || !slot.period) return map;
   const p = slot.period;
+  const pKey = 'p' + p;
+
   currentGroupMap.forEach((grp, key) => {
     const name = currentNames[key] || key;
+    // Skip if absent this period
+    if (isPersonAbsentForPeriod(name, pKey)) return;
+
     const slots = grp.slots[p];
     if (!slots || !slots.length) return;
-    const room = (slots[0].d2 || '').toUpperCase().trim();
-    if (!room) return;
+    const originalRoom = (slots[0].d2 || '').toUpperCase().trim();
+
+    // Get effective room (may be overridden by DC change)
+    const { room, changed, change } = getEffectiveRoom(name, originalRoom, pKey);
+    if (!room) return; // no room = goes to no-room panel, not here
+
     if (!map.has(room)) map.set(room, []);
-    map.get(room).push({ name, color: grp.bg, fg: grp.fg || null });
+    map.get(room).push({ name, color: grp.bg, fg: grp.fg || null, changed, change, originalRoom });
   });
   return map;
 }
 
-// ── Render map ─────────────────────────────────────────────────────────────
+// Collect people who have a timetable entry this period but NO room assigned
+// (also people whose DC entry has no room — e.g. "MacqLit", "LEC", "RCP")
+function getMapNoRoomPeople(slot) {
+  const list = [];
+  if (!currentGroupMap || !slot || !slot.period) return list;
+  const p = slot.period;
+  const pKey = 'p' + p;
+
+  currentGroupMap.forEach((grp, key) => {
+    const name = currentNames[key] || key;
+    if (isPersonAbsentForPeriod(name, pKey)) return; // absent → not shown anywhere
+
+    const slots = grp.slots[p];
+    if (!slots || !slots.length) return; // not timetabled this period
+
+    const originalRoom = (slots[0].d2 || '').toUpperCase().trim();
+    const { room, changed, change } = getEffectiveRoom(name, originalRoom, pKey);
+
+    if (!room) {
+      // Has a period but no room — show in no-room panel
+      list.push({ name, color: grp.bg, fg: grp.fg || null, changed, change,
+        label: change ? (change.description || 'No room') : (slots[0].d1 || 'No room') });
+    }
+  });
+  return list;
+}
+
 function renderMapView() {
   if (mainView !== 'map') return;
   const { cur, nxt } = getMapCurrentAndNext();
+  const slot = mapTab === 'now' ? cur : nxt;
+  const pKey = slot && slot.period ? 'p' + slot.period : null;
 
-  // Update badges
+  // Count for badges (exclude absent)
   let nc = 0, nx = 0;
   getMapPlacements(cur).forEach(a => nc += a.length);
   getMapPlacements(nxt).forEach(a => nx += a.length);
   document.getElementById('mapNowBadge').textContent = nc;
   document.getElementById('mapNextBadge').textContent = nx;
 
-  const slot = mapTab === 'now' ? cur : nxt;
   const placements = getMapPlacements(slot);
+  const noRoomPeople = getMapNoRoomPeople(slot);
 
   const canvas = document.getElementById('mapCanvas');
-  canvas.querySelectorAll('.map-group').forEach(el => el.remove());
-
-  // Empty state
+  canvas.querySelectorAll('.map-group, .map-noroom-panel').forEach(el => el.remove());
   document.getElementById('mapEmpty').style.display = mapRooms.length ? 'none' : '';
 
-  // Group rooms by prefix
   const groups = {};
   mapRooms.forEach(room => {
     const prefix = getRoomPrefix(room.code);
@@ -1513,16 +871,10 @@ function renderMapView() {
     groups[prefix].push(room);
   });
 
-  // Always use fixed reference dimensions — groups are positioned as % of these
   const CANVAS_REF_W = 1100, CANVAS_REF_H = 660;
-  const canvasW = CANVAS_REF_W;
-  const canvasH = CANVAS_REF_H;
-
   const placedCodes = new Set(mapRooms.map(r => r.code.toUpperCase()));
 
-  // Render each group as a zone
-  Object.entries(groups).sort((a,b) => a[0].localeCompare(b[0])).forEach(([prefix, rooms]) => {
-    // Use saved position (as %), then known px→% from MAP_PREFIX_POSITIONS, then auto-stack
+  Object.entries(groups).sort((a, b) => a[0].localeCompare(b[0])).forEach(([prefix, rooms]) => {
     if (!mapGroups[prefix]) {
       const known = MAP_PREFIX_POSITIONS[prefix];
       const count = Object.keys(mapGroups).filter(k => k !== '__v').length;
@@ -1535,7 +887,7 @@ function renderMapView() {
     const top  = pos.yp !== undefined ? (pos.yp / 100 * CANVAS_REF_H) : (pos.y || 0);
 
     const groupEl = document.createElement('div');
-    groupEl.className = 'map-group' + (mapEditMode ? ' edit-mode' : '');
+    groupEl.className = 'map-group';
     groupEl.style.left = left + 'px';
     groupEl.style.top  = top  + 'px';
 
@@ -1547,43 +899,35 @@ function renderMapView() {
     const roomsEl = document.createElement('div');
     roomsEl.className = 'map-group-rooms';
 
-    rooms.sort((a,b) => a.code.localeCompare(b.code)).forEach(room => {
+    rooms.sort((a, b) => a.code.localeCompare(b.code)).forEach(room => {
       const students = placements.get(room.code.toUpperCase()) || [];
       const roomEl = document.createElement('div');
       roomEl.className = 'map-room' + (students.length ? ' occupied' : '');
 
-      const codeRow = document.createElement('div'); codeRow.className = 'map-room-code';
+      const codeRow = document.createElement('div');
+      codeRow.className = 'map-room-code';
       codeRow.appendChild(document.createTextNode(room.code));
-      if (mapEditMode) {
-        const del = document.createElement('button'); del.className = 'map-room-del'; del.textContent = '✕';
-        del.addEventListener('click', e => { e.stopPropagation(); mapRemoveRoom(room.id); });
-        codeRow.appendChild(del);
-      }
       roomEl.appendChild(codeRow);
 
       if (students.length) {
-        const stuDiv = document.createElement('div'); stuDiv.className = 'map-students';
+        const stuDiv = document.createElement('div');
+        stuDiv.className = 'map-students';
         students.forEach(s => {
-          const b = document.createElement('span'); b.className = 'map-badge';
-          b.style.background = s.color; if (s.fg) b.style.color = s.fg;
+          const b = document.createElement('span');
+          b.className = 'map-badge';
+          b.style.background = s.color;
+          if (s.fg) b.style.color = s.fg;
           b.textContent = s.name;
-          if (currentDailyChanges) {
-            const dcLookup = getDcLookup();
-            const match = dcLookup[s.name.toLowerCase()];
-            const isAbsent = new Set((currentDailyChanges.absent||[]).map(n=>n.toLowerCase())).has(s.name.toLowerCase());
-            if (isAbsent) {
-              const tag = document.createElement('span'); tag.className = 'map-dc-tag';
-              tag.style.cssText = 'background:#fef3c7;color:#92400e;border:1px solid #fcd34d;';
-              tag.textContent = 'ABSENT'; b.appendChild(tag);
-            } else if (match) {
-              const p = mapTab === 'now' ? (cur && cur.period ? 'p'+cur.period : null) : (nxt && nxt.period ? 'p'+nxt.period : null);
-              const change = p && match.periods[p];
-              if (change) {
-                const tag = document.createElement('span'); tag.className = 'map-dc-tag';
-                tag.style.cssText = 'background:#dbeafe;color:#1e40af;border:1px solid #93c5fd;display:block;margin-top:2px;';
-                tag.textContent = '📌 ' + change; b.appendChild(tag);
-              }
-            }
+          // Show DC change tag if room was redirected
+          if (s.changed && s.change) {
+            const tag = document.createElement('span');
+            tag.className = 'map-dc-tag';
+            tag.style.cssText = 'background:#dbeafe;color:#1e40af;border:1px solid #93c5fd;display:block;margin-top:2px;';
+            const parts = [];
+            if (s.originalRoom && s.originalRoom !== s.change.room) parts.push(s.originalRoom + '→' + s.change.room);
+            if (s.change.teacherCode) parts.push(s.change.teacherCode);
+            tag.textContent = '📌 ' + (parts.join(' · ') || s.change.description || 'changed');
+            b.appendChild(tag);
           }
           stuDiv.appendChild(b);
         });
@@ -1597,87 +941,84 @@ function renderMapView() {
     canvas.appendChild(groupEl);
   });
 
-  // Unplaced
+  // ── No-Room panel (top-right of canvas) ───────────────────────────────────
+  canvas.querySelectorAll('.map-noroom-panel').forEach(el => el.remove());
+  if (noRoomPeople.length > 0) {
+    const panel = document.createElement('div');
+    panel.className = 'map-noroom-panel';
+    panel.style.cssText = `
+      position:absolute; top:8px; right:8px; z-index:20;
+      background:var(--surface); border:1.5px solid var(--border);
+      border-radius:10px; min-width:160px; max-width:220px;
+      box-shadow:0 2px 12px rgba(0,0,0,.12);
+    `;
+
+    const panelLabel = document.createElement('div');
+    panelLabel.style.cssText = `
+      font-family:'DM Mono',monospace; font-size:0.55rem; font-weight:700;
+      color:var(--muted); text-transform:uppercase; letter-spacing:.07em;
+      padding:5px 8px 4px; border-bottom:1px solid var(--border);
+      background:var(--soft); border-radius:8px 8px 0 0;
+    `;
+    panelLabel.textContent = '🏫 No room assigned';
+    panel.appendChild(panelLabel);
+
+    const list = document.createElement('div');
+    list.style.cssText = 'padding:5px 6px; display:flex; flex-direction:column; gap:3px;';
+
+    noRoomPeople.forEach(s => {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex; flex-direction:column; gap:2px;';
+
+      const badge = document.createElement('span');
+      badge.className = 'map-badge';
+      badge.style.cssText = `background:${s.color}; ${s.fg ? 'color:'+s.fg+';' : ''} display:block; border-radius:4px; padding:2px 7px; font-size:0.65rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;`;
+      badge.textContent = s.name;
+
+      const desc = document.createElement('span');
+      desc.style.cssText = `font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--muted); padding-left:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;`;
+      desc.textContent = s.label;
+
+      row.appendChild(badge);
+      row.appendChild(desc);
+      list.appendChild(row);
+    });
+
+    panel.appendChild(list);
+    canvas.appendChild(panel);
+  }
+
+  // ── Unplaced rooms (in footer) ─────────────────────────────────────────────
   const unplacedEl = document.getElementById('mapUnplaced');
   const unplacedLabel = document.getElementById('mapUnplacedLabel');
   unplacedEl.innerHTML = '';
   const unplaced = [];
-  placements.forEach((students, code) => { if (!placedCodes.has(code)) students.forEach(s => unplaced.push({...s, code})); });
+  placements.forEach((students, code) => {
+    if (!placedCodes.has(code)) students.forEach(s => unplaced.push({ ...s, code }));
+  });
   if (unplaced.length) {
     unplacedLabel.style.display = '';
     unplaced.forEach(s => {
-      const b = document.createElement('span'); b.className = 'map-badge';
+      const b = document.createElement('span');
+      b.className = 'map-badge';
       b.style.cssText = 'background:' + s.color + ';' + (s.fg ? 'color:' + s.fg + ';' : '') + 'cursor:default;';
-      b.title = 'Room ' + s.code + ' not on map — add it in Edit Rooms';
+      b.title = 'Room ' + s.code + ' not on map';
       b.textContent = s.name + ' (' + s.code + ')';
       unplacedEl.appendChild(b);
     });
-  } else { unplacedLabel.style.display = 'none'; }
+  } else {
+    unplacedLabel.style.display = 'none';
+  }
 
   document.getElementById('mapStatus').textContent =
     slot ? ('Showing ' + slot.label + (slot.start ? ' · ' + slot.start + '–' + slot.end : '')) : 'No period active';
 }
 
-function getMapCurrentAndNext() {
-  const nm = nowMinutes();
-  let cur = null, nxt = null;
-  for (const s of SCHOOL_SCHEDULE) {
-    const a = timeToMinutes(s.start), b = timeToMinutes(s.end);
-    if (nm >= a && nm < b) cur = s;
-    else if (nm < a && !nxt) nxt = s;
-  }
-  return { cur, nxt };
-}
+function getMapCurrentAndNext(){const nm=nowMinutes();let cur=null,nxt=null;for(const s of SCHOOL_SCHEDULE){const a=timeToMinutes(s.start),b=timeToMinutes(s.end);if(nm>=a&&nm<b)cur=s;else if(nm<a&&!nxt)nxt=s;}return{cur,nxt};}
 
-function makeGroupDraggable(groupEl, prefix, pos) {
-  const label = groupEl.querySelector('.map-group-label');
-  let sx, sy, oleft, otop;
-  const REF_W = 1100, REF_H = 660;
+function makeGroupDraggable(groupEl,prefix,pos){const label=groupEl.querySelector('.map-group-label');let sx,sy,oleft,otop;const REF_W=1100,REF_H=660;function getPx(){return{left:pos.xp!==undefined?pos.xp/100*REF_W:(pos.x||0),top:pos.yp!==undefined?pos.yp/100*REF_H:(pos.y||0)};}function savePct(left,top){pos.xp=+(left/REF_W*100).toFixed(2);pos.yp=+(top/REF_H*100).toFixed(2);delete pos.x;delete pos.y;mapGroups[prefix]=pos;}function startDrag(clientX,clientY){const p=getPx();sx=clientX;sy=clientY;oleft=p.left;otop=p.top;groupEl.style.zIndex=10;}function doDrag(clientX,clientY){const newLeft=Math.max(0,oleft+clientX-sx);const newTop=Math.max(0,otop+clientY-sy);groupEl.style.left=newLeft+'px';groupEl.style.top=newTop+'px';savePct(newLeft,newTop);}function endDrag(){groupEl.style.zIndex='';saveMapGroups();}label.addEventListener('mousedown',e=>{e.preventDefault();startDrag(e.clientX,e.clientY);function move(e2){doDrag(e2.clientX,e2.clientY);}function up(){endDrag();document.removeEventListener('mousemove',move);document.removeEventListener('mouseup',up);}document.addEventListener('mousemove',move);document.addEventListener('mouseup',up);});label.addEventListener('touchstart',e=>{const t=e.touches[0];startDrag(t.clientX,t.clientY);function move(e2){const t2=e2.touches[0];doDrag(t2.clientX,t2.clientY);}function up(){endDrag();document.removeEventListener('touchmove',move);document.removeEventListener('touchend',up);}document.addEventListener('touchmove',move,{passive:true});document.addEventListener('touchend',up);},{passive:true});}
 
-  function getPx() {
-    return {
-      left: pos.xp !== undefined ? pos.xp / 100 * REF_W : (pos.x || 0),
-      top:  pos.yp !== undefined ? pos.yp / 100 * REF_H : (pos.y || 0)
-    };
-  }
-  function savePct(left, top) {
-    pos.xp = +(left / REF_W * 100).toFixed(2);
-    pos.yp = +(top  / REF_H * 100).toFixed(2);
-    delete pos.x; delete pos.y;
-    mapGroups[prefix] = pos;
-  }
-
-  function startDrag(clientX, clientY) {
-    const p = getPx();
-    sx = clientX; sy = clientY; oleft = p.left; otop = p.top;
-    groupEl.style.zIndex = 10;
-  }
-  function doDrag(clientX, clientY) {
-    const newLeft = Math.max(0, oleft + clientX - sx);
-    const newTop  = Math.max(0, otop  + clientY - sy);
-    groupEl.style.left = newLeft + 'px';
-    groupEl.style.top  = newTop  + 'px';
-    savePct(newLeft, newTop);
-  }
-  function endDrag() { groupEl.style.zIndex = ''; saveMapGroups(); }
-
-  label.addEventListener('mousedown', e => {
-    e.preventDefault(); startDrag(e.clientX, e.clientY);
-    function move(e2) { doDrag(e2.clientX, e2.clientY); }
-    function up() { endDrag(); document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); }
-    document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
-  });
-  label.addEventListener('touchstart', e => {
-    const t = e.touches[0]; startDrag(t.clientX, t.clientY);
-    function move(e2) { const t2 = e2.touches[0]; doDrag(t2.clientX, t2.clientY); }
-    function up() { endDrag(); document.removeEventListener('touchmove', move); document.removeEventListener('touchend', up); }
-    document.addEventListener('touchmove', move, { passive: true }); document.addEventListener('touchend', up);
-  }, { passive: true });
-}
-
-// Init map sidebar
 renderMapSidebar();
-
 loadTimetable();
 </script>
 </body>
