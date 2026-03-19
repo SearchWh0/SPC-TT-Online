@@ -1712,7 +1712,7 @@ dcReadBtn.addEventListener('click', async () => {
     const text = data.text || '';
 
     try {
-      const clean = text.replace(/```json[\s\S]*?```|```/g, '').trim();
+      const clean = text.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
       dcExtracted = JSON.parse(clean);
       dcExtracted.raw = text;
       renderDcResult(dcExtracted);
