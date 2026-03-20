@@ -1359,16 +1359,13 @@ async function renderUsersPage() {
   tbody.querySelectorAll('.btn-close-user').forEach(btn => {
     btn.addEventListener('click', async () => {
       const user = btn.dataset.user;
-      if (!confirm('Close ' + user + ' for update?\n\nThey will see a "Program Closed for Update" message and exit within 30 seconds.\nThey can then reopen the program themselves.')) return;
+      if (!confirm('Close ' + user + ' for update?\n\nThey will see a "Please Reopen" message and exit within 30 seconds.')) return;
       btn.textContent = '⏳ sending…'; btn.disabled = true;
       try {
-        const res = await api('POST', '/user/kill', { user, killed: true });
+        const res = await api('POST', '/exit/user', { user });
         if (res.ok) {
-          toast(user + ' — exit signal sent, re-enabling in 5 min');
-          setTimeout(async () => {
-            await api('POST', '/user/kill', { user, killed: false });
-            toast(user + ' re-enabled');
-          }, 5 * 60 * 1000);
+          toast(user + ' — exit signal sent');
+          setTimeout(() => { btn.textContent = '⏹ Close'; btn.disabled = false; }, 10000);
         } else throw new Error();
       } catch(e) {
         toast('Failed — check server', 'err');
@@ -1423,24 +1420,24 @@ document.getElementById('closeAllBtn').addEventListener('click', async () => {
   const onlineUsers = knownUsers.filter(u => heartbeatData[u]?.online);
   const msg = 'Close all scripts for update?\n\n'
     + (onlineUsers.length ? 'Online now: ' + onlineUsers.join(', ') + '\n\n' : '')
-    + knownUsers.length + ' user(s) will receive an exit signal and be auto re-enabled in 5 minutes.\n'
-    + 'They will see a "Program Closed for Update" message and exit within 30 seconds.';
+    + knownUsers.length + ' user(s) will receive an exit signal.\n'
+    + 'They will see a "Please Reopen" message and exit within 30 seconds.';
   if (!window.confirm(msg)) return;
 
   btn.textContent = '⏳ Sending…'; btn.disabled = true;
-
-  const results = await Promise.allSettled(
-    knownUsers.map(user => api('POST', '/user/kill', { user, killed: true }))
-  );
-  const sent = results.filter(r => r.status === 'fulfilled' && r.value.ok).length;
-  toast('Exit signal sent to ' + sent + ' user(s) — re-enabling in 5 min');
-  btn.textContent = '✓ Sent (' + sent + ')';
-
-  setTimeout(async () => {
-    await Promise.allSettled(knownUsers.map(user => api('POST', '/user/kill', { user, killed: false })));
-    toast('All users re-enabled — they can reopen the program');
+  try {
+    const res = await api('POST', '/exit/all', {});
+    if (res.ok) {
+      const data  = await res.json();
+      const count = data.flagged?.length ?? knownUsers.length;
+      toast('Exit signal sent to ' + count + ' user(s)');
+      btn.textContent = '✓ Sent (' + count + ')';
+      setTimeout(() => { btn.textContent = '⏹ Close all for update'; btn.disabled = false; }, 10000);
+    } else throw new Error();
+  } catch(e) {
+    toast('Failed to reach server', 'err');
     btn.textContent = '⏹ Close all for update'; btn.disabled = false;
-  }, 5 * 60 * 1000);
+  }
 });
 
 // ── Export CSV ─────────────────────────────────────────────────────────────
