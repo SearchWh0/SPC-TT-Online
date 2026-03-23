@@ -160,11 +160,16 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .btn-close-user{background:none;border:1.5px solid rgba(251,191,36,0.4);color:var(--yellow);font-family:var(--font);font-size:0.75rem;font-weight:700;padding:5px 12px;border-radius:7px;cursor:pointer;transition:all .15s;white-space:nowrap;}
 .btn-close-user:hover{background:rgba(251,191,36,0.1);}
 .btn-close-user:disabled{opacity:0.35;cursor:default;}
+/* ── NEW: restart button ── */
+.btn-restart-user{background:none;border:1.5px solid rgba(96,165,250,0.4);color:var(--blue);font-family:var(--font);font-size:0.75rem;font-weight:700;padding:5px 12px;border-radius:7px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-restart-user:hover{background:rgba(96,165,250,0.12);}
+.btn-restart-user:disabled{opacity:0.35;cursor:default;}
 .version-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-family:var(--mono);font-size:0.62rem;font-weight:700;border:1px solid;}
 .version-badge.current{background:rgba(52,211,153,0.1);border-color:rgba(52,211,153,0.35);color:var(--green);}
 .version-badge.outdated{background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.35);color:var(--yellow);}
 .version-badge.unknown{background:var(--surface2);border-color:var(--border);color:var(--muted);}
 .exit-pending-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--yellow);box-shadow:0 0 6px var(--yellow);margin-left:4px;flex-shrink:0;}
+.restart-pending-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--blue);box-shadow:0 0 6px var(--blue);margin-left:4px;flex-shrink:0;}
 .toolbar-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:24px;}
 .btn-outline{background:none;border:1.5px solid var(--border2);color:var(--muted2);font-family:var(--font);font-size:0.8rem;font-weight:700;padding:8px 16px;border-radius:9px;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
 .btn-outline:hover{border-color:var(--accent);color:var(--accent);}
@@ -229,6 +234,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
         <button class="btn-outline green" id="exportCsvBtn">⬇ Export CSV</button>
         <button class="btn-outline blue" id="weeklySummaryBtn">📋 Weekly summary</button>
         <button class="btn-outline" id="closeAllBtn" style="margin-left:auto">⏹ Close all for update</button>
+        <button class="btn-outline blue" id="restartAllBtn">↺ Restart all</button>
       </div>
 
       <div class="group-filter-bar" id="groupFilterBar">
@@ -327,7 +333,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
       <div class="page-header">
         <div class="page-header-left">
           <div class="page-title" id="usersPageTitle">Users</div>
-          <div class="page-sub" id="usersPageSub">Kill switch &amp; remote close per user</div>
+          <div class="page-sub" id="usersPageSub">Kill switch, remote close &amp; restart per user</div>
         </div>
         <button class="back-btn" id="backToUsers" style="display:none">← All users</button>
       </div>
@@ -349,6 +355,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
                   <th class="sortable" data-col="group">Group</th>
                   <th>Kill switch</th>
                   <th>Close</th>
+                  <th>Restart</th>
                   <th>Stats</th>
                 </tr>
               </thead>
@@ -356,8 +363,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
             </table>
           </div>
           <p style="font-size:0.72rem;color:var(--muted);margin-top:16px;line-height:1.6">
-            <strong style="color:var(--red)">Kill switch</strong> — permanently disables the user's script. They will see an "Access Disabled" message and the script will exit. Re-enable to restore access.<br>
-            <strong style="color:var(--yellow)">Close for update</strong> — sends an exit signal via the kill endpoint. They see a "Program Closed for Update" message and exit within 30 seconds, then can reopen themselves. Auto re-enabled after 5 minutes.
+            <strong style="color:var(--red)">Kill switch</strong> — permanently disables the user's script until re-enabled.<br>
+            <strong style="color:var(--yellow)">Close</strong> — sends an exit signal. They see a "Program Closed" message and exit within 30 seconds.<br>
+            <strong style="color:var(--blue)">Restart</strong> — sends a reload signal. The script closes and immediately reopens, re-fetching all phrases and checking for updates.
           </p>
         </div>
       </div>
@@ -391,12 +399,32 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 
     <!-- ══ CONFIG PAGE ══ -->
     <div class="page" id="configPage">
-      <div class="page-header"><div class="page-header-left"><div class="page-title">Configuration</div><div class="page-sub">Server connection and admin settings</div></div></div>
+      <div class="page-header"><div class="page-header-left"><div class="page-title">Configuration</div><div class="page-sub">Server connection, admin settings, and version control</div></div></div>
       <div class="section-card">
         <div class="section-card-title">Server</div>
         <div class="config-field"><label class="config-label">Server URL</label><div class="row"><input class="input" id="cfgUrl" type="text" placeholder="https://timetable-server-r6nb.onrender.com" /><button class="btn btn-secondary" id="cfgTestBtn">Test</button></div></div>
         <div class="config-field"><label class="config-label">Admin Password</label><div class="row"><input class="input" id="cfgPw" type="password" /><button class="btn btn-primary" id="cfgSaveBtn">Save & Connect</button></div></div>
         <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted);margin-top:8px" id="cfgStatus"></div>
+      </div>
+
+      <!-- ── NEW: Latest Version setter ── -->
+      <div class="section-card">
+        <div class="section-card-title">Script Version Control</div>
+        <p style="font-size:0.82rem;color:var(--muted2);margin-bottom:16px;line-height:1.6">
+          Set the <strong style="color:var(--text)">latest version</strong> string here. When an LSO's AHK script version doesn't match this value, the update banner appears in their panel with a Restart button. After deploying a new <code style="font-family:var(--mono);font-size:0.8em;background:var(--surface2);padding:1px 6px;border-radius:4px">.ahk</code> file, update this to trigger the notification.
+        </p>
+        <div class="config-field">
+          <label class="config-label">Current latest version on server</label>
+          <div style="font-family:var(--mono);font-size:0.9rem;color:var(--green);margin-bottom:12px" id="currentLatestVersion">Loading…</div>
+        </div>
+        <div class="config-field">
+          <label class="config-label">Set new latest version</label>
+          <div class="row">
+            <input class="input" id="newVersionInput" type="text" placeholder="e.g. v3.6" style="max-width:200px" />
+            <button class="btn btn-primary" id="setVersionBtn">Set version</button>
+          </div>
+        </div>
+        <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted);margin-top:8px" id="versionSetStatus"></div>
       </div>
     </div>
 
@@ -438,7 +466,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 <script>
 const RENDER_URL      = 'https://timetable-server-r6nb.onrender.com';
 const UTILITY_KEYS    = new Set(['Ctrl+Alt+E','Ctrl+Alt+T','Ctrl+Alt+P','Ctrl+Alt+F','Ctrl+Alt+W','Ctrl+Alt+S','Ctrl+Alt+M','__heartbeat__']);
-const CURRENT_VERSION = 'v3.0';
+const CURRENT_VERSION = 'v3.5';
 const USER_COLORS     = ['#af5cfa','#60a5fa','#34d399','#fbbf24','#f87171','#a78bfa','#fb923c','#38bdf8'];
 const GROUPS          = ['Cranbourne', 'Clyde', 'Other'];
 
@@ -539,7 +567,6 @@ function buildFilteredStats(allData, range) {
   const byKey  = {};
   const byUser = {};
   const byDay  = {};
-
   events.forEach(e => {
     if (!byKey[e.key]) byKey[e.key] = { label: allData.byKey[e.key]?.label || e.key, total: 0, byUser: {} };
     byKey[e.key].total++;
@@ -549,7 +576,6 @@ function buildFilteredStats(allData, range) {
     const d = localDateStr(new Date(e.ts));
     byDay[d] = (byDay[d] || 0) + 1;
   });
-
   return { byKey, byUser, byDay, recentEvents: events };
 }
 
@@ -564,14 +590,6 @@ function sumUserDayRange(byUserDay, user, range) {
     if (day >= from && day <= to) { phrases += v.phrases || 0; utility += v.utility || 0; }
   }
   return { phrases, utility };
-}
-
-function sumAllUsersDayRange(byUserDay, range) {
-  let total = 0;
-  for (const user of Object.keys(byUserDay || {})) {
-    total += sumUserDayRange(byUserDay, user, range).phrases;
-  }
-  return total;
 }
 
 async function tryConnect(url, pw) {
@@ -617,6 +635,7 @@ async function bootApp() {
   document.getElementById('cfgPw').value  = adminPw;
   setStatus(true);
   await Promise.all([loadStats(), loadHeartbeats(), loadPhrases(), loadUsers(), loadFirstSeen()]);
+  loadLatestVersion();
 }
 
 function setStatus(ok) {
@@ -633,6 +652,7 @@ document.querySelectorAll('.nav-item').forEach(item => {
     if (item.dataset.page === 'configPage') {
       document.getElementById('cfgUrl').value = serverUrl || localStorage.getItem('obs-server') || '';
       document.getElementById('cfgPw').value  = adminPw  || localStorage.getItem('obs-pw')     || '';
+      loadLatestVersion();
     }
     if (item.dataset.page === 'usersPage') renderUsersPage();
   });
@@ -729,6 +749,47 @@ async function loadHeartbeats() {
     if (res.ok) { heartbeatData = await res.json(); renderOnline(); }
   } catch(e) {}
 }
+
+// ── Latest version ─────────────────────────────────────────────────────────
+async function loadLatestVersion() {
+  try {
+    const res = await api('GET', '/version/latest');
+    if (res.ok) {
+      const data = await res.json();
+      const el = document.getElementById('currentLatestVersion');
+      if (el) el.textContent = data.version || '—';
+    }
+  } catch(e) {}
+}
+
+document.getElementById('setVersionBtn').addEventListener('click', async () => {
+  const val = document.getElementById('newVersionInput').value.trim();
+  if (!val) { toast('Enter a version string', 'err'); return; }
+  const btn = document.getElementById('setVersionBtn');
+  const statusEl = document.getElementById('versionSetStatus');
+  btn.disabled = true; btn.textContent = 'Setting…';
+  try {
+    const res = await api('POST', '/version/latest', { version: val });
+    if (res.ok) {
+      toast('Latest version set to ' + val);
+      document.getElementById('currentLatestVersion').textContent = val;
+      document.getElementById('newVersionInput').value = '';
+      statusEl.textContent = '✓ Set to ' + val + ' — AHK scripts will see the update banner within 30 minutes';
+      statusEl.style.color = 'var(--green)';
+    } else {
+      let errDetail = 'HTTP ' + res.status;
+      try { const d = await res.json(); errDetail += ': ' + (d.error || JSON.stringify(d)); } catch(e2) {}
+      toast('Failed to set version', 'err');
+      statusEl.textContent = '✕ ' + errDetail;
+      statusEl.style.color = 'var(--red)';
+    }
+  } catch(e) {
+    toast('Network error', 'err');
+    statusEl.style.color = 'var(--red)';
+    statusEl.textContent = '✕ ' + e.message;
+  }
+  btn.disabled = false; btn.textContent = 'Set version';
+});
 
 function renderStats() {
   if (!statsData) return;
@@ -999,15 +1060,16 @@ function renderOnline() {
   if (!entries.length) { el.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">No heartbeat data yet</div>'; return; }
   el.innerHTML = '';
   entries.forEach(([user, data]) => {
-    const { online, lastSeen, version, exitPending } = data;
+    const { online, lastSeen, version, exitPending, restartPending } = data;
     const ago    = lastSeen ? timeAgo(new Date(lastSeen)) : 'never';
     const nick   = getNick(user);
     const grp    = groupOf(user);
     const vBadge = version
       ? '<span class="version-badge ' + (version === CURRENT_VERSION ? 'current' : 'outdated') + '">' + escH(version) + '</span>'
       : '';
-    const exitDot = exitPending ? '<span class="exit-pending-dot" title="Exit pending"></span>' : '';
-    el.innerHTML += '<div class="online-chip' + (online?' active':'') + '"><div class="online-dot' + (online?' active':'') + '"></div><strong>' + escH(user) + '</strong>' + (nick?'<span style="color:var(--muted2);font-size:0.75rem">('+escH(nick)+')</span>':'') + vBadge + exitDot + '<span class="online-time">' + (online ? 'online' : ago) + '</span><span class="group-badge ' + escH(grp) + '" style="margin-left:4px">' + escH(grp) + '</span></div>';
+    const exitDot    = exitPending    ? '<span class="exit-pending-dot"    title="Exit pending"></span>'    : '';
+    const restartDot = restartPending ? '<span class="restart-pending-dot" title="Restart pending"></span>' : '';
+    el.innerHTML += '<div class="online-chip' + (online?' active':'') + '"><div class="online-dot' + (online?' active':'') + '"></div><strong>' + escH(user) + '</strong>' + (nick?'<span style="color:var(--muted2);font-size:0.75rem">('+escH(nick)+')</span>':'') + vBadge + exitDot + restartDot + '<span class="online-time">' + (online ? 'online' : ago) + '</span><span class="group-badge ' + escH(grp) + '" style="margin-left:4px">' + escH(grp) + '</span></div>';
   });
 }
 
@@ -1132,7 +1194,7 @@ function showUsersListView() {
   document.getElementById('userDetailView').style.display  = 'none';
   document.getElementById('backToUsers').style.display     = 'none';
   document.getElementById('usersPageTitle').textContent    = 'Users';
-  document.getElementById('usersPageSub').textContent      = 'Kill switch & remote close per user';
+  document.getElementById('usersPageSub').textContent      = 'Kill switch, remote close & restart per user';
 }
 
 function showUserDetailViewInUsers(user) {
@@ -1228,7 +1290,7 @@ async function renderUsersPage() {
   tbody.innerHTML = '';
 
   if (!knownUsers.size) {
-    tbody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);text-align:center;padding:24px">No users found</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" style="color:var(--muted);text-align:center;padding:24px">No users found</td></tr>';
     return;
   }
 
@@ -1250,14 +1312,15 @@ async function renderUsersPage() {
   });
 
   userArr.forEach(user => {
-    const hb       = heartbeatData[user] || {};
-    const online   = hb.online || false;
-    const version  = hb.version || null;
-    const lastSeen = hb.lastSeen ? timeAgo(new Date(hb.lastSeen)) : 'never';
-    const killed   = !!killedData[user];
-    const exitPend = !!hb.exitPending;
-    const grp      = groupOf(user);
-    const nick     = getNick(user);
+    const hb            = heartbeatData[user] || {};
+    const online        = hb.online || false;
+    const version       = hb.version || null;
+    const lastSeen      = hb.lastSeen ? timeAgo(new Date(hb.lastSeen)) : 'never';
+    const killed        = !!killedData[user];
+    const exitPend      = !!hb.exitPending;
+    const restartPend   = !!hb.restartPending;
+    const grp           = groupOf(user);
+    const nick          = getNick(user);
 
     const statusDot = online
       ? '<span style="color:var(--green);font-size:0.75rem">● online</span>'
@@ -1278,6 +1341,11 @@ async function renderUsersPage() {
     const closeBtn = exitPend
       ? '<button class="btn-close-user" disabled>⏳ pending…</button>'
       : '<button class="btn-close-user" data-user="' + escH(user) + '">⏹ Close</button>';
+
+    // ── NEW: restart button ──
+    const restartBtn = restartPend
+      ? '<button class="btn-restart-user" disabled>⏳ pending…</button>'
+      : '<button class="btn-restart-user" data-user="' + escH(user) + '">↺ Restart</button>';
 
     const statsBtn = '<button class="btn-view-stats" data-user="' + escH(user) + '">📊 Stats</button>';
 
@@ -1300,6 +1368,7 @@ async function renderUsersPage() {
       '<td>' + grpSelect + '</td>' +
       '<td>' + killBadge + ' ' + killBtn + '</td>' +
       '<td>' + closeBtn + '</td>' +
+      '<td>' + restartBtn + '</td>' +
       '<td>' + statsBtn + '</td>';
     tbody.appendChild(tr);
   });
@@ -1320,7 +1389,7 @@ async function renderUsersPage() {
     });
   });
 
-  // Group dropdown change
+  // Group dropdown
   tbody.querySelectorAll('.group-select').forEach(sel => {
     sel.addEventListener('change', e => {
       e.stopPropagation();
@@ -1355,7 +1424,7 @@ async function renderUsersPage() {
     });
   });
 
-  // ── Per-user close — kill endpoint fires within 30s, auto re-enables after 5 min ──
+  // Close button
   tbody.querySelectorAll('.btn-close-user').forEach(btn => {
     btn.addEventListener('click', async () => {
       const user = btn.dataset.user;
@@ -1370,6 +1439,25 @@ async function renderUsersPage() {
       } catch(e) {
         toast('Failed — check server', 'err');
         btn.disabled = false; btn.textContent = '⏹ Close';
+      }
+    });
+  });
+
+  // ── NEW: Restart button ──
+  tbody.querySelectorAll('.btn-restart-user').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const user = btn.dataset.user;
+      if (!confirm('Restart ' + user + '\'s script?\n\nIt will close and immediately reopen, re-fetching all phrases and checking for updates. Takes about 30 seconds.')) return;
+      btn.textContent = '⏳ sending…'; btn.disabled = true;
+      try {
+        const res = await api('POST', '/restart/user', { user });
+        if (res.ok) {
+          toast(user + ' — restart signal sent');
+          setTimeout(() => { btn.textContent = '↺ Restart'; btn.disabled = false; }, 10000);
+        } else throw new Error();
+      } catch(e) {
+        toast('Failed — check server', 'err');
+        btn.disabled = false; btn.textContent = '↺ Restart';
       }
     });
   });
@@ -1395,6 +1483,7 @@ document.getElementById('cfgSaveBtn').addEventListener('click', async () => {
     localStorage.setItem('obs-server', url); localStorage.setItem('obs-pw', pw);
     document.getElementById('cfgStatus').textContent = '✓ Connected'; document.getElementById('cfgStatus').style.color = 'var(--green)';
     setStatus(true); toast('Config saved!');
+    loadLatestVersion();
   } else {
     document.getElementById('cfgStatus').textContent = '✕ Could not connect'; document.getElementById('cfgStatus').style.color = 'var(--red)';
     toast('Connection failed', 'err');
@@ -1409,21 +1498,15 @@ document.getElementById('cfgTestBtn').addEventListener('click', async () => {
 });
 
 // ── Close all for update ───────────────────────────────────────────────────
-// Uses kill endpoint — AHK polls every 30s so signal fires promptly.
-// Shows "Program Closed for Update" (not "Access Disabled").
-// Auto re-enables all users after 5 minutes so they can reopen normally.
 document.getElementById('closeAllBtn').addEventListener('click', async () => {
   const btn        = document.getElementById('closeAllBtn');
   const knownUsers = Object.keys(heartbeatData);
   if (!knownUsers.length) { toast('No users have connected yet', 'err'); return; }
-
   const onlineUsers = knownUsers.filter(u => heartbeatData[u]?.online);
   const msg = 'Close all scripts for update?\n\n'
     + (onlineUsers.length ? 'Online now: ' + onlineUsers.join(', ') + '\n\n' : '')
-    + knownUsers.length + ' user(s) will receive an exit signal.\n'
-    + 'They will see a "Please Reopen" message and exit within 30 seconds.';
+    + knownUsers.length + ' user(s) will receive an exit signal.';
   if (!window.confirm(msg)) return;
-
   btn.textContent = '⏳ Sending…'; btn.disabled = true;
   try {
     const res = await api('POST', '/exit/all', {});
@@ -1437,6 +1520,32 @@ document.getElementById('closeAllBtn').addEventListener('click', async () => {
   } catch(e) {
     toast('Failed to reach server', 'err');
     btn.textContent = '⏹ Close all for update'; btn.disabled = false;
+  }
+});
+
+// ── NEW: Restart all ───────────────────────────────────────────────────────
+document.getElementById('restartAllBtn').addEventListener('click', async () => {
+  const btn        = document.getElementById('restartAllBtn');
+  const knownUsers = Object.keys(heartbeatData);
+  if (!knownUsers.length) { toast('No users have connected yet', 'err'); return; }
+  const onlineUsers = knownUsers.filter(u => heartbeatData[u]?.online);
+  const msg = 'Restart all scripts?\n\n'
+    + (onlineUsers.length ? 'Online now: ' + onlineUsers.join(', ') + '\n\n' : '')
+    + 'Each script will close and immediately reopen. Takes about 30 seconds per user.';
+  if (!window.confirm(msg)) return;
+  btn.textContent = '⏳ Sending…'; btn.disabled = true;
+  let sent = 0;
+  try {
+    for (const user of knownUsers) {
+      const res = await api('POST', '/restart/user', { user });
+      if (res.ok) sent++;
+    }
+    toast('Restart signal sent to ' + sent + ' user(s)');
+    btn.textContent = '✓ Sent (' + sent + ')';
+    setTimeout(() => { btn.textContent = '↺ Restart all'; btn.disabled = false; }, 10000);
+  } catch(e) {
+    toast('Failed to reach server', 'err');
+    btn.textContent = '↺ Restart all'; btn.disabled = false;
   }
 });
 
