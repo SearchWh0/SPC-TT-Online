@@ -466,7 +466,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 <script>
 const RENDER_URL      = 'https://timetable-server-r6nb.onrender.com';
 const UTILITY_KEYS    = new Set(['Ctrl+Alt+E','Ctrl+Alt+T','Ctrl+Alt+P','Ctrl+Alt+F','Ctrl+Alt+W','Ctrl+Alt+S','Ctrl+Alt+M','__heartbeat__']);
-const CURRENT_VERSION = 'v3.5';
+let CURRENT_VERSION = '';
 const USER_COLORS     = ['#af5cfa','#60a5fa','#34d399','#fbbf24','#f87171','#a78bfa','#fb923c','#38bdf8'];
 const GROUPS          = ['Cranbourne', 'Clyde', 'Other'];
 
@@ -756,8 +756,13 @@ async function loadLatestVersion() {
     const res = await api('GET', '/version/latest');
     if (res.ok) {
       const data = await res.json();
+      // Add this line:
+      CURRENT_VERSION = data.version || '';
       const el = document.getElementById('currentLatestVersion');
       if (el) el.textContent = data.version || '—';
+      // Add this to refresh badges after version loads:
+      renderOnline();
+      if (statsData) renderStats();
     }
   } catch(e) {}
 }
