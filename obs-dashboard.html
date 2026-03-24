@@ -1087,7 +1087,18 @@ function renderOnline() {
       const latest = vCounts[CURRENT_VERSION]?.total || 0;
       const outdated = allEntries.length - latest;
       vcEl.innerHTML = Object.entries(vCounts)
-        .sort((a,b) => b[1].total - a[1].total)
+        .sort((a,b) => {
+          // Current version always first
+          if (a[0] === CURRENT_VERSION) return -1;
+          if (b[0] === CURRENT_VERSION) return 1;
+          // Unknown (—) always last
+          if (a[0] === '—') return 1;
+          if (b[0] === '—') return -1;
+          // Otherwise descending by version number (strip 'v' prefix)
+          const na = parseFloat(a[0].replace(/^v/i,'')) || 0;
+          const nb = parseFloat(b[0].replace(/^v/i,'')) || 0;
+          return nb - na;
+        })
         .map(([v, info]) => {
           const isCurrent = v === CURRENT_VERSION;
           const cls = isCurrent ? 'current' : (v === '—' ? 'unknown' : 'outdated');
