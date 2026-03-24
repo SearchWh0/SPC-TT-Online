@@ -164,6 +164,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .btn-restart-user{background:none;border:1.5px solid rgba(96,165,250,0.4);color:var(--blue);font-family:var(--font);font-size:0.75rem;font-weight:700;padding:5px 12px;border-radius:7px;cursor:pointer;transition:all .15s;white-space:nowrap;}
 .btn-restart-user:hover{background:rgba(96,165,250,0.12);}
 .btn-restart-user:disabled{opacity:0.35;cursor:default;}
+.btn-delete-user{background:none;border:1.5px solid rgba(248,113,113,0.3);color:var(--muted);font-family:var(--font);font-size:0.75rem;font-weight:700;padding:5px 12px;border-radius:7px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-delete-user:hover{border-color:var(--red);color:var(--red);background:rgba(248,113,113,0.08);}
 .version-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-family:var(--mono);font-size:0.62rem;font-weight:700;border:1px solid;}
 .version-badge.current{background:rgba(52,211,153,0.1);border-color:rgba(52,211,153,0.35);color:var(--green);}
 .version-badge.outdated{background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.35);color:var(--yellow);}
@@ -268,7 +270,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
       </div>
 
       <div class="chart-card" id="onlineCard">
-        <div class="chart-title">Who's online now <span style="color:var(--muted);font-size:0.7rem">(seen in last 3 min)</span></div>
+        <div class="chart-title">Who's online now <span style="color:var(--muted);font-size:0.7rem">(seen in last 3 min)</span><span id="versionCountBadges" style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center"></span></div>
         <div class="online-grid" id="onlineGrid"></div>
       </div>
 
@@ -357,6 +359,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
                   <th>Close</th>
                   <th>Restart</th>
                   <th>Stats</th>
+                  <th>Delete</th>
                 </tr>
               </thead>
               <tbody id="usersTableBody"></tbody>
@@ -664,6 +667,7 @@ document.querySelectorAll('.group-filter-chip').forEach(chip => {
     chip.classList.add('active');
     statsGroupFilter = chip.dataset.group;
     renderStats();
+    renderOnline();
   });
 });
 
@@ -1061,8 +1065,43 @@ function renderFeedInto(el, events, user) {
 
 function renderOnline() {
   const el      = document.getElementById('onlineGrid');
-  const entries = Object.entries(heartbeatData).sort((a,b) => (b[1].online?1:0)-(a[1].online?1:0));
-  if (!entries.length) { el.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">No heartbeat data yet</div>'; return; }
+  const vcEl    = document.getElementById('versionCountBadges');
+  let entries   = Object.entries(heartbeatData).sort((a,b) => (b[1].online?1:0)-(a[1].online?1:0));
+
+  // Filter by current group selection
+  if (statsGroupFilter !== 'all') {
+    entries = entries.filter(([user]) => groupOf(user) === statsGroupFilter);
+  }
+
+  // Version counts (across all users, not just filtered, for the summary)
+  const allEntries = Object.entries(heartbeatData);
+  const vCounts = {};
+  allEntries.forEach(([user, data]) => {
+    const v = data.version || '—';
+    if (!vCounts[v]) vCounts[v] = { total: 0, current: 0 };
+    vCounts[v].total++;
+    if (CURRENT_VERSION && v === CURRENT_VERSION) vCounts[v].current++;
+  });
+  if (vcEl) {
+    if (Object.keys(vCounts).length && CURRENT_VERSION) {
+      const latest = vCounts[CURRENT_VERSION]?.total || 0;
+      const outdated = allEntries.length - latest;
+      vcEl.innerHTML = Object.entries(vCounts)
+        .sort((a,b) => b[1].total - a[1].total)
+        .map(([v, info]) => {
+          const isCurrent = v === CURRENT_VERSION;
+          const cls = isCurrent ? 'current' : (v === '—' ? 'unknown' : 'outdated');
+          return '<span class="version-badge ' + cls + '" title="' + info.total + ' user(s) on ' + escH(v) + '">' + escH(v) + ' × ' + info.total + '</span>';
+        }).join('');
+      if (outdated > 0) {
+        vcEl.innerHTML += '<span style="font-family:var(--mono);font-size:0.62rem;color:var(--yellow);margin-left:2px">' + outdated + ' need update</span>';
+      }
+    } else {
+      vcEl.innerHTML = '';
+    }
+  }
+
+  if (!entries.length) { el.innerHTML = '<div style="color:var(--muted);font-size:0.82rem">No heartbeat data' + (statsGroupFilter !== 'all' ? ' for ' + statsGroupFilter : '') + '</div>'; return; }
   el.innerHTML = '';
   entries.forEach(([user, data]) => {
     const { online, lastSeen, version, exitPending, restartPending } = data;
@@ -1295,7 +1334,7 @@ async function renderUsersPage() {
   tbody.innerHTML = '';
 
   if (!knownUsers.size) {
-    tbody.innerHTML = '<tr><td colspan="9" style="color:var(--muted);text-align:center;padding:24px">No users found</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" style="color:var(--muted);text-align:center;padding:24px">No users found</td></tr>';
     return;
   }
 
@@ -1352,7 +1391,8 @@ async function renderUsersPage() {
       ? '<button class="btn-restart-user" disabled>⏳ pending…</button>'
       : '<button class="btn-restart-user" data-user="' + escH(user) + '">↺ Restart</button>';
 
-    const statsBtn = '<button class="btn-view-stats" data-user="' + escH(user) + '">📊 Stats</button>';
+    const statsBtn  = '<button class="btn-view-stats" data-user="' + escH(user) + '">📊 Stats</button>';
+    const deleteBtn = '<button class="btn-delete-user" data-user="' + escH(user) + '">🗑 Delete</button>';
 
     const nickDisplay = nick
       ? '<span style="color:var(--muted2);font-size:0.75rem;font-family:var(--mono)">(' + escH(nick) + ')</span> '
@@ -1374,7 +1414,8 @@ async function renderUsersPage() {
       '<td>' + killBadge + ' ' + killBtn + '</td>' +
       '<td>' + closeBtn + '</td>' +
       '<td>' + restartBtn + '</td>' +
-      '<td>' + statsBtn + '</td>';
+      '<td>' + statsBtn + '</td>' +
+      '<td>' + deleteBtn + '</td>';
     tbody.appendChild(tr);
   });
 
@@ -1472,6 +1513,39 @@ async function renderUsersPage() {
     btn.addEventListener('click', e => {
       e.stopPropagation();
       showUserDetailViewInUsers(btn.dataset.user);
+    });
+  });
+
+  // Delete user
+  tbody.querySelectorAll('.btn-delete-user').forEach(btn => {
+    btn.addEventListener('click', async e => {
+      e.stopPropagation();
+      const user = btn.dataset.user;
+      if (!confirm('Permanently delete ' + user + '?\n\nThis removes ALL their data — heartbeat, stats, version history, and flags. This cannot be undone.')) return;
+      btn.textContent = '⏳…'; btn.disabled = true;
+      try {
+        const res = await api('DELETE', '/user/' + encodeURIComponent(user));
+        if (res.ok) {
+          // Also clear local data
+          delete heartbeatData[user];
+          delete firstSeenData[user];
+          delete killedData[user];
+          delete userNicknames[user];
+          delete userGroups[user];
+          saveNicknames(); saveGroups();
+          if (statsData) {
+            delete statsData.byUser[user];
+            if (statsData.byUserDay) delete statsData.byUserDay[user];
+            statsData.recentEvents = (statsData.recentEvents || []).filter(e => e.user !== user);
+          }
+          toast(user + ' deleted');
+          renderUsersPage();
+          renderStats();
+        } else throw new Error();
+      } catch(e2) {
+        toast('Delete failed — check server', 'err');
+        btn.disabled = false; btn.textContent = '🗑 Delete';
+      }
     });
   });
 }
