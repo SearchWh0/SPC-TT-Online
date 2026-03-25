@@ -324,6 +324,13 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   <div class="map-toolbar">
     <button class="map-tab-btn active" data-maptab="now">Now <span class="map-badge-count" id="mapNowBadge">0</span></button>
     <button class="map-tab-btn" data-maptab="next">Next <span class="map-badge-count" id="mapNextBadge">0</span></button>
+    <div style="width:1px;height:20px;background:var(--border);margin:0 4px;flex-shrink:0;"></div>
+    <button class="map-tab-btn" data-maptab="p1">P1</button>
+    <button class="map-tab-btn" data-maptab="p2">P2</button>
+    <button class="map-tab-btn" data-maptab="p3">P3</button>
+    <button class="map-tab-btn" data-maptab="p4">P4</button>
+    <button class="map-tab-btn" data-maptab="p5">P5</button>
+    <button class="map-tab-btn" data-maptab="p6">P6</button>
   </div>
   <div class="map-body">
     <div class="map-outer" id="mapOuter">
@@ -475,6 +482,31 @@ async function loadTimetable(){const url=getServerUrl();if(!url){showScreen('noS
 function showStaleBanner(){if(document.getElementById('staleBanner'))return;const b=document.createElement('div');b.id='staleBanner';b.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#b45309;color:#fff;padding:10px 20px;border-radius:10px;font-size:0.82rem;font-family:Outfit,sans-serif;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,0.3);';b.textContent='⚠️ Showing cached data — server unreachable';document.body.appendChild(b);setTimeout(()=>b.remove(),6000);}
 document.getElementById('refreshBtn').addEventListener('click',loadTimetable);
 setInterval(loadTimetable,600000);
+
+// ── ?user= deep-link: open a specific person's timetable directly ──────────
+(function checkUserParam(){
+  const params = new URLSearchParams(window.location.search);
+  const deepUser = params.get('user');
+  if (!deepUser) return;
+  // After timetable loads, find and open the matching group
+  const _orig = loadTimetable;
+  // Override openDetail to also update the URL so refreshes work
+  const origLoad = window.onload;
+  // Wait for first render then auto-open
+  const observer = new MutationObserver(() => {
+    if (!currentGroupMap) return;
+    const lower = deepUser.toLowerCase().trim();
+    for (const [key, grp] of currentGroupMap.entries()) {
+      const n = (currentNames[key]||'').toLowerCase();
+      if (n === lower || n.replace(/\s+/g,'') === lower.replace(/\s+/g,'')) {
+        observer.disconnect();
+        setTimeout(() => openDetail(key), 80);
+        return;
+      }
+    }
+  });
+  observer.observe(document.getElementById('tileGrid'), { childList: true });
+})();
 
 // ── Daily Changes (Toggle) ─────────────────────────────────────────────────
 let dcExpanded=false;
@@ -843,7 +875,25 @@ function renderDetail(key,grp,name){
     if(lastEmail.teacherEntries.length===0){chipsEl.innerHTML='<span style="color:var(--muted);font-size:0.8rem;font-style:italic;">No teachers found in timetable data</span>';}
     else{chipsEl.innerHTML=lastEmail.teacherEntries.map(([code,{prefix,isOverride}],i)=>`<div class="teacher-chip">${escapeHTML(code)}<span class="arrow">→</span><span class="email-part">${escapeHTML(lastEmail.teacherEmails[i])}</span>${isOverride?'<span class="override-badge">override</span>':''}</div>`).join('');}
   }
-  inner.querySelector('#lsoSaveNameBtn').addEventListener('click',function(){const lsoNames=getLSONames();const val=document.getElementById('lsoName').value.trim();if(val)lsoNames[key]=val;else delete lsoNames[key];saveLSONames(lsoNames);const hint=document.getElementById('lsoNameHint');hint.textContent=`✓ saved for ${name}`;hint.style.color='#22a85a';setTimeout(()=>{hint.textContent=`saved for ${name}`;hint.style.color='';},2000);renderTiles(currentGroupMap,currentNames);});
+  inner.querySelector('#lsoSaveNameBtn').addEventListener('click',function(){
+    const lsoNames=getLSONames();
+    const val=document.getElementById('lsoName').value.trim();
+    if(val)lsoNames[key]=val;else delete lsoNames[key];
+    saveLSONames(lsoNames);
+    const hint=document.getElementById('lsoNameHint');
+    hint.textContent=`✓ saved for ${name}`;hint.style.color='#22a85a';
+    setTimeout(()=>{hint.textContent=`saved for ${name}`;hint.style.color='';},2000);
+    renderTiles(currentGroupMap,currentNames);
+    // Also sync to server so AHK can read it
+    const serverUrl=getServerUrl();
+    if(serverUrl){
+      const domain=document.getElementById('lsoDomain').value.trim()||'stpeters.vic.edu.au';
+      const cc=document.getElementById('lsoCC').value.trim();
+      // Use the LSO name value as the "user" key (Windows username expected by AHK)
+      // We also store by the display name so the server can match either way
+      fetch(serverUrl+'/lso-settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:val||name,name:val||name,domain,cc})}).catch(()=>{});
+    }
+  });
   inner.querySelector('#emailLSOToggle').addEventListener('click',function(){const panel=document.getElementById('lsoPanel');const isVisible=panel.classList.toggle('visible');this.textContent=isVisible?'✕ Close':'✉ Email LSO';if(isVisible){refreshEmail();panel.scrollIntoView({behavior:'smooth',block:'nearest'});}});
   ['lsoName','lsoDomain','lsoCC'].forEach(id=>{inner.querySelector('#'+id).addEventListener('input',refreshEmail);});
   inner.querySelector('#lsoOpenBtn').addEventListener('click',()=>{if(!lastEmail)return;const{subject,body,teacherEmails,cc}=lastEmail;const mailto=`mailto:${teacherEmails.join(';')}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;window.location.href=mailto;});
@@ -971,10 +1021,20 @@ function getMapNoRoomPeople(slot) {
 function renderMapView() {
   if (mainView !== 'map') return;
   const { cur, nxt } = getMapCurrentAndNext();
-  const slot = mapTab === 'now' ? cur : nxt;
+
+  // Resolve the slot based on active tab
+  let slot;
+  const periodTabMatch = mapTab.match(/^p(\d)$/);
+  if (periodTabMatch) {
+    const pNum = parseInt(periodTabMatch[1], 10);
+    slot = SCHOOL_SCHEDULE.find(s => s.period === pNum) || null;
+  } else {
+    slot = mapTab === 'now' ? cur : nxt;
+  }
+
   const pKey = slot && slot.period ? 'p' + slot.period : null;
 
-  // Count for badges (exclude absent)
+  // Count for badges (exclude absent) — always based on live now/next
   let nc = 0, nx = 0;
   getMapPlacements(cur).forEach(a => nc += a.length);
   getMapPlacements(nxt).forEach(a => nx += a.length);
@@ -1135,7 +1195,7 @@ function renderMapView() {
   }
 
   document.getElementById('mapStatus').textContent =
-    slot ? ('Showing ' + slot.label + (slot.start ? ' · ' + slot.start + '–' + slot.end : '')) : 'No period active';
+    slot ? (periodTabMatch ? slot.label + ' · ' + slot.start + '–' + slot.end + ' (pinned)' : ('Showing ' + slot.label + (slot.start ? ' · ' + slot.start + '–' + slot.end : ''))) : 'No period active';
 }
 
 function getMapCurrentAndNext(){const nm=nowMinutes();let cur=null,nxt=null;for(const s of SCHOOL_SCHEDULE){const a=timeToMinutes(s.start),b=timeToMinutes(s.end);if(nm>=a&&nm<b)cur=s;else if(nm<a&&!nxt)nxt=s;}return{cur,nxt};}
