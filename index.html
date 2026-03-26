@@ -488,22 +488,35 @@ setInterval(loadTimetable,600000);
   const params = new URLSearchParams(window.location.search);
   const deepUser = params.get('user');
   if (!deepUser) return;
-  // After timetable loads, find and open the matching group
-  const _orig = loadTimetable;
-  // Override openDetail to also update the URL so refreshes work
-  const origLoad = window.onload;
-  // Wait for first render then auto-open
-  const observer = new MutationObserver(() => {
-    if (!currentGroupMap) return;
-    const lower = deepUser.toLowerCase().trim();
+
+  // Try to resolve the Windows username to a display name via lso-settings,
+  // then fall back to the raw username if the server has nothing stored.
+  function tryOpenForName(displayName) {
+    const lower = displayName.toLowerCase().trim();
+    if (!currentGroupMap) return false;
     for (const [key, grp] of currentGroupMap.entries()) {
       const n = (currentNames[key]||'').toLowerCase();
       if (n === lower || n.replace(/\s+/g,'') === lower.replace(/\s+/g,'')) {
-        observer.disconnect();
         setTimeout(() => openDetail(key), 80);
-        return;
+        return true;
       }
     }
+    return false;
+  }
+
+  // Observer fires each time tiles are rendered
+  const observer = new MutationObserver(() => {
+    if (!currentGroupMap) return;
+    // First try the raw username in case it happens to match
+    if (tryOpenForName(deepUser)) { observer.disconnect(); return; }
+    // Otherwise fetch stored display name from server and try that
+    fetch(getServerUrl() + '/lso-settings?user=' + encodeURIComponent(deepUser))
+      .then(r => r.ok ? r.json() : {})
+      .then(s => {
+        const displayName = (s && s.name) ? s.name : deepUser;
+        if (tryOpenForName(displayName)) observer.disconnect();
+      })
+      .catch(() => {});
   });
   observer.observe(document.getElementById('tileGrid'), { childList: true });
 })();
