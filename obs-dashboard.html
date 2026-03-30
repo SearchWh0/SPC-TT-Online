@@ -196,6 +196,17 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 #toast.ok{border-color:var(--green);color:var(--green);}
 #toast.err{border-color:var(--red);color:var(--red);}
+.feedback-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start;transition:border-color .15s;}
+.feedback-card:hover{border-color:var(--border2);}
+.feedback-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:800;flex-shrink:0;}
+.feedback-body{flex:1;min-width:0;}
+.feedback-meta{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;}
+.feedback-user{font-weight:700;font-size:0.88rem;}
+.feedback-time{font-family:var(--mono);font-size:0.65rem;color:var(--muted);}
+.feedback-msg{font-size:0.88rem;line-height:1.55;color:var(--text);word-break:break-word;}
+.feedback-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;padding:4px 6px;border-radius:6px;transition:color .15s,background .15s;flex-shrink:0;margin-top:-2px;}
+.feedback-del:hover{color:var(--red);background:rgba(248,113,113,0.1);}
+.feedback-empty{text-align:center;padding:48px 0;color:var(--muted);font-size:0.9rem;}
 </style>
 </head>
 <body>
@@ -210,6 +221,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
       <div class="nav-item active" data-page="statsPage"><span class="icon">📊</span> Stats</div>
       <div class="nav-item" data-page="usersPage"><span class="icon">👥</span> Users</div>
       <div class="nav-item" data-page="phrasesPage"><span class="icon">📝</span> Phrases</div>
+      <div class="nav-item" data-page="feedbackPage"><span class="icon">💬</span> Feedback</div>
       <div class="nav-item" data-page="configPage"><span class="icon">⚙️</span> Config</div>
     </nav>
     <div class="sidebar-footer">
@@ -396,6 +408,26 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
             <div class="chart-title">Recent activity</div>
             <div class="feed" id="userDetailFeed"></div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ FEEDBACK PAGE ══ -->
+    <div class="page" id="feedbackPage">
+      <div class="page-header">
+        <div class="page-header-left">
+          <div class="page-title">Feedback</div>
+          <div class="page-sub">Messages sent by LSOs from the panel</div>
+        </div>
+        <button class="btn-outline" id="refreshFeedbackBtn">↻ Refresh</button>
+      </div>
+      <div class="section-card">
+        <div class="section-card-title">
+          <span id="feedbackCount">All messages</span>
+          <button class="btn btn-secondary btn-sm" id="clearAllFeedbackBtn" style="color:var(--red);border-color:rgba(248,113,113,0.4)">🗑 Clear all</button>
+        </div>
+        <div id="feedbackList" style="display:flex;flex-direction:column;gap:10px;">
+          <div style="color:var(--muted);font-size:0.85rem;padding:20px 0">Loading feedback…</div>
         </div>
       </div>
     </div>
@@ -637,7 +669,7 @@ async function bootApp() {
   document.getElementById('cfgUrl').value = serverUrl;
   document.getElementById('cfgPw').value  = adminPw;
   setStatus(true);
-  await Promise.all([loadStats(), loadHeartbeats(), loadPhrases(), loadUsers(), loadFirstSeen()]);
+  await Promise.all([loadStats(), loadHeartbeats(), loadPhrases(), loadUsers(), loadFirstSeen(), loadFeedback()]);
   loadLatestVersion();
 }
 
@@ -658,6 +690,7 @@ document.querySelectorAll('.nav-item').forEach(item => {
       loadLatestVersion();
     }
     if (item.dataset.page === 'usersPage') renderUsersPage();
+    if (item.dataset.page === 'feedbackPage') loadFeedback();
   });
 });
 
@@ -1736,6 +1769,76 @@ document.getElementById('weeklyCopyBtn').addEventListener('click', () => {
 });
 document.getElementById('weeklyModal').addEventListener('click', e => {
   if (e.target === document.getElementById('weeklyModal')) document.getElementById('weeklyModal').style.display = 'none';
+});
+
+// ── Feedback ────────────────────────────────────────────────────────────────
+let feedbackData = [];
+
+async function loadFeedback() {
+  try {
+    const res = await api('GET', '/feedback');
+    if (!res.ok) throw new Error('Failed');
+    feedbackData = await res.json();
+    renderFeedback();
+  } catch(e) {
+    document.getElementById('feedbackList').innerHTML = '<div class="feedback-empty">Could not load feedback.</div>';
+  }
+}
+
+function renderFeedback() {
+  const list = document.getElementById('feedbackList');
+  const count = document.getElementById('feedbackCount');
+  if (!feedbackData.length) {
+    list.innerHTML = '<div class="feedback-empty">💬 No feedback yet — messages sent from the LSO panel will appear here.</div>';
+    count.textContent = 'No messages';
+    return;
+  }
+  count.textContent = feedbackData.length + ' message' + (feedbackData.length !== 1 ? 's' : '');
+  list.innerHTML = feedbackData.map((f, i) => {
+    const color = USER_COLORS[Math.abs(f.user.split('').reduce((a,c)=>a+c.charCodeAt(0),0)) % USER_COLORS.length];
+    const initials = f.user.slice(0,2).toUpperCase();
+    const date = new Date(f.ts);
+    const timeStr = date.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) + ' ' + date.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'});
+    const nick = getNick(f.user);
+    const displayUser = escH(f.user) + (nick ? ' <span style="color:var(--muted2);font-size:0.8em">('+escH(nick)+')</span>' : '');
+    return `<div class="feedback-card" data-id="${f.id}">
+      <div class="feedback-avatar" style="background:${color}22;color:${color};border:1.5px solid ${color}44">${initials}</div>
+      <div class="feedback-body">
+        <div class="feedback-meta">
+          <span class="feedback-user">${displayUser}</span>
+          <span class="feedback-time">${escH(timeStr)}</span>
+        </div>
+        <div class="feedback-msg">${escH(f.message)}</div>
+      </div>
+      <button class="feedback-del" title="Delete" onclick="deleteFeedback(${f.id})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+async function deleteFeedback(id) {
+  if (!confirm('Delete this message?')) return;
+  try {
+    const res = await api('DELETE', '/feedback/' + id);
+    if (!res.ok) throw new Error('Failed');
+    feedbackData = feedbackData.filter(f => f.id !== id);
+    renderFeedback();
+    toast('Message deleted');
+  } catch(e) { toast('Delete failed', 'err'); }
+}
+
+document.getElementById('refreshFeedbackBtn').addEventListener('click', () => {
+  loadFeedback().then(() => toast('Feedback refreshed'));
+});
+
+document.getElementById('clearAllFeedbackBtn').addEventListener('click', async () => {
+  if (!feedbackData.length) { toast('Nothing to clear', 'err'); return; }
+  if (!confirm('Delete ALL ' + feedbackData.length + ' feedback messages? This cannot be undone.')) return;
+  try {
+    await Promise.all(feedbackData.map(f => api('DELETE', '/feedback/' + f.id)));
+    feedbackData = [];
+    renderFeedback();
+    toast('All feedback cleared');
+  } catch(e) { toast('Clear failed', 'err'); }
 });
 
 // ── Auto refresh ───────────────────────────────────────────────────────────
