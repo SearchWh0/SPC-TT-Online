@@ -156,20 +156,6 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .cell-data.flash-copy::after { content:'✓'; position:absolute; top:7px; right:9px; font-size:0.7rem; color:#22a85a; }
 .cell-data.empty { cursor:default; }
 
-/* ── Power Automate section ── */
-.pa-steps { display:flex; flex-direction:column; gap:10px; margin:14px 0; }
-.pa-step { display:flex; gap:12px; align-items:flex-start; }
-.pa-step-num { width:22px; height:22px; border-radius:50%; background:var(--text); color:var(--bg); font-size:0.7rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
-.pa-step-text { font-size:0.84rem; line-height:1.6; color:var(--text); }
-.pa-step-text code { font-family:'DM Mono',monospace; font-size:0.78rem; background:var(--soft); border:1px solid var(--border); border-radius:4px; padding:1px 6px; }
-.pa-step-text strong { font-weight:700; }
-.pa-endpoint { font-family:'DM Mono',monospace; font-size:0.72rem; background:var(--soft); border:1px solid var(--border); border-radius:8px; padding:10px 14px; margin:10px 0; word-break:break-all; color:var(--text); }
-.pa-endpoint .method { color:#22a85a; font-weight:700; margin-right:8px; }
-.pa-json { font-family:'DM Mono',monospace; font-size:0.7rem; background:var(--soft); border:1px solid var(--border); border-radius:8px; padding:12px 14px; margin:10px 0; white-space:pre; overflow-x:auto; color:var(--text); line-height:1.7; }
-.pa-copy-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'DM Mono',monospace; font-size:0.68rem; padding:4px 10px; border-radius:6px; cursor:pointer; transition:border-color .15s,color .15s; }
-.pa-copy-btn:hover { border-color:var(--text); color:var(--text); }
-.pa-warning { background:#fff8e1; border:1px solid #f0c040; border-radius:8px; padding:10px 14px; font-size:0.8rem; color:#7a5800; margin:10px 0; }
-[data-theme="dark"] .pa-warning { background:#2a2000; border-color:#7a5800; color:#f0c040; }
 
 /* ── Email Composer ── */
 .email-section { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:22px; margin-bottom:20px; }
@@ -1404,6 +1390,11 @@ document.getElementById('clearBtn').addEventListener('click',()=>{
 });
 
 function handlePaste(e) {
+  // Ignore paste if lock screen is visible
+  if (!document.getElementById('lockScreen').classList.contains('hidden')) return;
+  // Ignore paste if focus is inside a text input, textarea, or contenteditable
+  const tag = document.activeElement && document.activeElement.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement.isContentEditable) return;
   const h=e.clipboardData.getData('text/html');
   if(h&&(h.includes('<td')||h.includes('<TD'))) processHTMLData(h);
   else setMsg('No table data — copy directly from Excel (Ctrl+A, Ctrl+C).','err');
