@@ -1246,7 +1246,7 @@ document.getElementById('addOverrideBtn').addEventListener('click', () => {
   if (lastRow) lastRow.querySelector('.code-input').focus();
 });
 
-document.getElementById('saveOverridesBtn').addEventListener('click', () => {
+document.getElementById('saveOverridesBtn').addEventListener('click', async () => {
   const tbody = document.getElementById('overrideTbody');
   const newOverrides = {};
   tbody.querySelectorAll('tr').forEach(tr => {
@@ -1256,7 +1256,23 @@ document.getElementById('saveOverridesBtn').addEventListener('click', () => {
   });
   emailOverrides = newOverrides;
   localStorage.setItem('tt-email-overrides', JSON.stringify(emailOverrides));
-  setStatus('overrideStatus', `✓ Saved ${Object.keys(emailOverrides).length} override(s)`, 'green');
+
+  // Push to server
+  const url = getServer(); const pw = getPw();
+  if (url && pw) {
+    try {
+      const res = await fetch(`${url}/email-overrides`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Password': pw },
+        body: JSON.stringify(emailOverrides)
+      });
+      if (res.ok) setStatus('overrideStatus', `✓ Saved ${Object.keys(emailOverrides).length} override(s) & pushed to server`, 'green');
+      else if (res.status === 401) setStatus('overrideStatus', '✓ Saved locally — wrong password, not pushed', 'green');
+      else setStatus('overrideStatus', `✓ Saved locally — server error ${res.status}`, 'green');
+    } catch(e) { setStatus('overrideStatus', `✓ Saved locally — couldn't reach server`, 'green'); }
+  } else {
+    setStatus('overrideStatus', `✓ Saved ${Object.keys(emailOverrides).length} override(s) locally`, 'green');
+  }
   renderOverrideTable();
 });
 
@@ -1268,7 +1284,23 @@ document.getElementById('clearOverridesBtn').addEventListener('click', () => {
   setStatus('overrideStatus', 'Overrides cleared', '');
 });
 
-renderOverrideTable();
+// Load overrides — prefer server, fall back to localStorage
+(async () => {
+  const url = getServer();
+  if (url) {
+    try {
+      const res = await fetch(`${url}/email-overrides`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && typeof data === 'object' && !Array.isArray(data)) {
+          emailOverrides = data;
+          localStorage.setItem('tt-email-overrides', JSON.stringify(data));
+        }
+      }
+    } catch(e) { /* fall through to localStorage */ }
+  }
+  renderOverrideTable();
+})();
 
 // ── Actions ────────────────────────────────────────────────────────────────
 document.getElementById('exportKeysBtn').addEventListener('click', () => {
