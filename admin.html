@@ -706,6 +706,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     localStorage.setItem('tt-server', url.replace(/\/$/,''));
     localStorage.setItem('tt-pw', pw);
     lockScreen.classList.add('hidden');
+    loadServerTimetable();
   }
 
   // Pre-fill from localStorage
@@ -757,6 +758,29 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   lockPwEl.addEventListener('keydown', e => { if (e.key === 'Enter') doUnlock(); });
   lockUrlEl.addEventListener('keydown', e => { if (e.key === 'Enter') lockPwEl.focus(); });
 })();
+
+// ── Load timetable from server on startup ─────────────────────────────────
+async function loadServerTimetable() {
+  const url = getServer();
+  if (!url) return;
+  try {
+    const res = await fetch(`${url}/timetable`);
+    if (!res.ok) return; // 404 = nothing uploaded yet, that's fine
+    const state = await res.json();
+    if (!state.map) return;
+    // Merge saved names from server into colorNames
+    if (state.names) Object.assign(colorNames, state.names);
+    localStorage.setItem('tt-colornames', JSON.stringify(colorNames));
+    // Rebuild groupMap from server data
+    const groupMap = new Map();
+    for (const [k, v] of Object.entries(state.map)) groupMap.set(k, v);
+    rawGroupMap = groupMap;
+    currentGroupMap = applyMerges(groupMap);
+    renderApp(currentGroupMap);
+    document.getElementById('statusBar').textContent =
+      `${currentGroupMap.size} groups · loaded from server (uploaded ${state.date || 'unknown date'})`;
+  } catch(e) { /* silently ignore — user can paste manually */ }
+}
 
 // ── Server config ──────────────────────────────────────────────────────────
 const serverUrlEl = document.getElementById('serverUrl');
