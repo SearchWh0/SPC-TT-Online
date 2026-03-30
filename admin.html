@@ -343,64 +343,6 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
         <div class="field-status">Opens the right sheet — Ctrl+A → Ctrl+C → switch back and paste</div>
       </div>
 
-      <!-- Power Automate -->
-      <div class="settings-section full" id="paSection">
-        <div class="section-title">⚡ Power Automate — Fully Automatic Daily Upload</div>
-        <p class="section-desc">Set up a Power Automate flow that runs at 7am each weekday, reads today's sheet from your Excel file, and posts it to the server automatically — no manual steps.</p>
-
-        <div class="pa-warning">
-          ⚠️ <strong>One-time setup required first:</strong> Paste your timetable at least once manually using the Timetable tab. This saves the colour → person mapping so the automated flow knows who is who.
-        </div>
-
-        <div style="font-weight:700;font-size:0.9rem;margin:16px 0 8px;">Step 1 — Your endpoint details</div>
-        <p class="section-desc" style="margin-bottom:8px">Copy these into Power Automate exactly as shown.</p>
-
-        <div style="font-size:0.75rem;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">HTTP POST URL</div>
-        <div class="pa-endpoint" id="paEndpointUrl"><span class="method">POST</span><span id="paUrlText">https://timetable-server-r6nb.onrender.com/automate</span></div>
-        <button class="pa-copy-btn" id="copyPaUrl">Copy URL</button>
-
-        <div style="font-size:0.75rem;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.06em;margin:12px 0 4px">Headers</div>
-        <div class="pa-json" id="paHeadersJson">{
-  "Content-Type": "application/json",
-  "x-admin-password": "<span id="paPasswordPlaceholder">your-password</span>"
-}</div>
-        <button class="pa-copy-btn" id="copyPaHeaders">Copy headers</button>
-
-        <div style="font-weight:700;font-size:0.9rem;margin:20px 0 8px;">Step 2 — Build the flow in Power Automate</div>
-        <div class="pa-steps">
-          <div class="pa-step"><div class="pa-step-num">1</div><div class="pa-step-text">Go to <strong>make.powerautomate.com</strong> and sign in with your school Microsoft account.</div></div>
-          <div class="pa-step"><div class="pa-step-num">2</div><div class="pa-step-text">Click <strong>Create → Scheduled cloud flow</strong>. Set it to run at <code>7:00 AM</code>, repeat every <code>1 day</code>.</div></div>
-          <div class="pa-step"><div class="pa-step-num">3</div><div class="pa-step-text">Add a <strong>Condition</strong> action. Set it to check: <code>dayOfWeek(utcNow(), 'AUS Eastern Standard Time')</code> is not equal to <code>0</code> and not equal to <code>6</code>. This skips weekends.</div></div>
-          <div class="pa-step"><div class="pa-step-num">4</div><div class="pa-step-text">In the <strong>Yes</strong> branch, add action: <strong>Excel Online (Business) → Get a row</strong>. Connect to your SharePoint file. Under Sheet Name, use an expression to calculate today's sheet — see Step 3 below.</div></div>
-          <div class="pa-step"><div class="pa-step-num">5</div><div class="pa-step-text">Add action: <strong>Excel Online (Business) → List rows present in a table</strong> — OR use <strong>Get worksheets</strong> to read the entire sheet range. Select your file and today's calculated sheet name.</div></div>
-          <div class="pa-step"><div class="pa-step-num">6</div><div class="pa-step-text">Add action: <strong>HTTP</strong>. Method: <code>POST</code>. URI: the URL above. Add the headers above. Body: use the expression from Step 4.</div></div>
-          <div class="pa-step"><div class="pa-step-num">7</div><div class="pa-step-text">Save and test the flow. Check the server responds with <code>{"ok": true}</code>.</div></div>
-        </div>
-
-        <div style="font-weight:700;font-size:0.9rem;margin:20px 0 8px;">Step 3 — Sheet name expression (Day 1–10)</div>
-        <p class="section-desc" style="margin-bottom:8px">Use this expression in Power Automate for the sheet name. It calculates the correct Day number based on the cycle start date.</p>
-        <div class="pa-json" id="paExpressionText">concat('Day ', add(mod(sub(div(sub(ticks(convertFromUtc(utcNow(),'AUS Eastern Standard Time','yyyy-MM-dd')), ticks('2026-02-23')), 864000000000), 1), 10), 1))</div>
-        <button class="pa-copy-btn" id="copyPaExpression">Copy expression</button>
-        <div class="field-status" style="margin-top:6px">⚠ This expression counts weekdays — paste it into a Power Automate "Compose" action first and verify the output matches today's Day number shown above.</div>
-
-        <div style="font-weight:700;font-size:0.9rem;margin:20px 0 8px;">Step 4 — Body expression</div>
-        <p class="section-desc" style="margin-bottom:8px">The HTTP action body should pass each row's values and the row index. Use this template and replace <code>outputs('List_rows')?['body/value']</code> with the actual output from your List rows action.</p>
-        <div class="pa-json">@{
-  "rows": outputs('List_rows')?['body/value']
-}</div>
-
-        <div class="pa-warning" style="margin-top:16px">
-          📌 <strong>Important:</strong> Power Automate's Excel connector does not return cell background colours. The server will match columns by position using the colour layout saved from your last manual paste. If you change the spreadsheet layout, do one manual paste to update the mapping.
-        </div>
-
-        <div style="font-weight:700;font-size:0.9rem;margin:20px 0 8px;">Saved column map</div>
-        <p class="section-desc" style="margin-bottom:8px">This is generated automatically when you paste the timetable. The server uses it to assign colours when Power Automate sends values-only data.</p>
-        <div class="pa-json" id="paColMapDisplay">No column map saved yet — paste a timetable first.</div>
-        <div class="btn-row" style="margin-top:8px">
-          <button class="s-btn secondary" id="clearColMapBtn">Clear column map</button>
-        </div>
-      </div>
-
       <!-- Colour names + LSO names -->
       <div class="settings-section full">
         <div class="section-title">Colour → Name & LSO Name Mapping</div>
