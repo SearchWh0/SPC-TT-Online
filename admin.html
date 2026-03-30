@@ -156,6 +156,20 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .cell-data.flash-copy::after { content:'✓'; position:absolute; top:7px; right:9px; font-size:0.7rem; color:#22a85a; }
 .cell-data.empty { cursor:default; }
 
+/* ── Power Automate section ── */
+.pa-steps { display:flex; flex-direction:column; gap:10px; margin:14px 0; }
+.pa-step { display:flex; gap:12px; align-items:flex-start; }
+.pa-step-num { width:22px; height:22px; border-radius:50%; background:var(--text); color:var(--bg); font-size:0.7rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+.pa-step-text { font-size:0.84rem; line-height:1.6; color:var(--text); }
+.pa-step-text code { font-family:'DM Mono',monospace; font-size:0.78rem; background:var(--soft); border:1px solid var(--border); border-radius:4px; padding:1px 6px; }
+.pa-step-text strong { font-weight:700; }
+.pa-endpoint { font-family:'DM Mono',monospace; font-size:0.72rem; background:var(--soft); border:1px solid var(--border); border-radius:8px; padding:10px 14px; margin:10px 0; word-break:break-all; color:var(--text); }
+.pa-endpoint .method { color:#22a85a; font-weight:700; margin-right:8px; }
+.pa-json { font-family:'DM Mono',monospace; font-size:0.7rem; background:var(--soft); border:1px solid var(--border); border-radius:8px; padding:12px 14px; margin:10px 0; white-space:pre; overflow-x:auto; color:var(--text); line-height:1.7; }
+.pa-copy-btn { background:none; border:1px solid var(--border); color:var(--muted); font-family:'DM Mono',monospace; font-size:0.68rem; padding:4px 10px; border-radius:6px; cursor:pointer; transition:border-color .15s,color .15s; }
+.pa-copy-btn:hover { border-color:var(--text); color:var(--text); }
+.pa-warning { background:#fff8e1; border:1px solid #f0c040; border-radius:8px; padding:10px 14px; font-size:0.8rem; color:#7a5800; margin:10px 0; }
+[data-theme="dark"] .pa-warning { background:#2a2000; border-color:#7a5800; color:#f0c040; }
 
 /* ── Email Composer ── */
 .email-section { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:22px; margin-bottom:20px; }
@@ -273,8 +287,9 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
   <div class="paste-wrap" id="pasteWrap">
     <div class="paste-zone" id="pasteZone" tabindex="0">
       <div class="paste-icon">📋</div>
-      <h2>Paste your timetable</h2>
-      <p>Open your Excel timetable · select all <span class="key">Ctrl+A</span> · copy <span class="key">Ctrl+C</span> · click here and press <span class="key">Ctrl+V</span></p>
+      <h2>Load your timetable</h2>
+      <p>Open your Excel timetable · select all <span class="key">Ctrl+A</span> · copy <span class="key">Ctrl+C</span> · then click the button below</p>
+      <button id="clipboardPasteBtn" style="margin-top:20px;background:var(--text);color:var(--bg);border:none;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;padding:14px 36px;border-radius:12px;cursor:pointer;transition:opacity .15s;">📋 Paste from clipboard</button>
     </div>
     <div class="paste-status" id="pasteStatus"></div>
   </div>
@@ -788,61 +803,6 @@ document.getElementById('openSheetBtn').addEventListener('click', () => {
 });
 
 // ── Power Automate section ─────────────────────────────────────────────────
-function updatePASection() {
-  const url  = getServer() || 'https://timetable-server-r6nb.onrender.com';
-  const pw   = localStorage.getItem('tt-pw') || 'your-password';
-  const urlText = document.getElementById('paUrlText');
-  const pwEl    = document.getElementById('paPasswordPlaceholder');
-  if (urlText) urlText.textContent = `${url}/automate/pa`;
-  if (pwEl)    pwEl.textContent    = pw;
-
-  const mapEl = document.getElementById('paColMapDisplay');
-  if (mapEl) {
-    const saved = localStorage.getItem('tt-col-map');
-    if (saved) {
-      try {
-        const m = JSON.parse(saved);
-        mapEl.textContent = JSON.stringify(m, null, 2);
-      } catch(e) { mapEl.textContent = 'Invalid saved map.'; }
-    } else {
-      mapEl.textContent = 'No column map saved yet — paste a timetable first.';
-    }
-  }
-}
-updatePASection();
-
-document.getElementById('saveConfigBtn').addEventListener('click', updatePASection);
-
-function copyText(text, btn, label) {
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = '✓ Copied!';
-    setTimeout(() => btn.textContent = label, 1800);
-  });
-}
-
-document.getElementById('copyPaUrl').addEventListener('click', function() {
-  const url = getServer() || 'https://timetable-server-r6nb.onrender.com';
-  copyText(`${url}/automate`, this, 'Copy URL');
-});
-
-document.getElementById('copyPaHeaders').addEventListener('click', function() {
-  const pw = localStorage.getItem('tt-pw') || 'your-password';
-  const headers = JSON.stringify({ 'Content-Type': 'application/json', 'x-admin-password': pw }, null, 2);
-  copyText(headers, this, 'Copy headers');
-});
-
-document.getElementById('copyPaExpression').addEventListener('click', function() {
-  const expr = document.getElementById('paExpressionText').textContent;
-  copyText(expr, this, 'Copy expression');
-});
-
-document.getElementById('clearColMapBtn').addEventListener('click', () => {
-  if (confirm('Clear the saved column map? You will need to paste manually once to rebuild it.')) {
-    localStorage.removeItem('tt-col-map');
-    updatePASection();
-  }
-});
-
 // ── LSO per-person names ───────────────────────────────────────────────────
 function getLSONames() {
   try { return JSON.parse(localStorage.getItem('tt-lso-names') || '{}'); }
@@ -1380,6 +1340,31 @@ const contentArea=document.getElementById('contentArea');
 pasteZone.addEventListener('click',()=>pasteZone.focus());
 document.addEventListener('paste',handlePaste);
 
+// ── Clipboard button ───────────────────────────────────────────────────────
+document.getElementById('clipboardPasteBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('clipboardPasteBtn');
+  try {
+    const items = await navigator.clipboard.read();
+    let html = null;
+    for (const item of items) {
+      if (item.types.includes('text/html')) {
+        const blob = await item.getType('text/html');
+        html = await blob.text();
+        break;
+      }
+    }
+    if (html && (html.includes('<td') || html.includes('<TD'))) {
+      processHTMLData(html);
+    } else {
+      setMsg('No table data found in clipboard — copy directly from Excel (Ctrl+A, Ctrl+C) then try again.', 'err');
+    }
+  } catch(e) {
+    // Fallback: browser didn't allow clipboard.read(), ask them to use Ctrl+V
+    setMsg('Clipboard access denied — click inside the box and press Ctrl+V instead.', 'err');
+    pasteZone.focus();
+  }
+});
+
 document.getElementById('clearBtn').addEventListener('click',()=>{
   appWrap.classList.remove('visible');
   pasteWrap.style.display='';
@@ -1466,8 +1451,6 @@ function processHTMLData(htmlStr) {
       body: JSON.stringify({ colMap })
     }).catch(() => {});
   }
-
-  updatePASection();
 
   // Apply any saved merges before rendering/pushing
   currentGroupMap = applyMerges(groupMap);
