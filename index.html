@@ -463,7 +463,7 @@ function buildLSOEmail(slots,lsoSettings,dcChanges){
 
   const teacherEntries=[...teacherMap.entries()];
   const teacherEmails=teacherEntries.map(([code,{prefix}])=>`${prefix}@${domain}`);
-  const body=['Good morning teachers,','','Today I will be attending and supporting the students within your classes.','',...periodLines,'',`Please introduce me to the students as ${yourName}.`,'I look forward to working with you today and providing effective support to our students.join('\n');
+  const body=['Good morning teachers,','','Today I will be attending and supporting the students within your classes.','',...periodLines,'',`Please introduce me to the students as ${yourName}.`,'I look forward to working with you today and providing effective support to our students.].join('\n');
   return{subject,body,teacherEmails,teacherEntries,cc};
 }
 function getLSOSettings(key){return{domain:localStorage.getItem('lso-domain')||'stpeters.vic.edu.au',yourName:getLSONameForKey(key),cc:localStorage.getItem('lso-cc')||'kmcmellon@stpeters.vic.edu.au'};}
