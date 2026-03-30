@@ -191,6 +191,33 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 .email-history-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.9rem; padding:3px 6px; border-radius:5px; flex-shrink:0; }
 .email-history-del:hover { color:#e05151; background:rgba(224,81,81,0.1); }
 
+/* ── Lock screen ── */
+#lockScreen {
+  position:fixed; inset:0; z-index:9999;
+  background:var(--bg); display:flex; align-items:center; justify-content:center;
+  padding:24px;
+}
+#lockScreen.hidden { display:none; }
+.lock-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:20px;
+  padding:36px 32px; width:100%; max-width:400px;
+  box-shadow:var(--shadow-lg); display:flex; flex-direction:column; gap:0;
+}
+.lock-logo { display:flex; align-items:center; gap:12px; margin-bottom:28px; }
+.lock-title { font-size:1.6rem; font-weight:900; letter-spacing:-0.04em; }
+.lock-badge { background:#e05151; color:#fff; font-family:'DM Mono',monospace; font-size:0.62rem; padding:3px 8px; border-radius:4px; letter-spacing:0.08em; text-transform:uppercase; }
+.lock-field { display:flex; flex-direction:column; gap:5px; margin-bottom:14px; }
+.lock-label { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; }
+.lock-input { background:var(--surface2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'DM Mono',monospace; font-size:0.85rem; padding:11px 14px; outline:none; transition:border-color .2s; width:100%; }
+.lock-input:focus { border-color:var(--text); }
+.lock-btn { background:var(--text); color:var(--bg); border:none; font-family:'Outfit',sans-serif; font-size:0.95rem; font-weight:700; padding:13px; border-radius:10px; cursor:pointer; transition:opacity .15s; margin-top:6px; width:100%; }
+.lock-btn:hover { opacity:0.82; }
+.lock-btn:disabled { opacity:0.45; cursor:not-allowed; }
+.lock-status { font-family:'DM Mono',monospace; font-size:0.72rem; min-height:18px; margin-top:10px; text-align:center; }
+.lock-status.err  { color:#e05151; }
+.lock-status.ok   { color:#22a85a; }
+.lock-status.info { color:var(--muted); }
+
 /* ── Merge section ── */
 .merge-select-list { display:flex; flex-direction:column; gap:6px; margin-bottom:14px; }
 .merge-check-row { display:flex; align-items:center; gap:12px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:10px 14px; cursor:pointer; transition:border-color .15s; user-select:none; }
@@ -213,6 +240,26 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
 </style>
 </head>
 <body>
+
+<!-- ══ LOCK SCREEN ══ -->
+<div id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-logo">
+      <div class="lock-title">Timetable</div>
+      <div class="lock-badge">Admin</div>
+    </div>
+    <div class="lock-field">
+      <span class="lock-label">Server URL</span>
+      <input id="lockUrl" class="lock-input" type="text" placeholder="https://your-app.onrender.com" autocomplete="off" spellcheck="false" />
+    </div>
+    <div class="lock-field">
+      <span class="lock-label">Admin Password</span>
+      <input id="lockPw" class="lock-input" type="password" placeholder="Password" autocomplete="current-password" />
+    </div>
+    <button class="lock-btn" id="lockBtn">Unlock</button>
+    <div class="lock-status info" id="lockStatus"></div>
+  </div>
+</div>
 
 <header class="site-header">
   <div class="header-left">
@@ -683,6 +730,90 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     if (btn.dataset.tab === 'emailTab') { setTimeout(initEmailTab, 50); }
   });
 });
+
+// ── Lock screen ───────────────────────────────────────────────────────────
+(async function initLock() {
+  const lockScreen = document.getElementById('lockScreen');
+  const lockUrlEl  = document.getElementById('lockUrl');
+  const lockPwEl   = document.getElementById('lockPw');
+  const lockBtn    = document.getElementById('lockBtn');
+  const lockStatus = document.getElementById('lockStatus');
+
+  function setLockStatus(msg, type) {
+    lockStatus.textContent = msg;
+    lockStatus.className = 'lock-status ' + (type || 'info');
+  }
+
+  async function tryUnlock(url, pw) {
+    // Verify by hitting a protected endpoint — POST /names with the password
+    // A 200 or 404 means the password is accepted; 401 means wrong password
+    try {
+      const res = await fetch(`${url.replace(/\/$/,'')}/names`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Password': pw },
+        body: JSON.stringify({ names: {} })
+      });
+      return res.status !== 401;
+    } catch(e) {
+      return null; // network error
+    }
+  }
+
+  function unlock(url, pw) {
+    localStorage.setItem('tt-server', url.replace(/\/$/,''));
+    localStorage.setItem('tt-pw', pw);
+    lockScreen.classList.add('hidden');
+  }
+
+  // Pre-fill from localStorage
+  const savedUrl = localStorage.getItem('tt-server') || '';
+  const savedPw  = localStorage.getItem('tt-pw') || '';
+  lockUrlEl.value = savedUrl;
+  lockPwEl.value  = savedPw;
+
+  // Auto-unlock if we already have saved credentials
+  if (savedUrl && savedPw) {
+    setLockStatus('Checking saved credentials…', 'info');
+    const result = await tryUnlock(savedUrl, savedPw);
+    if (result === true) {
+      unlock(savedUrl, savedPw);
+      return;
+    } else if (result === false) {
+      setLockStatus('Saved password is incorrect — please re-enter.', 'err');
+      localStorage.removeItem('tt-pw');
+      lockPwEl.value = '';
+      lockPwEl.focus();
+    } else {
+      setLockStatus('Could not reach server — check the URL.', 'err');
+    }
+  } else if (!savedUrl) {
+    setLockStatus('Enter your server URL and password to continue.', 'info');
+  }
+
+  async function doUnlock() {
+    const url = lockUrlEl.value.trim();
+    const pw  = lockPwEl.value;
+    if (!url) { setLockStatus('Please enter the server URL.', 'err'); lockUrlEl.focus(); return; }
+    if (!pw)  { setLockStatus('Please enter the password.', 'err'); lockPwEl.focus(); return; }
+    lockBtn.disabled = true;
+    setLockStatus('Verifying…', 'info');
+    const result = await tryUnlock(url, pw);
+    lockBtn.disabled = false;
+    if (result === true) {
+      setLockStatus('✓ Unlocked', 'ok');
+      unlock(url, pw);
+    } else if (result === false) {
+      setLockStatus('✕ Wrong password.', 'err');
+      lockPwEl.select();
+    } else {
+      setLockStatus('✕ Could not reach server — check the URL.', 'err');
+    }
+  }
+
+  lockBtn.addEventListener('click', doUnlock);
+  lockPwEl.addEventListener('keydown', e => { if (e.key === 'Enter') doUnlock(); });
+  lockUrlEl.addEventListener('keydown', e => { if (e.key === 'Enter') lockPwEl.focus(); });
+})();
 
 // ── Server config ──────────────────────────────────────────────────────────
 const serverUrlEl = document.getElementById('serverUrl');
