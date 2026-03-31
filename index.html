@@ -508,7 +508,36 @@ function openDetail(key){if(!currentGroupMap)return;const grp=currentGroupMap.ge
 backBtn.addEventListener('click',goHome);
 
 // ── Load timetable ─────────────────────────────────────────────────────────
-async function loadTimetable(){const url=getServerUrl();if(!url){showScreen('noServerState');return;}showScreen('loadingState');fetchEmailOverrides();try{const res=await fetch(`${url}/timetable`);if(res.status===404){showScreen('emptyState');return;}if(!res.ok){showScreen('emptyState');return;}const state=await res.json();if(!state.map){showScreen('emptyState');return;}const groupMap=new Map();for(const[k,v]of Object.entries(state.map))groupMap.set(k,v);currentGroupMap=groupMap;currentNames=state.names||{};try{localStorage.setItem('tt-cached-data',JSON.stringify(state));localStorage.setItem('tt-cached-time',Date.now().toString());}catch(e){}renderTiles(groupMap,currentNames);loadDailyChanges();if(activeDetailKey&&groupMap.has(activeDetailKey)){const grp=groupMap.get(activeDetailKey);const name=currentNames[activeDetailKey]||'—';siteTitle.textContent=name;backBtn.classList.add('visible');renderDetail(activeDetailKey,grp,name);showScreen('detailView');}else{activeDetailKey=null;showScreen('tileView');}}catch(e){const cached=localStorage.getItem('tt-cached-data');const cachedTime=parseInt(localStorage.getItem('tt-cached-time')||'0');const ageHours=(Date.now()-cachedTime)/3600000;if(cached&&ageHours<20){try{const state=JSON.parse(cached);const groupMap=new Map();for(const[k,v]of Object.entries(state.map))groupMap.set(k,v);currentGroupMap=groupMap;currentNames=state.names||{};renderTiles(groupMap,currentNames);if(activeDetailKey&&groupMap.has(activeDetailKey)){const grp=groupMap.get(activeDetailKey);const name=currentNames[activeDetailKey]||'—';siteTitle.textContent=name;backBtn.classList.add('visible');renderDetail(activeDetailKey,grp,name);showScreen('detailView');}else{activeDetailKey=null;showScreen('tileView');}showStaleBanner();return;}catch(e2){}}showScreen('noServerState');}}
+async function loadTimetable(){
+  const url=getServerUrl();if(!url){showScreen('noServerState');return;}showScreen('loadingState');fetchEmailOverrides();
+  try{
+    const res=await fetch(`${url}/timetable`);
+    if(res.status===404){showScreen('emptyState');return;}
+    if(!res.ok){showScreen('emptyState');return;}
+    const state=await res.json();
+    if(!state.map){showScreen('emptyState');return;}
+    const groupMap=new Map();for(const[k,v]of Object.entries(state.map))groupMap.set(k,v);
+    currentGroupMap=groupMap;
+    // Merge server names with any cached names — never replace a known name with empty
+    const cachedNames = (() => { try { return JSON.parse(localStorage.getItem('tt-cached-names')||'{}'); } catch(e){ return {}; } })();
+    const serverNames = state.names||{};
+    const mergedNames = Object.assign({}, cachedNames);
+    for (const [k,v] of Object.entries(serverNames)) { if (v && v.trim()) mergedNames[k] = v; }
+    currentNames = mergedNames;
+    try{
+      localStorage.setItem('tt-cached-data',JSON.stringify(state));
+      localStorage.setItem('tt-cached-time',Date.now().toString());
+      localStorage.setItem('tt-cached-names',JSON.stringify(mergedNames));
+    }catch(e){}
+    renderTiles(groupMap,currentNames);loadDailyChanges();
+    if(activeDetailKey&&groupMap.has(activeDetailKey)){const grp=groupMap.get(activeDetailKey);const name=currentNames[activeDetailKey]||'—';siteTitle.textContent=name;backBtn.classList.add('visible');renderDetail(activeDetailKey,grp,name);showScreen('detailView');}
+    else{activeDetailKey=null;showScreen('tileView');}
+  }catch(e){
+    const cached=localStorage.getItem('tt-cached-data');const cachedTime=parseInt(localStorage.getItem('tt-cached-time')||'0');const ageHours=(Date.now()-cachedTime)/3600000;
+    if(cached&&ageHours<20){try{const state=JSON.parse(cached);const groupMap=new Map();for(const[k,v]of Object.entries(state.map))groupMap.set(k,v);currentGroupMap=groupMap;currentNames=state.names||{};renderTiles(groupMap,currentNames);if(activeDetailKey&&groupMap.has(activeDetailKey)){const grp=groupMap.get(activeDetailKey);const name=currentNames[activeDetailKey]||'—';siteTitle.textContent=name;backBtn.classList.add('visible');renderDetail(activeDetailKey,grp,name);showScreen('detailView');}else{activeDetailKey=null;showScreen('tileView');}showStaleBanner();return;}catch(e2){}}
+    showScreen('noServerState');
+  }
+}
 function showStaleBanner(){if(document.getElementById('staleBanner'))return;const b=document.createElement('div');b.id='staleBanner';b.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#b45309;color:#fff;padding:10px 20px;border-radius:10px;font-size:0.82rem;font-family:Outfit,sans-serif;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,0.3);';b.textContent='⚠️ Showing cached data — server unreachable';document.body.appendChild(b);setTimeout(()=>b.remove(),6000);}
 document.getElementById('refreshBtn').addEventListener('click',loadTimetable);
 setInterval(loadTimetable,600000);
