@@ -288,8 +288,7 @@ body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif;
     <div class="paste-zone" id="pasteZone" tabindex="0">
       <div class="paste-icon">📋</div>
       <h2>Load your timetable</h2>
-      <p>Open your Excel timetable · select all <span class="key">Ctrl+A</span> · copy <span class="key">Ctrl+C</span> · then click the button below</p>
-      <button id="clipboardPasteBtn" style="margin-top:20px;background:var(--text);color:var(--bg);border:none;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;padding:14px 36px;border-radius:12px;cursor:pointer;transition:opacity .15s;">📋 Paste from clipboard</button>
+      <p>Open your Excel timetable · select all <span class="key">Ctrl+A</span> · copy <span class="key">Ctrl+C</span> · click here · then press <span class="key">Ctrl+V</span></p>
     </div>
     <div class="paste-status" id="pasteStatus"></div>
   </div>
@@ -1414,31 +1413,6 @@ const contentArea=document.getElementById('contentArea');
 pasteZone.addEventListener('click',()=>pasteZone.focus());
 document.addEventListener('paste',handlePaste);
 
-// ── Clipboard button ───────────────────────────────────────────────────────
-document.getElementById('clipboardPasteBtn').addEventListener('click', async () => {
-  const btn = document.getElementById('clipboardPasteBtn');
-  try {
-    const items = await navigator.clipboard.read();
-    let html = null;
-    for (const item of items) {
-      if (item.types.includes('text/html')) {
-        const blob = await item.getType('text/html');
-        html = await blob.text();
-        break;
-      }
-    }
-    if (html && (html.includes('<td') || html.includes('<TD'))) {
-      processHTMLData(html);
-    } else {
-      setMsg('No table data found in clipboard — copy directly from Excel (Ctrl+A, Ctrl+C) then try again.', 'err');
-    }
-  } catch(e) {
-    // Fallback: browser didn't allow clipboard.read(), ask them to use Ctrl+V
-    setMsg('Clipboard access denied — click inside the box and press Ctrl+V instead.', 'err');
-    pasteZone.focus();
-  }
-});
-
 document.getElementById('clearBtn').addEventListener('click',()=>{
   appWrap.classList.remove('visible');
   pasteWrap.style.display='';
@@ -1460,7 +1434,6 @@ function handlePaste(e) {
 }
 
 function processHTMLData(htmlStr) {
-  const REF_ROW=2;
   const parser=new DOMParser();
   const doc=parser.parseFromString(htmlStr,'text/html');
   const ccm={},fgcm={};
@@ -1473,6 +1446,13 @@ function processHTMLData(htmlStr) {
   const grid=[];
   rows.forEach(tr=>{const row=[];tr.querySelectorAll('td,th').forEach(td=>{const colspan=parseInt(td.getAttribute('colspan')||'1',10);const text=td.textContent.trim();const{bg,fg}=cellColors(td,ccm,fgcm);for(let s=0;s<colspan;s++)row.push({text,bg,fg});});grid.push(row);});
   const numCols=Math.max(...grid.map(r=>r.length));
+  // Dynamically find the header row containing period numbers 1–6
+  // instead of hardcoding row index 2 (handles timetable formats with extra title rows)
+  let REF_ROW=2;
+  for(let r=0;r<Math.min(grid.length,8);r++){
+    const periodCount=grid[r].filter(c=>{const n=parseInt(c.text,10);return n>=1&&n<=6;}).length;
+    if(periodCount>=3){REF_ROW=r;break;}
+  }
   const refRow=grid[REF_ROW]||[];
   const periodNums=[];
   for(let c=0;c<numCols;c++){const txt=refRow[c]?refRow[c].text:'';const n=parseInt(txt,10);periodNums[c]=(n>=1&&n<=6)?n:null;}
